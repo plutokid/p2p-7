@@ -1,0 +1,51 @@
+/*Autocomplete location input*/
+.pac-container:after {
+  content: "" !important;
+}
+
+.pac-item {
+  padding: 0.5em;
+  -webkit-transition: all 0.1s ease-in;
+  -moz-transition: all 0.1s ease-in;
+  -o-transition: all 0.1s ease-in;
+  transition: all 0.1s ease-in;
+}
+
+.pac-container > .pac-item:nth-child(odd) {
+  background: rgba(236, 236, 236, 0.7);
+}
+
+.pac-container > .pac-item:nth-child(odd):hover {
+  background: #274c74;
+}
+.pac-item:hover {
+  background: #274c74;
+  color: #fff;
+}
+.pac-selected {
+  background: #274c74 !important;
+  color: #fff;
+}
+/*Alert/Status box at the bottom right*/
+.status-box {
+  position: fixed;
+  bottom: -15px;
+  right: 15px;
+}
+
+#map{
+  /*width: 100%;*/
+}
+
+.loading {
+  position: absolute;
+  left: 50%;
+  padding: 5px;
+  background: rgb(255, 188, 136);
+  z-index: 999;
+}
+
+.search {
+  text-align: center;
+  margin-top: 5px;
+}
