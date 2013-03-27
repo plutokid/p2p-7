@@ -11,6 +11,10 @@
 
         $('#searchForm').on('submit', function(e) {
           var val = $('#js-location-input').val();
+          $('#wtv').hide();
+          $('#wtv2').show();
+          $('body').css('background-color', 'white');
+          $('html').css('background-color', 'white');
           _this.mapIt(val);
           _this.searchAirbnb(val);
           e.preventDefault();
@@ -42,6 +46,12 @@
                     });
                   }
                 }
+              }
+            },
+            infowindow: {
+              address: $tr.find($('.ownerAdd')).text(),
+              options: {
+                content: _this.generateInfw($tr)
               }
             }
           });

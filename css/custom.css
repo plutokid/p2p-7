@@ -42,9 +42,7 @@
 }
 
 .search {
-  text-align: center;
-  margin-top: 5px;
-}
+  text-align: center;}
 
 .row-selected {
   background-color: #abcdef;
@@ -66,3 +64,7 @@
 .list-wrapper {
   overflow: hidden;
 }
+
+.map_canvas img{
+ max-width: none;
+ }

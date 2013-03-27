@@ -1,22 +1,44 @@
 
+@font-face
+{
+font-family: HELVETICANEUELTSTD;
+src: url('fonts/HELVETICANEUELTSTD-ULTLT.OTF');
+     
+}
+.search {
+	background:url(../img/barbubble.png) no-repeat;
+	height: 84px;
+	padding-left: 190px;
+	padding-top: 31px;
+	margin:0 auto;
+	width:584px;
+	height:150px;
+	margin-top:200px;
 
-/* ==========================================================================
-   Author's custom styles
-   ========================================================================== */
+}
+#js-location-input{
+	border: medium none;
+    height: 45px;
+	background:none;
+	color:#222;
+	float:left;
+	width:520px;
+	font-family:HELVETICANEUELTSTD;
+	font-style:italic;
 
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#searchIt{
+	background:none;
+	border:none;
+	margin-top:3px;
+	float:right;
+	padding-right:0px;
+}
+#searchForm input,#searchForm  button{
+	font-size:26px;
+	box-shadow:none;
+}
+#searchForm {
+	margin-top:90px;
+}
