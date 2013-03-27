@@ -33,10 +33,6 @@
   right: 15px;
 }
 
-#map{
-  /*width: 100%;*/
-}
-
 .loading {
   position: absolute;
   left: 50%;
@@ -48,4 +44,25 @@
 .search {
   text-align: center;
   margin-top: 5px;
+}
+
+.row-selected {
+  background-color: #abcdef;
+}
+
+.info-img {
+  text-align: center;
+}
+
+.info-price {
+  text-align: center;
+  margin-top: 3px;
+}
+
+.ownerAdd {
+  word-wrap: break-word;
+}
+
+.list-wrapper {
+  overflow: hidden;
 }
