@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
-    <meta name="description" content="">
+    <title>Outpost - Plan yo' trip</title>
+    <meta name="description" content="Outpost - Plan your trip with peer to peer madness only.">
     <meta name="viewport" content="width=device-width">
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -19,7 +19,6 @@
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
 </head>
 <body>
-  <div class="loading" id="loading" style="display:none"><b>Fetching Airbnb results...</b></div>
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
@@ -31,53 +30,100 @@
         <a class="brand" href="/">Outpost</a>
         <div class="nav-collapse collapse" id="appendToNav">
           <ul class="nav">
-            <li><a href="javascript:void(0)">Github</a></li>
-            <li><a href="#about">About</a></li>
-            <li class="dropdown">
-              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Twitter <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Follow @wololodev</a></li>
-                <li><a href="#">Follow @askovi</a></li>
-              </ul>
-            </li>
+            <li><a href="#about" data-toggle="modal">About</a></li>
+            <li class='st_fblike_hcount shares' displayText='Facebook Like'></li>
+            <li class='st_twitter_hcount shares' displayText='Tweet'></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
   </div>
   <div class="hero-unit" id="landing">
-    <h1>Outpost</h1>
+    <h1>Ou<img class="logo" src="/img/nosmoke.png" alt="outpost logo">post</h1>
     <p>Plan your trip with peer to peer madness only.</p>
     <p>
     <form class="form-inline" id="searchForm">
-      <input class="" id="js-orig-location-input" type="text" autocomplete="off" placeholder="From location">
-      <input class="" id="js-dest-location-input" type="text" autocomplete="off" placeholder="To location">
-      <input class="input-small" id="js-sdate-input" type="text" autocomplete="off" placeholder="Leaving on">
+      <input id="js-orig-location-input" type="text" autocomplete="off" placeholder="From location*" autofocus required>
+      <input id="js-dest-location-input" type="text" autocomplete="off" placeholder="To location*" required>
+      <input class="input-small" id="js-sdate-input" type="text" autocomplete="off" placeholder="Leaving on*" required>
       <input class="input-small" id="js-edate-input" type="text" autocomplete="off" placeholder="Checking out">
       <select class="input-small" id="js-guest">
-        <option selected disabled value="x">People</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
+        <option selected disabled value="1">People</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
       </select>
       <button class="btn btn-info" id="searchIt" type="submit">Search</button>
     </form>
     </p>
+    <h6>Currently supporting: </h6>
+    <ul class="thumbnails">
+      <li class="span2 logos">
+        <a href="https://www.airbnb.com/" target="_blank">
+          <img src="img/airbnb_logo_edited.png" alt="airbnb logo">
+        </a>
+      </li>
+      <li class="span2 logos">
+        <a href="http://ridejoy.com/" target="_blank">
+          <img src="img/ridejoy_logo_edited.png" alt="ridejoy logo">
+        </a>
+      </li>
+      <li class="span2 logos">
+        <a href="https://www.vayable.com/" target="_blank">
+          <img src="img/vayable_logo_edited.png" alt="vayable logo">
+        </a>
+      </li>
+    </ul>
   </div>
 
   <div class="row-fluid listings" style="display: none;">
-    <div class="span2" id="sidebar">
-      <table class="table">
-        <caption id="count"></caption>
-        <thead>
-          <th><i class="icon-user"></i></th>
-          <th>Location</th>
-          <th><i class="icon-globe"></i></th>
-        </thead>
-        <tbody id="listings">
-          <!-- items cum here -->
-        </tbody>
-      </table>
+    <div class="span2 sidebar mvwq" id="sidebar">
+      <ul class="nav nav-tabs">
+        <li class="active"><a id="js-jayridemenu" href="#ridejoy" data-toggle="tab" title="Ridejoy"><img src="img/ridejoy.ico"></a></li>
+        <li><a id="js-airbnbmenu" href="#airbnb" data-toggle="tab" title="Airbnb"><img src="img/airbnb.ico"></a></li>
+        <li><a id="js-vayablemenu"href="#vayable" data-toggle="tab" title="Vayable"><img src="img/vayable.ico"></a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="ridejoy">
+          <div class="loading" id="joyride-loading"></div>
+          <table class="table">
+            <thead>
+              <th><i class="icon-user"></i></th>
+              <th>Location</th>
+              <th><i class="icon-globe"></i></th>
+            </thead>
+            <tbody class="lists" id="joyride-list">
+              <!-- items cum here -->
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane" id="airbnb">
+          <div class="loading" id="airbnb-loading"></div>
+          <table class="table">
+            <thead>
+              <th><i class="icon-user"></i></th>
+              <th>Location</th>
+            </thead>
+            <tbody class="lists" id="airbnb-list">
+              <!-- items cum here -->
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane" id="vayable">
+          <div class="loading" id="vayable-loading"></div>
+          <table class="table">
+            <thead>
+              <th><i class="icon-user"></i></th>
+              <th>Location</th>
+              <th><i class="icon-globe"></i></th>
+            </thead>
+            <tbody class="lists" id="vayable-list">
+              <!-- items cum here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
     <div class="span10 map-cont">
       <div class="map" id="map">
@@ -86,8 +132,30 @@
     </div>
   </div>
 
+
+  <!-- Modal -->
+  <div id="about" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="about-outpost" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="about-outpost">About Outpost</h3>
+    </div>
+    <div class="modal-body">
+      <p>I'd like to start saying that Outpost was built in less than 4 days just to get the spontaneous idea
+         out of my mind and into code. That said, I applied to YCombinator's summer 2013 cohort with a friend,
+         and wanted to see if connecting P2P websites is something the people want before pursuing Outpost any further. </p><p>Sorry if there's bugs or
+         no information available next to your neighborhood, I will make sure to crawl/scrap more data from many other market place
+         networks soon.</p>
+          Thank you.
+
+         <p class="text-right">
+          Hamed Al-Khabaz <br>
+          <a href="https://twitter.com/wololodev" target="_blank">@wololodev</a> <br>
+          <a href="mailto:">hamedalkhabaz@gmail.com</a>
+      </p>
+    </div>
+  </div>
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
   <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
   <script src="js/vendor/bootstrap.min.js"></script>
   <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDszynV_XPq7Lgnmb_JAEz2QArQ7RdU5iA&sensor=false&libraries=places"></script>
@@ -96,10 +164,12 @@
   <script src="js/plugins.js"></script>
   <script src="js/main.js"></script>
   <script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    var _gaq=[['_setAccount','UA-39723359-1'],['_trackPageview']];
     (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
   </script>
+  <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+  <script type="text/javascript">stLight.options({publisher: "77d2d940-1d21-4e6a-9eee-6aa6bd1943df", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
 </body>
 </html>
