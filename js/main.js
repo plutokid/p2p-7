@@ -76,6 +76,7 @@ $(document).ready(function($) {
         _this.searchJoyRide();
         _this.searchAirbnb();
         _this.searchVayable();
+        _this.searchFoursquare();
         _this.mapIt(orig, dest);
         p2p.hasSearchedOnce = true;
       });
@@ -277,6 +278,36 @@ $(document).ready(function($) {
         }
       }, '.tr-vayable');
 
+      $('#foursquare-list').on({
+        click: function() {
+          var $tr = $(this);
+          var obj = $tr.data('obj');
+          $('.row-selected').removeClass('row-selected');
+          $tr.addClass("row-selected");
+          p2p.$map.gmap3({
+            get: {
+              name: "marker",
+              tag: obj.tripid,
+              callback: function(marker) {
+                var map = p2p.$map.gmap3("get");
+                var infowindow = p2p.$map.gmap3({get:{name:"infowindow"}});
+                if (infowindow) {
+                  infowindow.open(map, marker);
+                  infowindow.setContent(_this.fourSquareInfo(obj));
+                } else {
+                  p2p.$map.gmap3({
+                    infowindow: {
+                      anchor:marker,
+                      options:{content: _this.fourSquareInfo(obj)}
+                    }
+                  });
+                }
+              }
+            }
+          });
+        }
+      }, '.tr-foursquare');
+
       p2p.$map.on("click", ".routeit", function() {
         var origin = $(this).data("orig");
         var dest = $(this).data("dest");
@@ -328,11 +359,54 @@ $(document).ready(function($) {
 
     vayableInfo: function(obj) {
       return '<div class="js-infowindow">' +
+        '<div class="info-desc">' + obj.origin + '</div>' +
         '<div class="info-desc">' + obj.desc + '</div>' +
         '<div class="info-img img-polaroid"><img height="96px" width="96px" src="' + obj.pic + '"></div>' +
         '<div class="info-price">' + obj.price + ' per person</div>' +
         '<a class="btn btn-small btn-primary" href="' + obj.link + '" target="_blank"><i class="icon-check"></i>&nbsp;Book It</a></div>' +
         '</div>';
+    },
+
+    fourSquareInfo: function(obj) {
+      return '<div class="js-infowindow">' +
+        '<div class="info-desc">' + obj.origin + '</div>' +
+        '<div class="info-desc">' + obj.desc + '</div>' +
+        '<div class="info-price">There are currently <b>' + obj.live + '</b> visitors there.</div>' +
+        '<a class="btn btn-small btn-primary" href="' + obj.link + '" target="_blank"><i class="icon-check"></i>&nbsp;More info</a></div>' +
+        '</div>';
+    },
+
+    ll: function(org, isBounded) {
+      var i;
+      var url;
+      var bounds;
+      if (isBounded) {
+        bounds = p2p.inVal.destBound;
+        url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + org + "&bounds="+bounds.southwest.lat+","+bounds.southwest.lng+"|"+bounds.northeast.lat+","+bounds.northeast.lng+"&sensor=false";
+      } else {
+        url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + org + "&sensor=false";
+      }
+      $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "JSON",
+        async: false,
+        success: function(data) {
+          var lat, lng;
+          try {
+            lat = data.results[0].geometry.location.lat;
+            lng = data.results[0].geometry.location.lng;
+          } catch(e) {
+            lat = undefined;
+            lng = undefined;
+          }
+
+          lat = lat + (Math.random()*0.01) -0.004;
+          lng = lng + (Math.random()*0.01) -0.004;
+          i = [lat, lng];
+        }
+      });
+      return i;
     },
 
     searchJoyRide: function() {
@@ -442,39 +516,6 @@ $(document).ready(function($) {
           });
         }
       });
-    },
-
-    ll: function(org, isBounded) {
-      var i;
-      var url;
-      var bounds;
-      if (isBounded) {
-        bounds = p2p.inVal.destBound;
-        url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + org + "&bounds="+bounds.southwest.lat+","+bounds.southwest.lng+"|"+bounds.northeast.lat+","+bounds.northeast.lng+"&sensor=false";
-      } else {
-        url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + org + "&sensor=false";
-      }
-      $.ajax({
-        url: url,
-        type: "GET",
-        dataType: "JSON",
-        async: false,
-        success: function(data) {
-          var lat, lng;
-          try {
-            lat = data.results[0].geometry.location.lat;
-            lng = data.results[0].geometry.location.lng;
-          } catch(e) {
-            lat = undefined;
-            lng = undefined;
-          }
-
-          lat = lat + (Math.random()*0.01) -0.004;
-          lng = lng + (Math.random()*0.01) -0.004;
-          i = [lat, lng];
-        }
-      });
-      return i;
     },
 
     searchAirbnb: function() {
@@ -639,13 +680,13 @@ $(document).ready(function($) {
             html += '' +
             "<tr class='tr-vayable tr " + classname + "' data-obj='" + json_trip + "'>" +
               "<td><img class='img-circle' height='32px' width='32px' src='" + data[i].img + "'></td>" +
-              "<td class='ownerAdd'>" + data[i].origin + "</td>" +
+              "<td class='ownerAdd'>" + data[i].desc + "</td>" +
               "<td><a href='" + data[i].link + "' target='_blank'><i class='icon-share' title='go to " + data[i].link + "'></i></td>" +
             "</tr>";
           }
 
           if (!len) {
-            $('#vayable-list').html("No owners found");
+            $('#vayable-list').html("No tourisim action found");
           } else {
             $('#vayable-list').html(html);
           }
@@ -685,6 +726,114 @@ $(document).ready(function($) {
                 mouseout: function(marker, event, context) {
                   marker.setIcon("img/humanicon.png");
                   $('#vayable-list .' + context.id).removeClass('row-hovered');
+                }
+              }
+            }
+          });
+        }
+      });
+    },
+
+    searchFoursquare: function() {
+      var _this = this;
+      var loc;
+      $.ajax({
+        url: "https://api.foursquare.com/v2/venues/trending",
+        data: {
+          ll: p2p.inVal.destlat + "," + p2p.inVal.destlon,
+          oauth_token: "UKU0UMG0XYMT40IAXVCVMUEB0LG1PFLOKFSOVLNMQO3JHSH3"
+        },
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+          var len = data.response.venues.length;
+          var markers = [];
+          var html = "";
+          var tripid;
+          var tripdata;
+          var json_trip;
+          var icon, ext, pic;
+
+          $('#foursquare-loading').hide();
+
+          for (var i = 0; i < len; i++) {
+            tripid = data.response.venues[i].id;
+            classname = tripid;
+            icon = data.response.venues[i].categories[0].icon;
+            if (!icon) {
+              icon = data.response.venues[i].categories[0].icon.prefix;
+              ext = data.response.venues[i].categories[0].icon.suffix;
+              icon = icon.substring(0, icon.length - 1) + ext;
+            }
+
+            tripdata = {
+              tripid: tripid,
+              origLonglat: [data.response.venues[i].location.lat, data.response.venues[i].location.lng],
+              desc: data.response.venues[i].name,
+              origin: data.response.venues[i].location.address + " " + data.response.venues[i].location.state,
+              live: data.response.venues[i].hereNow.count,
+              link: data.response.venues[i].canonicalUrl,
+              pic: icon
+            };
+
+            markers.push({
+              latLng: tripdata.origLonglat,
+              "data": _this.fourSquareInfo(tripdata),
+              tag: tripid,
+              id: classname,
+              options: {
+                icon: icon
+              }
+            });
+
+            json_trip = JSON.stringify(tripdata);
+            html += '' +
+            "<tr class='tr-foursquare tr " + classname + "' data-obj='" + json_trip + "'>" +
+              "<td><img class='img-circle' height='32px' width='32px' src='" + tripdata.pic + "'></td>" +
+              "<td class='ownerAdd'>" + tripdata.desc + "</td>" +
+              "<td><a href='" + tripdata.link + "' target='_blank'><i class='icon-share' title='go to " + tripdata.link + "'></i></td>" +
+            "</tr>";
+          }
+
+          if (!len) {
+            $('#foursquare-list').html("Nobody's chillin' in this neighbourhood, sorry.");
+          } else {
+            $('#foursquare-list').html(html);
+          }
+
+          $('#foursquare-list').html(html);
+          p2p.$map.gmap3({
+            marker: {
+              values: markers,
+              events: {
+                click: function(marker, event, context) {
+                  $('.row-selected').removeClass('row-selected');
+                  var map = p2p.$map.gmap3("get");
+                  var infowindow = p2p.$map.gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.open(map, marker);
+                    infowindow.setContent(context.data);
+                  } else {
+                    p2p.$map.gmap3({
+                      infowindow: {
+                        anchor:marker,
+                        options:{content: context.data},
+                        events: {
+                          closeclick: function(infowindow) {
+                            $('.row-selected').removeClass('row-selected');
+                          }
+                        }
+                      }
+                    });
+                  }
+                  $('#foursquare-list').find('.' + context.id).addClass('row-selected');
+                },
+                mouseover: function(marker, event, context) {
+                  $('#js-foursquaremenu').tab('show');
+                  $('#foursquare-list').find('.' + context.id).addClass('row-hovered');
+                },
+                mouseout: function(marker, event, context) {
+                  $('#foursquare-list .' + context.id).removeClass('row-hovered');
                 }
               }
             }
@@ -734,5 +883,6 @@ $(document).ready(function($) {
   };
 
   p2p.init();
+  $('.tooly').tooltip();
 });
 })(jQuery);
