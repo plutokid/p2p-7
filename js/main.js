@@ -1,5 +1,8 @@
 (function($) {
 $(document).ready(function($) {
+  $.ajaxSetup({
+     timeout: 5000
+   });
   var p2p = {
     $map: $('#map'),
     hasSearchedOnce: false,
@@ -73,10 +76,12 @@ $(document).ready(function($) {
         p2p.inVal.edate = $('#js-edate-input').val();
         p2p.inVal.guests = $('#js-guest').val();
 
+        _this.searchVayable();
+        _this.searchInstagram();
+        _this.searchTwitter();
+        _this.searchFoursquare();
         _this.searchJoyRide();
         _this.searchAirbnb();
-        _this.searchVayable();
-        _this.searchFoursquare();
         _this.mapIt(orig, dest);
         p2p.hasSearchedOnce = true;
       });
@@ -308,6 +313,66 @@ $(document).ready(function($) {
         }
       }, '.tr-foursquare');
 
+      $('#twitter-list').on({
+        click: function() {
+          var $tr = $(this);
+          var obj = $tr.data('obj');
+          $('.row-selected').removeClass('row-selected');
+          $tr.addClass("row-selected");
+          p2p.$map.gmap3({
+            get: {
+              name: "marker",
+              tag: obj.tripid,
+              callback: function(marker) {
+                var map = p2p.$map.gmap3("get");
+                var infowindow = p2p.$map.gmap3({get:{name:"infowindow"}});
+                if (infowindow) {
+                  infowindow.open(map, marker);
+                  infowindow.setContent(_this.twitterInfo(obj));
+                } else {
+                  p2p.$map.gmap3({
+                    infowindow: {
+                      anchor:marker,
+                      options:{content: _this.twitterInfo(obj)}
+                    }
+                  });
+                }
+              }
+            }
+          });
+        }
+      }, '.tr-twitter');
+
+      $('#instagram-list').on({
+        click: function() {
+          var $tr = $(this);
+          var obj = $tr.data('obj');
+          $('.row-selected').removeClass('row-selected');
+          $tr.addClass("row-selected");
+          p2p.$map.gmap3({
+            get: {
+              name: "marker",
+              tag: obj.tripid,
+              callback: function(marker) {
+                var map = p2p.$map.gmap3("get");
+                var infowindow = p2p.$map.gmap3({get:{name:"infowindow"}});
+                if (infowindow) {
+                  infowindow.open(map, marker);
+                  infowindow.setContent(_this.instagramInfo(obj));
+                } else {
+                  p2p.$map.gmap3({
+                    infowindow: {
+                      anchor:marker,
+                      options:{content: _this.instagramInfo(obj)}
+                    }
+                  });
+                }
+              }
+            }
+          });
+        }
+      }, '.tr-instagram');
+
       p2p.$map.on("click", ".routeit", function() {
         var origin = $(this).data("orig");
         var dest = $(this).data("dest");
@@ -373,6 +438,21 @@ $(document).ready(function($) {
         '<div class="info-desc">' + obj.desc + '</div>' +
         '<div class="info-price">There are currently <b>' + obj.live + '</b> visitors there.</div>' +
         '<a class="btn btn-small btn-primary" href="' + obj.link + '" target="_blank"><i class="icon-check"></i>&nbsp;More info</a></div>' +
+        '</div>';
+    },
+
+    twitterInfo: function(obj) {
+      return '<div class="js-infowindow">' +
+        '<div class="info-desc">' + obj.origin + '</div>' +
+        '<div class="info-price">' + obj.desc + '</div>' +
+        '</div>';
+    },
+
+    instagramInfo: function(obj) {
+      return '<div class="js-infowindow instagood">' +
+        '<div class="info-price"><b>' + obj.likes + '</b> likes</div>' +
+        '<div class="info-img img-polaroid"><a href="' + obj.link + '" target="_blank"><img height="96px" width="96px" src="' + obj.pic + '"></a></div>' +
+        '<div class="info-desc">' + obj.desc + '</div>' +
         '</div>';
     },
 
@@ -624,6 +704,10 @@ $(document).ready(function($) {
               }
             }
           });
+        },
+        error: function() {
+          $('#airbnb-loading').hide();
+          $('#airbnb-list').html("No owners found");
         }
       });
     },
@@ -730,6 +814,10 @@ $(document).ready(function($) {
               }
             }
           });
+        },
+        error: function() {
+          $('#vayable-loading').hide();
+          $('#vayable-list').html("No tourism found");
         }
       });
     },
@@ -791,12 +879,12 @@ $(document).ready(function($) {
             "<tr class='tr-foursquare tr " + classname + "' data-obj='" + json_trip + "'>" +
               "<td><img class='img-circle' height='32px' width='32px' src='" + tripdata.pic + "'></td>" +
               "<td class='ownerAdd'>" + tripdata.desc + "</td>" +
-              "<td><a href='" + tripdata.link + "' target='_blank'><i class='icon-share' title='go to " + tripdata.link + "'></i></td>" +
+              "<td>" + tripdata.live  + "</td>" +
             "</tr>";
           }
 
-          if (!len) {
-            $('#foursquare-list').html("Nobody's chillin' in this neighbourhood, sorry.");
+          if (!html) {
+            $('#foursquare-list').html("Nobody's currently chillin' in this neighbourhood, sorry.");
           } else {
             $('#foursquare-list').html(html);
           }
@@ -838,6 +926,227 @@ $(document).ready(function($) {
               }
             }
           });
+        },
+        error: function() {
+          $('#foursquare-loading').hide();
+          $('#foursquare-list').html("Nobody's currently chillin' in this neighbourhood, sorry.");
+        }
+      });
+    },
+
+    searchTwitter: function() {
+      var _this = this;
+      var loc;
+      function myFunction(data) {
+        console.log("this");
+      }
+      $.ajax({
+        url: "http://search.twitter.com/search.json?q=&geocode=" + p2p.inVal.destlat + "," + p2p.inVal.destlon + ",50km",
+        dataType: "jsonp",
+        jsonpCallback: "myFunction",
+        success: function(data) {
+          console.log("ds");
+          var len = data.results.length;
+          var markers = [];
+          var html = "";
+          var tripid;
+          var tripdata;
+          var json_trip;
+          var icon, ext, pic;
+          var base = data.results;
+
+          $('#twitter-loading').hide();
+
+          for (var i = 0; i < len; i++) {
+            if (!data.results[i].geo)
+              continue;
+            tripid = base[i].id;
+            classname = tripid;
+
+            tripdata = {
+              tripid: tripid,
+              origLonglat: data.results[i].geo.coordinates,
+              desc: base[i].text,
+              origin: base[i].place.full_name,
+              name: base[i].from_user_name,
+              pic: base[i].profile_image_url
+            };
+
+            markers.push({
+              latLng: tripdata.origLonglat,
+              "data": _this.twitterInfo(tripdata),
+              tag: tripid,
+              id: classname,
+              options: {
+                icon: "img/twittermap.png"
+              }
+            });
+
+            json_trip = JSON.stringify(tripdata);
+            html += '' +
+            "<tr class='tr-twitter tr " + classname + "' data-obj='" + json_trip + "'>" +
+              "<td><img class='img-circle' height='32px' width='32px' src='" + tripdata.pic + "'></td>" +
+              "<td class='ownerAdd'>" + tripdata.name + "</td>" +
+            "</tr>";
+          }
+
+          if (!html) {
+            $('#twitter-list').html("No local tweets found");
+          } else {
+            $('#twitter-list').html(html);
+          }
+
+          $('#twitter-list').html(html);
+          p2p.$map.gmap3({
+            marker: {
+              values: markers,
+              events: {
+                click: function(marker, event, context) {
+                  $('.row-selected').removeClass('row-selected');
+                  var map = p2p.$map.gmap3("get");
+                  var infowindow = p2p.$map.gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.open(map, marker);
+                    infowindow.setContent(context.data);
+                  } else {
+                    p2p.$map.gmap3({
+                      infowindow: {
+                        anchor:marker,
+                        options:{content: context.data},
+                        events: {
+                          closeclick: function(infowindow) {
+                            $('.row-selected').removeClass('row-selected');
+                          }
+                        }
+                      }
+                    });
+                  }
+                  $('#twitter-list').find('.' + context.id).addClass('row-selected');
+                },
+                mouseover: function(marker, event, context) {
+                  $('#js-twittermenu').tab('show');
+                  $('#twitter-list').find('.' + context.id).addClass('row-hovered');
+                },
+                mouseout: function(marker, event, context) {
+                  $('#twitter-list .' + context.id).removeClass('row-hovered');
+                }
+              }
+            }
+          });
+        },
+        error: function() {
+          $('#twitter-loading').hide();
+          $('#twitter-list').html("No tweets found in this neighbourhood");
+        }
+      });
+    },
+
+    searchInstagram: function() {
+      var _this = this;
+      var loc;
+      function myFunction(data) {
+        console.log("this");
+      }
+      $.ajax({
+        url: "https://api.instagram.com/v1/media/search?&lat=" + p2p.inVal.destlat + "&lng=" + p2p.inVal.destlon + "&client_id=6bc7093ffec44fff96bc7cdaa22bd075",
+        dataType: "jsonp",
+        success: function(data) {
+          var len = data.data.length;
+          var markers = [];
+          var html = "";
+          var tripid;
+          var tripdata;
+          var json_trip;
+          var icon, ext, pic, desc;
+          var base = data.data;
+
+          $('#instagram-loading').hide();
+
+          for (var i = 0; i < len; i++) {
+            tripid = base[i].id;
+            classname = tripid;
+            if (base[i].caption) {
+              desc = base[i].caption.text;
+            } else {
+              desc = "";
+            }
+            tripdata = {
+              tripid: tripid,
+              origLonglat: [base[i].location.latitude, base[i].location.longitude],
+              desc: desc,
+              likes: base[i].likes.count,
+              link: base[i].link,
+              pic: base[i].images.thumbnail.url,
+              userpic: base[i].user.profile_picture,
+              name: base[i].user.username
+            };
+
+            markers.push({
+              latLng: tripdata.origLonglat,
+              "data": _this.instagramInfo(tripdata),
+              tag: tripid,
+              id: classname,
+              options: {
+                icon: "img/instagrammap.png"
+              }
+            });
+
+            json_trip = JSON.stringify(tripdata);
+            html += '' +
+            "<tr class='tr-instagram tr " + classname + "' data-obj='" + json_trip + "'>" +
+              "<td><img class='img-circle' height='32px' width='32px' src='" + tripdata.userpic + "'></td>" +
+              "<td class='ownerAdd'>" + tripdata.name + "</td>" +
+              "<td><a href='" + tripdata.link + "' target='_blank'><i class='icon-share' title='go to " + tripdata.link + "'></i></td>" +
+            "</tr>";
+          }
+
+          if (!html) {
+            $('#instagram-list').html("No pictures found");
+          } else {
+            $('#instagram-list').html(html);
+          }
+
+          $('#instagram-list').html(html);
+          p2p.$map.gmap3({
+            marker: {
+              values: markers,
+              events: {
+                click: function(marker, event, context) {
+                  $('.row-selected').removeClass('row-selected');
+                  var map = p2p.$map.gmap3("get");
+                  var infowindow = p2p.$map.gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.open(map, marker);
+                    infowindow.setContent(context.data);
+                  } else {
+                    p2p.$map.gmap3({
+                      infowindow: {
+                        anchor:marker,
+                        options:{content: context.data},
+                        events: {
+                          closeclick: function(infowindow) {
+                            $('.row-selected').removeClass('row-selected');
+                          }
+                        }
+                      }
+                    });
+                  }
+                  $('#instagram-list').find('.' + context.id).addClass('row-selected');
+                },
+                mouseover: function(marker, event, context) {
+                  $('#js-instagrammenu').tab('show');
+                  $('#instagram-list').find('.' + context.id).addClass('row-hovered');
+                },
+                mouseout: function(marker, event, context) {
+                  $('#instagram-list .' + context.id).removeClass('row-hovered');
+                }
+              }
+            }
+          });
+        },
+        error: function() {
+          $('#instagram-loading').hide();
+          $('#instagram-list').html("No pictures found.");
         }
       });
     },
@@ -849,6 +1158,7 @@ $(document).ready(function($) {
           'width': $(window).width() - $('#sidebar').width()
         });
         $('#sidebar').css('height', $(window).height() - 41);
+        $('.inner').css('height', $(window).height() - 41);
       }
       p2p.$map.gmap3({
         clear: {

@@ -82,6 +82,9 @@ body {
   max-width: 256px;
   text-align: center;
 }
+.instagood {
+  height: 200px;
+}
 .tr {
   cursor: pointer;
 }
@@ -101,7 +104,20 @@ body {
 }
 
 .sidebar {
+  height: 598px;
+  width: 350px;
+  position: absolute;
+  top: 41px;
+  left: 90px;
+  z-index: 9999;
+  background-color: rgba(26, 21, 21, 0.75);
+}
+
+.inner {
+  background: white;
   overflow: auto;
+  width: 335px;
+  margin: 0 auto;
 }
 
 .logos {
@@ -130,12 +146,14 @@ body {
   margin-top: -31px;
 }
 
+.map {
+  width: 100% !important;
+}
+
+
 @media (max-width: 767px) {
   .mvwq {
     display: none !important;
-  }
-  .map {
-    width: 100% !important;
   }
   .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
     margin-left: 0px;
@@ -145,4 +163,8 @@ body {
     padding-left: 0px;
     padding-right: 0px;
   }
+}
+
+.twitters iframe {
+  width: 60px !important;
 }
