@@ -38,7 +38,7 @@ body {
 
 
 .tr:hover {
-  background-color: #f1f1f1;
+  background-color: #ddd;
 }
 
 .row-selected:hover {
@@ -46,11 +46,15 @@ body {
 }
 
 .row-selected {
-  background-color: #abcdef;
+  background-color: #abcdef !important;
 }
 
 .row-hovered {
-  background-color: #f1f1f1;
+  background-color: #ddd;
+}
+
+.tr-vayable.row-hovered {
+  opacity: 0.9;
 }
 
 .info-price {
@@ -70,7 +74,7 @@ body {
   max-width: none;
 }
 
-.listings {
+#listings {
   margin-top: -20px;
 }
 
@@ -115,14 +119,20 @@ body {
 
 .inner {
   background: white;
-  overflow: auto;
+  overflow: hidden;
   width: 335px;
-  margin: 0 auto;
+  margin: -8px auto 0 auto;
+  border-radius: 10px 10px 0 0;
+}
+
+.inner:hover {
+  overflow: auto;
 }
 
 .logos {
   opacity: 0.8;
 }
+
 .logos:hover{
   opacity: 1;
 }
@@ -137,8 +147,9 @@ body {
 
 .loading {
   background: url("../img/ajax-loader.gif");
-  width: 32px;
-  height: 32px;
+  margin: 5px auto;
+  width: 16px;
+  height: 11px;
 }
 
 .logo {
@@ -150,8 +161,12 @@ body {
   width: 100% !important;
 }
 
+.resultInfo {
+  color: #f1f1f1;
+  padding-top: 9px;
+}
 
-@media (max-width: 767px) {
+@media (max-width: 640px) {
   .mvwq {
     display: none !important;
   }
@@ -167,4 +182,56 @@ body {
 
 .twitters iframe {
   width: 60px !important;
+}
+
+.lists tr:first-child {
+  border-top: white solid 2px;
+}
+
+.tr-vayable {
+  height: 80px;
+  background-size: cover;
+}
+
+.tr-vayable:hover {
+  opacity: 0.9;
+}
+
+.text-white {
+  color:black;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 0) and (min-device-width: 1025px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-button:start:decrement,
+  ::-webkit-scrollbar-button:end:increment {
+    display: block;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-button:vertical:increment {
+    background-color: #fff;
+  }
+  
+  ::-webkit-scrollbar-track-piece {
+    background-color: #ccc;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:vertical {
+    height: 50px;
+    background-color: orange;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:horizontal {
+    width: 50px;
+    background-color: #ccc;
+    border-radius: 3px;
+  }
 }
