@@ -16,6 +16,7 @@
     </style>
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
     <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
 </head>
 <body>
   <!-- Navbar -->
@@ -27,10 +28,15 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="/">Outpost</a>
+        <a class="header-logo-link" href="http://outpostp2p.com">
+        <span class="left">Ou</spam>
+          <span class="header-logo left"></span>
+        <span class="left">post</span>
         <div class="nav-collapse collapse" id="appendToNav">
           <ul class="nav">
-            <li><a data-toggle="modal" href="#about">Help</a></li>
+            <li><a data-toggle="modal" href="#about">About</a></li>
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a data-toggle="modal" href="#help">Help</a></li>
             <li class="shares"><div class="fb-like" data-href="http://outpostp2p.com" data-send="false" data-layout="button_count" data-width="45" data-show-faces="false"></div>&nbsp;</li>
             <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @airbnb, @ridejoy, @vayable, and @foursquare listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
           </ul>
@@ -43,13 +49,11 @@
   <!-- Landing hero header -->
   <div id="landingpage">
     <div class="main-head">
-      <h1>Ou<img class="logo" src="img/nosmoke.png" alt="outpost logo">post</h1>
-      <h4>Plan your trip with peer to peer madness only.</h4>
       <!-- Main form -->
       <div id="js-firstSearch">
         <form class="form-inline" id="js-searchForm">
-          <input class="input-xlarge" id="js-orig-location-input" type="search" autocomplete="off" placeholder="Where do you want to be ?" value="Montréal, QC, Canada" autofocus required>
-          <button class="btn btn-info" id="searchIt" type="submit"><i class="icon-search icon-white"></i>&nbsp;Search</button>
+          <input class="input-xlarge" id="js-orig-location-input" type="search" autocomplete="off" placeholder="Where do you want to be ?" autofocus required>
+          <button class="btn btn-info" id="searchIt" type="submit"></i><span class="icon-search search-icon"></span>&nbsp;Search</button>
         </form>
       </div>
     </div>
@@ -71,6 +75,180 @@
           </a>
         </span>
       </div>
+    </div>
+
+    <div>
+      <div class="menu-box-main">
+    <section class='p2p-main'>
+    <div class='row collapse'>
+      <div class="large-12">
+        <div class="large-3 columns p2p-line">
+        </div>
+        <div class="large-6 columns tp2p-text">
+           The P2P experience - How it works?
+        </div>
+        <div class="large-3 columns p2p-line">
+        </div>
+      </div>
+    </div>
+    </section>
+    <section class='main-menu'>
+    <!-- First row menu -->
+    <div>
+      <div class="large-12 columns">
+        <div class="row">
+          <!-- Thumbnails -->
+          <div class="large-3 menu-box-col-box small-3 columns">
+            <div class="menu-box menu-box-red">
+              <div class='menu-box-count menu-box-count-red'>
+                 1
+              </div>
+              <div class='menu-box-icon-main'>
+                <div class='icon-map-marker icon-large menu-box-icon-marker'>
+                </div>
+              </div>
+            </div>
+            <h6 class="menu-box-title">Look around you</h6>
+            <div class="menu-box-desc">
+               Check out all the activities around you. Still bored? Go to step 2.
+            </div>
+            <div class="clear">
+            </div>
+            <div class="">
+              <ul class='center-circle'>
+                <li class="circle-red"></li>
+                <li class="circle-blue "></li>
+                <li class="circle-green "></li>
+              </ul>
+            </div>
+          </div>
+          <div class="large-1 small-1 columns circle-main">
+            <ul class=''>
+              <li class="circle-red left"></li>
+              <li class="circle-blue left"></li>
+              <li class="circle-green left"></li>
+            </ul>
+          </div>
+          <div class="large-3 small-3 menu-box-col-box columns ">
+            <div class="menu-box menu-box-blue">
+              <div class='menu-box-count menu-box-count-blue'>
+                 2
+              </div>
+              <div class='menu-box-icon-main'>
+                <div class='icon-search icon-large menu-box-icon-marker'>
+                </div>
+              </div>
+            </div>
+            <h6 class="menu-box-title">Pick a place to go</h6>
+            <div class="menu-box-desc">
+               Use the autocomplete search input to find an awesome destination. When you're happy with the results, move to step 3.
+            </div>
+          </div>
+          <div class="large-1 small-1 columns circle-main">
+            <ul class=''>
+              <li class="circle-red left"></li>
+              <li class="circle-blue left"></li>
+              <li class="circle-green left"></li>
+            </ul>
+          </div>
+          <div class="large-3 small-3 menu-box-col-box columns">
+            <div class="menu-box menu-box-green">
+              <div class='menu-box-count menu-box-count-green'>
+                 3
+              </div>
+              <div class='menu-box-icon-main'>
+                <img src='img/box-car.png' alt='car icon'/>
+              </div>
+            </div>
+            <h6 class="menu-box-title">Pack up and travel</h6>
+            <div class="menu-box-desc">
+              Pick a ride share to get to your destination.
+            </div>
+            <ul class='center-circle'>
+              <li class="circle-red"></li>
+              <li class="circle-blue "></li>
+              <li class="circle-green "></li>
+            </ul>
+          </div>
+          <div class="large-1 small-12 columns circle-main">
+          </div>
+          <!-- End Thumbnails -->
+        </div>
+      </div>
+    </div>
+    <!-- End first row menu -->
+    <div>
+      <div class="large-12 columns">
+        <div class="row">
+          <!-- Thumbnails -->
+          <div class="large-3 small-3 menu-box-col-box columns">
+            <div class="menu-box menu-box-green">
+              <div class='menu-box-count menu-box-count-green'>
+                 6
+              </div>
+              <div class='menu-box-icon-main'>
+                <div class='icon-undo icon-large menu-box-icon-marker'>
+                </div>
+              </div>
+            </div>
+            <h6 class="menu-box-title">Have fun and iterate</h6>
+            <div class="menu-box-desc">
+               Congratz! You just travelled using the P2P experience. Ride again?
+            </div>
+          </div>
+          <div class="large-1 small-1 columns circle-main">
+            <ul class=''>
+              <li class="circle-red left"></li>
+              <li class="circle-blue left"></li>
+              <li class="circle-green left"></li>
+            </ul>
+          </div>
+          <div class="large-3 small-3 menu-box-col-box columns ">
+            <div class="menu-box menu-box-blue">
+              <div class='menu-box-count menu-box-count-blue'>
+                 5
+              </div>
+              <div class='menu-box-icon-main'>
+                <div class='icon-home icon-large menu-box-icon-marker'>
+                </div>
+              </div>
+            </div>
+            <h6 class="menu-box-title">Get the home feeling</h6>
+            <div class="menu-box-desc">
+               Concerned about where you&apos;ll sleep? We got you covered! Find a sweet room available close to you on the map.
+            </div>
+          </div>
+          <div class="large-1 small-1 columns circle-main">
+            <ul class=''>
+              <li class="circle-red left"></li>
+              <li class="circle-blue left"></li>
+              <li class="circle-green left"></li>
+            </ul>
+          </div>
+          <div class="large-3 small-3 menu-box-col-box columns">
+            <div class="menu-box menu-box-red">
+              <div class='menu-box-count menu-box-count-green'>
+                 4
+              </div>
+              <div class='menu-box-icon-main'>
+                <div class='icon-user icon-large menu-box-icon-marker'>
+                </div>
+              </div>
+            </div>
+            <h6 class="menu-box-title">Find a bud to show you around</h6>
+            <div class="menu-box-desc">
+              Many friendly people are eager to show you the secrets of their city. Spot one on the map.
+            </div>
+          </div>
+          <div class="large-1 small-12 columns circle-main">
+          </div>
+          <!-- End Thumbnails -->
+        </div>
+      </div>
+    </div>
+    </section>
+  </div>
+  </section>
     </div>
   </div>
 
