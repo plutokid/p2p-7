@@ -101,6 +101,7 @@
         Outpost.values.origLocationLat = origlatLng[0];
         Outpost.values.origLocationLng = origlatLng[1];
         Outpost.mvc.views.map = new Outpost.views.map();
+        $('.js-mainmenu').hide();
       }
     }),
 
