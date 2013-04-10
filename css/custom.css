@@ -1,6 +1,6 @@
 body {
   background: #f1f1f1;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 
 .pac-container:after {
@@ -87,11 +87,6 @@ body {
   opacity: 0.9;
 }
 
-.info-price {
-  text-align: center;
-  margin-top: 3px;
-}
-
 .ownerAdd {
   word-wrap: break-word;
 }
@@ -112,19 +107,8 @@ body {
   margin-left:0 !important;
 }
 
-.js-infowindow {
-  max-width: 256px;
-  text-align: center;
-}
-.instagood {
-  height: 200px;
-}
 .tr {
   cursor: pointer;
-}
-
-.info-desc {
-  font-size: 11px;
 }
 
 .nav {
@@ -260,4 +244,126 @@ body {
     background-color: #ccc;
     border-radius: 3px;
   }
+}
+
+/*INFO WINDOW */
+.js-infowindow {
+  cursor: default;
+  background: #fff;
+  border-radius: 4px 0 4px 4px;
+  width: 300px;
+  height: 145px;
+  box-shadow: 1px -2px 12px 1px;
+}
+
+.js-infowindow:after {
+  bottom: -14px;
+  content: "";
+  display: block;
+  left: 45%;
+  position: absolute;
+  width: 0;
+  border-color: #fff transparent;
+  border-style: solid;
+  border-width: 15px 15px 0;
+}
+
+.info-desc {
+  height: 50px;
+}
+
+.js-closeInfoWindow {
+  color: #ffffff;
+  padding: 1px;
+  border-radius: 0 3px 3px 0;
+  position: absolute;
+  right: -12px;
+}
+
+.js-closeInfoWindow:hover {
+  color: #ff1;
+  text-decoration: none;
+}
+
+.info-logo {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+}
+
+.info-img {
+  margin: 5px;
+}
+
+.info-text {
+  padding-left: 5px;
+  padding-left: 5px;
+  color: #fff;
+}
+
+.css-blue {
+  color: #24b0cf;
+}
+
+.css-green {
+  color: #95d17b;
+}
+
+.css-red {
+  color: #ec5f41;
+}
+
+.css-bgblue {
+  background-color: #24b0cf;
+}
+
+.css-bggreen {
+  background-color: #95d17b;
+}
+
+.css-bgred {
+  background-color: #ec5f41;
+}
+
+.info-content ul {
+  margin-top: -20px;
+  margin:0;
+  list-style: none;
+}
+
+.info-book-vay {
+  background: #95d17b;
+}
+
+.info-book-vay:hover {
+  color: white;
+  background: #255610;
+}
+
+.info-book-rid {
+  color: white;
+  background: #ec5f41;
+}
+
+.info-book-rid:hover {
+  color: white;
+  background: #a41414;
+}
+
+.info-book-air {
+  color: white;
+  background: #24b0cf;
+}
+
+.info-book-air:hover {
+  color: white;
+  background: #0b4f5e;
+}
+
+.info-origin {
+  text-overflow: ellipsis;
+  width: 132px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
 }

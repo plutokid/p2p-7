@@ -116,12 +116,12 @@
         this.render();
       },
 
-      events: {
-        "click .routeit": "routeRide"
+      closeInfo: function() {
+        $('#map').gmap3({clear:"overlay"});
       },
 
       routeRide: function(e) {
-        var $node = $(e.currentTarget);
+        var $node = $(e);
         var origin = $node.data("orig");
         var dest = $node.data("dest");
         var _this = this;
@@ -148,11 +148,11 @@
             }
           }
         });
+        return false;
       },
 
       setMapTerrain: function() {
         $('#js-searchForm').remove();
-        $('body').css("background", "none");
         $('#landingpage').remove();
         $('#listings').show();
         $('#sidebar').css('height', Outpost.state.rMapHeight);
@@ -170,25 +170,19 @@
             },
             events: {
               click: function(marker, event, context) {
-                var map = _this.$el.gmap3("get");
-                var infowindow = _this.$el.gmap3({get:{name:"infowindow"}});
-                $('.row-selected').removeClass('row-selected');
-                if (infowindow) {
-                  infowindow.open(map, marker);
-                  infowindow.setContent(context.data);
-                } else {
-                  _this.$el.gmap3({
-                    infowindow: {
-                      anchor:marker,
-                      options:{content: context.data},
-                      events: {
-                        closeclick: function(infowindow) {
-                          $('.row-selected').removeClass('row-selected');
-                        }
+                _this.$el.gmap3({clear: "overlay"}, {
+                  overlay: {
+                    latLng: marker.getPosition(),
+                    options: {
+                      content: opts.infoWindowTmpl(context.data),
+                      offset: {
+                        x: -158,
+                        y: -220
                       }
                     }
-                  });
-                }
+                  }
+                });
+                $('.row-selected').removeClass('row-selected');
                 $(opts.nodeList).find('.' + context.id).addClass('row-selected');
               },
               mouseover: function(marker, event, context) {
@@ -210,23 +204,28 @@
 
       relateMarker: function(item, opts) {
         var _this = this;
+        var map = this.$el.gmap3("get");
         _this.$el.gmap3({
           get: {
             name: "marker",
             id: opts.prefix + item.id,
             callback: function(marker) {
-              var map = _this.$el.gmap3("get");
-              var infowindow = _this.$el.gmap3({get:{name:"infowindow"}});
-              if (infowindow) {
-                infowindow.open(map, marker);
-                infowindow.setContent(opts.infoWindowTmpl(item));
-              } else {
-                _this.$el.gmap3({
-                  infowindow: {
-                    anchor:marker,
-                    options:{content: opts.infoWindowTmpl(item)}
+              if (marker.getPosition()) {
+                map.panTo(marker.getPosition());
+                _this.$el.gmap3({clear: "overlay"}, {
+                  overlay: {
+                    latLng: marker.getPosition(),
+                    options: {
+                      content: opts.infoWindowTmpl(item),
+                      offset: {
+                        x: -158,
+                        y: -220
+                      }
+                    }
                   }
                 });
+              } else {
+                // show a alert div error
               }
             }
           }
