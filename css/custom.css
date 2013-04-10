@@ -658,22 +658,47 @@ a:hover {
 }
 
 /*HOW IT WORKS*/
+.hiw-container {
+  margin:0 auto;
+  width: 960px;
+}
 .hiw {
   border-radius: 4px;
   width: 260px;
   height: 140px;
+  padding-top: 5px;
 }
 
 .hiw-num {
   width: 28px;
-  height: 30px;
+  height: 28px;
   border-radius: 2px;
   font-size: 24px;
   font-weight: bold;
   text-align: center;
   background: white;
+margin-left: 5px;
+padding-top: 5px;
 }
 
-.hiw-first {
+.hiw-first, .hiw-fourth {
   background: #ec5f41;
+}
+
+.hiw-second, .hiw-fifth {
+  background: #24b0cf;
+}
+
+.hiw-third, .hiw-sixth {
+  background: #95d17b;
+}
+
+.hiw-icon {
+  color: #fff;
+  text-align: center;
+  font-size: 64px;
+}
+
+.hiw-title {
+  color: #6f6f6f;
 }
