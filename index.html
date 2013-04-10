@@ -52,13 +52,29 @@
     <div class="main-head">
       <h2 class="text-center top">Dive into the peer to peer experience</h2>
       <!-- Main form -->
-      <div id="js-firstSearch">
-        <form class="form-inline" id="js-searchForm">
-          <input class="input-xlarge" id="js-orig-location-input" type="search" autocomplete="off" placeholder="Where do you want to be ?" autofocus required>
-          <button class="button prefix search-blue blue-bg" id="searchIt" type="submit"></i><span class="icon-search search-icon"></span><span class="search-textbt"> Search </span></button>
-          <a class="button prefix around-me red-bg" href="#">
-                <span class="target-icon"></span><span class="aroundtext"> What's around me? </span></a>
-        </form>
+      <div class="css-main-search" id="js-firstSearch">
+        <div class="inner-search">
+          <div class="search-bar-wrapper">
+            <form class="form-inline" id="js-searchForm">
+              <div class="inner-form row-fluid">
+                <div class="span8 input-append text-center span9">
+                  <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="Where do you want to be ?" autofocus required>
+                  <button class="btn wearedual btn-info css-searchit" id="searchIt" type="submit">
+                    <span class="icon-search css-searchicon"></span>
+                    Search
+                  </button>
+                </div>
+                <div class="span1 css-ortext">or</div>
+                <div class="span3">
+                  <button class="btn css-whataround btn-danger" href="#">
+                    <img src="img/icon-target.png" width="26px" alt="geolocate">
+                    <span class="">What's around me ?</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
     <!-- horizontal logo bar -->
@@ -98,7 +114,7 @@
           <div class="hiw-second-wrap span4 hiw-wrap">
             <div class="hiw hiw-second">
               <div class="hiw-num" style="color:#24b0cf">2</div>
-              <div class="hiw-icon"><div class="icon-search icon-large"></div></div>
+              <div class="hiw-icon"><div class="hiw-icon-search icon-search icon-large"></div></div>
             </div>
             <h4 class="hiw-title">Pick a place to go</h4>
             <p class="hiw-desc">Use the autocomplete search input to find an awesome destination. When you're happy with the results, move to step 3.</p>

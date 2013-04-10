@@ -102,6 +102,7 @@
         Outpost.values.origLocationLng = origlatLng[1];
         Outpost.mvc.views.map = new Outpost.views.map();
         $('.js-mainmenu').hide();
+        $('body').css('overflow', 'hidden');
       }
     }),
 
@@ -211,22 +212,24 @@
             name: "marker",
             id: opts.prefix + item.id,
             callback: function(marker) {
-              if (marker.getPosition()) {
-                map.panTo(marker.getPosition());
-                _this.$el.gmap3({clear: "overlay"}, {
-                  overlay: {
-                    latLng: marker.getPosition(),
-                    options: {
-                      content: opts.infoWindowTmpl(item),
-                      offset: {
-                        x: -158,
-                        y: -220
+              if (typeof marker.getPosition === 'function') {
+                if (marker.getPosition()) {
+                  map.panTo(marker.getPosition());
+                  _this.$el.gmap3({clear: "overlay"}, {
+                    overlay: {
+                      latLng: marker.getPosition(),
+                      options: {
+                        content: opts.infoWindowTmpl(item),
+                        offset: {
+                          x: -158,
+                          y: -220
+                        }
                       }
                     }
-                  }
-                });
+                  });
+                }
               } else {
-                // show a alert div error
+                console.log("setPosition doesen't exist, yet.");
               }
             }
           }
@@ -239,7 +242,11 @@
             name: "marker",
             id: opts.prefix + item.id,
             callback: function(marker) {
-              marker.setIcon(opts.iconHover);
+              if (typeof marker.setIcon === 'function') {
+                marker.setIcon(opts.iconHover);
+              } else {
+                console.log("Still working on fixing bugs, want to help ? Shoot me your CV @ info@outpostp2p.com");
+              }
             }
           }
         });
@@ -251,7 +258,11 @@
             name: "marker",
             id: opts.prefix + item.id,
             callback: function(marker) {
-              marker.setIcon(opts.icon);
+              if (typeof marker.setIcon === 'function') {
+                marker.setIcon(opts.iconHover);
+              } else {
+                console.log("method n'existe pas!");
+              }
             }
           }
         });
