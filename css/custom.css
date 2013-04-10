@@ -1,10 +1,7 @@
 body {
   background: #f1f1f1;
-
   overflow: auto;
-
   font-family:open sans, arial, sans-serif !important;
-
 }
 
 a {
@@ -68,7 +65,7 @@ a:hover {
   padding-bottom: 83px;
   height: 400px;
   background-size: cover;
-  background: #000000 url(https://d396sd1n8z1mcm.cloudfront.net/img/bg_main_header.jpg?b01aa45649b6bc919cc49cc12a0f6edd) no-repeat center center;  
+  background: #000000 url("../img/blurry.jpg") no-repeat center center;  
 }
 
 #js-firstSearch {
@@ -685,6 +682,7 @@ padding-top: 5px;
   background: #ec5f41;
 }
 
+
 .hiw-second, .hiw-fifth {
   background: #24b0cf;
 }
@@ -701,4 +699,12 @@ padding-top: 5px;
 
 .hiw-title {
   color: #6f6f6f;
+}
+
+.top {
+
+  margin-bottom:-50px;
+  padding-top:60px;
+  color: #d8d8d8;
+  padding-left:10px;
 }
