@@ -72,15 +72,6 @@ a:focus {
   background: #000000 url("../img/blurry.jpg") no-repeat center center;  
 }
 
-.hiw-icon-search{
-  
-  margin-top: -10px;
-  position:absolute;
-  margin-left: -35px;
-
-
-}
-
 .search {
   text-align: center;
 }
@@ -654,45 +645,8 @@ padding-top: 5px;
   width: 260px;
 }
 
-.circle-main {
-
-  display: inline-block;
-  padding-left: 275px;
-  margin-top: 20px;
-
-}
-
-.circle-main ul {
-    margin: 50%;
-    width: 30px;
-    list-style-type: disc !important;
-
-}
-
-.circle-main ul li {
-    width: 10px;
-    float: left !important;
-   
-}
-
-.circle-red {
-    color: #EC5F41;
-}
-
-.icon-large {
-
-  margin-top: -60px;
-  position:absolute;
-  margin-left: -35px;
-
-}
-
-.icon-undo {
-
-  margin-top: 0px;
-}
-
  /*END HOW IT WORKS*/
+ 
 .top {
   padding-top: 100px;
   color: #d8d8d8;
