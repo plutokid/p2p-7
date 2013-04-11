@@ -72,72 +72,6 @@ a:focus {
   background: #000000 url("../img/blurry.jpg") no-repeat center center;  
 }
 
-#js-firstSearch {
-/*
-   background-color: rgba(192, 192, 192, 0.5);
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-
-  height: 83px;
-    left: 25%;
-    margin-top: 100px;
-    padding-left: 20px;
-    padding-top: 8px;
-    position: absolute;
-    width: 900px;
-    right: 20%;
-*/
-}
-
-.form-inline {
-
-}
-
-.input-xlarge {
-
-/*  height:50px !important;
-  border:1px solid #484848 !important;
-  font-size:24px !important;
-  width:400px;
-  -webkit-border-top-left-radius: 8px;
-  -webkit-border-bottom-left-radius: 8px;
-  -moz-border-radius-topleft: 8px;
-  -moz-border-radius-bottomleft: 8px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  margin-top:-14px;
-  margin-left:-20px;
-  border-radius: 8px 8px 8px 8px !important;*/
-
-}
-
-#searchIt {
-
-
-/*  font-size: 26px;
-    font-weight: normal;
-  border:none;
-
-    position:absolute;
-    height: 60px !important;
-    margin-top:-14px;
-    margin-left:-12px;
-    width:160px;
-  -webkit-border-top-right-radius: 4px;
-  -webkit-border-bottom-right-radius: 8px;
-  -moz-border-radius-topright: 8px;
-  -moz-border-radius-bottomright: 8px;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
-  line-height: 2.125em;
-  text-align: center;
-  overflow: hidden;
-  z-index:2;*/
-
-
-}
-
 .hiw-icon-search{
   
   margin-top: -10px;
@@ -145,21 +79,6 @@ a:focus {
   margin-left: -35px;
 
 
-}
-
-.search-icon {
-/*
- font-size: 36px;
- margin-left:-80px;
- margin-top: -20px;
- position:absolute;*/
-}
-
-.search-textbt {
-/*
-position:absolute;
-  margin-top:-25px;
-  margin-left: -30px;*/
 }
 
 .search {
@@ -297,9 +216,12 @@ position:absolute;
 
 }
 
-.left {
+.beta {
 
-  
+  color: #24B0CF;
+  font-size: 10px;
+  position: absolute;
+
 }
 
 .header-logo-link {
@@ -733,21 +655,49 @@ padding-top: 5px;
   text-align: left;
   width: 260px;
 }
- /*END HOW IT WORKS*/
-.top {
-  color: #d8d8d8;
+
+.circle-main {
+
+  display: inline-block;
+  padding-left: 275px;
+  margin-top: 20px;
+
 }
 
+.circle-main ul {
+    margin: 50%;
+    width: 30px;
+    list-style-type: disc !important;
 
-.around-me {
-/*    border: medium none;
-    border-radius: 8px 8px 8px 8px;
-    font-size: 26px;
-    font-weight: normal;
-    height: 43px;
-    padding-bottom: 12px !important;
-    padding-top: 12px !important;
-    width: 100%;*/
+}
+
+.circle-main ul li {
+    width: 10px;
+    float: left !important;
+   
+}
+
+.circle-red {
+    color: #EC5F41;
+}
+
+.icon-large {
+
+  margin-top: -60px;
+  position:absolute;
+  margin-left: -35px;
+
+}
+
+.icon-undo {
+
+  margin-top: 0px;
+}
+
+ /*END HOW IT WORKS*/
+.top {
+  padding-top: 100px;
+  color: #d8d8d8;
 }
 
 .around-me:hover {
@@ -768,18 +718,6 @@ background-color: #A41414;
   background: none repeat scroll 0 0 #24B0CF;
 }
 
-.search-blue {
-
-/*  border: medium none;
-    border-radius: 8px 8px 8px 8px;
-    font-size: 26px;
-    font-weight: normal;
-    height: 43px;
-    padding-bottom: 12px !important;
-    padding-top: 12px !important;
-    width: 100%;*/
-}
-
 .search-blue:hover {
  background-color: #2284A1;
 
@@ -795,42 +733,7 @@ background-color: #2284A1;
     display: inline-block;
     width: 38px;
     height: 38px;
-/*    float: left;
-    height: 38px;
-    margin-left: 564px;
-    margin-top: -47px;
-    width: 38px;
-    z-index: 3;
-    position: absolute;*/
 }
-
-.button {
-
-/*  color: white;
-  cursor: pointer;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-  transition: background-color 300ms ease-out 0s;
-  padding-left:30px;
-  margin-left:158px;
-  margin-top:-20px;*/
-}
-
-.button {
-/*    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-    -webkit-transition: background-color 300ms ease-out;
-    -moz-transition: background-color 300ms ease-out;
-    transition: background-color 300ms ease-out; }
-    .button:active {
-      -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2) inset;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2) inset; }
-    .button.radius {
-      -webkit-border-radius: 3px;
-      border-radius: 3px; }
-    .button.round {
-      -webkit-border-radius: 1000px;
-      border-radius: 1000px; */
-} 
 
 .button:hover{
 
@@ -867,8 +770,8 @@ background-color: #2284A1;
 }
 
 .search-bar-wrapper {
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
   box-shadow: 0px 0px 5px #333333;
   border: 1px solid #222222;
   margin: 25px;
