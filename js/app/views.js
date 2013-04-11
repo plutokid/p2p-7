@@ -47,11 +47,28 @@
         }
 
         i = [lat, lng];
-      }).fail(function() {
-        // Do nothing for failure for now
+      }).fail(function(xmlHttpRequest, textStatus, errorThrown) {
+        console.log(xmlHttpRequest, textStatus, errorThrown);
+      });
+      return i;
+    },
+
+    ipToGeo: function() {
+      var dff = $.Deferred();
+      var ipajax = $.ajax({
+        url: "http://freegeoip.net/json/",
+        dataType: "json",
+        type: "GET"
       });
 
-      return i;
+      ipajax.done(function(data) {
+        dff.resolve({
+          location: data.city + ", " + data.region_code + ", " + data.country_code,
+          latLng: [data.latitude, data.longitude]
+        });
+      });
+
+      return dff.promise();
     }
   };
 
@@ -82,7 +99,18 @@
       },
 
       events: {
-        "submit #js-searchForm": "submitForm"
+        "submit #js-searchForm": "submitForm",
+        "click #js-whataround": "whatIsAround"
+      },
+
+      whatIsAround: function() {
+        var geoPromise = Outpost.helpers.ipToGeo();
+        geoPromise.done(function(data) {
+          Outpost.values.origLocation = data.location;
+          Outpost.values.origLocationLat = data.latLng[0];
+          Outpost.values.origLocationLng = data.latLng[1];
+          Outpost.mvc.views.map = new Outpost.views.map();
+        });
       },
 
       initTypeahead: function() {
@@ -101,8 +129,6 @@
         Outpost.values.origLocationLat = origlatLng[0];
         Outpost.values.origLocationLng = origlatLng[1];
         Outpost.mvc.views.map = new Outpost.views.map();
-        $('.js-mainmenu').hide();
-        $('body').css('overflow', 'hidden');
       }
     }),
 
@@ -114,6 +140,8 @@
       template: _.template($('#tmpl-resultInfo').html()),
 
       initialize: function() {
+        $('.js-mainmenu').hide();
+        $('body').css('overflow', 'hidden');
         this.setMapTerrain();
         this.render();
       },

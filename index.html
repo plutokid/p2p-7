@@ -41,7 +41,7 @@
             <li class="shares"><div class="fb-like" data-href="http://outpostp2p.com" data-send="false" data-layout="button_count" data-width="45" data-show-faces="false"></div>&nbsp;</li>
             <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @airbnb, @ridejoy, @vayable, and @foursquare listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
           </ul>
-          <p class="pull-right resultInfo"></p>
+          <p class="resultInfo"></p>
         </div>
       </div>
     </div>
@@ -66,10 +66,10 @@
                 </div>
                 <div class="span1 css-ortext">or</div>
                 <div class="span3">
-                  <button class="btn css-whataround btn-danger" href="#">
-                    <img src="img/icon-target.png" width="26px" alt="geolocate">
+                  <a class="btn css-whataround btn-danger" id="js-whataround" href="javascript:void(0)">
+                    <img src="img/icon-target.png" style="width: 26px;" alt="geolocate">
                     <span class="">What's around me ?</span>
-                  </button>
+                  </a>
                 </div>
               </div>
             </form>
@@ -321,7 +321,6 @@
   <!-- CUSTOM -->
   <script src="js/main.js"></script>
   <!-- ANALYTICS & CO. -->
-<!-- 
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <div id="fb-root"></div>
   <script>(function(d, s, id) {
@@ -337,6 +336,5 @@
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
   </script>
- -->
 </body>
 </html>

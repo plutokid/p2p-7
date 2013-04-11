@@ -91,7 +91,7 @@
             '<img src="img/vayable.png" alt="coutersy of vayable">' +
           '</div>' +
         '</div>' +
-        '<div class="info-img img-polaroid pull-left"><img width="128px" src="' + item.img + '"></div>' +
+        '<div class="info-img img-polaroid pull-left"><img style="width:128px;" src="' + item.img + '"></div>' +
         '<div class="info-content pull-left">' +
           '<ul>' +
             '<li>' +

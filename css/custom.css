@@ -314,8 +314,9 @@ position:absolute;
 
 .resultInfo {
   color: black;
-  position: relative;
-  margin-top: -25px;
+  position: absolute;
+  top: -25px;
+  left: 35%;
 }
 
 @media (max-width: 640px) {
@@ -333,6 +334,7 @@ position:absolute;
 }
 
 .navbar-inner {
+  background: #F2F2F2 !important;
   background: linear-gradient(to bottom, #F2F2F2 0%, #EFEFEF 38%, #ECECEC 57%, #EAEAEA 100%) repeat scroll 0 0 transparent !important;
   height: 40px;
 }
@@ -901,7 +903,7 @@ background-color: #2284A1;
 }
 
 .css-whataround {
-  height: 40px;
+  height: 30px;
   background: #EC5F41 !important;
   transition: background 300ms ease-out;
 }
