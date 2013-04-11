@@ -242,6 +242,28 @@ a:focus {
 }
 
 @media (max-width: 640px) {
+  body {
+    max-width: 640px !important;
+  }
+  .mobile-inputsearch {
+    float: none !important;
+  }
+  .css-ortext {
+    display: block !important;
+    float: none !important;
+    margin: 0px auto !important;
+  }
+  .mobile-whats {
+    width: 100% !important;
+    float: none !important;
+  }
+  .mobile-whats a {
+    width: 86% !important;
+  }
+  .hiw-wrap {
+    display: block !important;
+    float: none !important;
+  }
   .mvwq {
     display: none !important;
   }
