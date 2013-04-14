@@ -35,9 +35,7 @@
         </a>
         <div class="nav-collapse collapse" id="appendToNav">
           <ul class="nav css-nav">
-            <li><a class="js-mainmenu" data-toggle="modal" href="#about">Contact</a></li>
-            <li><a class="js-mainmenu" href="#how-it-works">How it works</a></li>
-            <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @airbnb, @ridejoy, @vayable, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
+            <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @airbnb, @ridejoy, @vayable, and @foursquare listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
           </ul>
           <p class="resultInfo"></p>
         </div>
@@ -56,7 +54,7 @@
             <form class="form-inline" id="js-searchForm">
               <div class="inner-form row-fluid">
                 <div class="input-append text-center span8 mobile-inputsearch">
-                  <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="Take me to..." autofocus required>
+                  <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="Take me to.." autofocus required>
                   <button class="btn wearedual btn-info css-searchit" id="searchIt" type="submit">
                     <span class="icon-search css-searchicon"></span>
                     Search
@@ -66,7 +64,7 @@
                 <div class="span3 mobile-whats">
                   <a class="btn css-whataround btn-danger" id="js-whataround" href="javascript:void(0)">
                     <img class="geolocate-icon" src="img/icon-target.png" alt="geolocate">
-                    <span class="">What's around me ?</span>
+                    <span class="">Locate Me</span>
                   </a>
                 </div>
               </div>
@@ -78,6 +76,7 @@
     <!-- horizontal logo bar -->
     <div class="css-logo-bar">
       <div class="css-container">
+        <span>Currently scrapping data from:</span>
         <span class="logos">
           <a class="tooly" data-toggle="tooltip" data-placement="top" title="Vacation rentals, private rooms, sublets by the night - Accommodations on Airbnb" href="https://www.airbnb.com/" target="_blank">
             <img width="128px" src="img/airbnb_logo_edited.png" alt="airbnb logo">
@@ -97,7 +96,7 @@
     </div>
 
     <div id="how-it-works" class="how-it-works">
-      <h2 class="text-center hiw-header">Think Airbnb for Airbnbs.</h2>
+      <h2 class="text-center hiw-header">So.. what is Outpost ?</h2>
       <div class="hiw-container">
         <div class="row">
           <div class="hiw-first-wrap span4 hiw-wrap">
@@ -107,7 +106,7 @@
             </div>
             
             <h4 class="hiw-title">Lookup P2P services</h4>
-            <p class="hiw-desc">With Outpost you can check out many person to person services into one spot! We're just 2 weeks old and are working hard everyday to get more marketplace networks into Outpost.</p>
+            <p class="hiw-desc">With Outpost you can check out many person to person services into one spot!</p>
           </div>
 
           <div class="hiw-second-wrap span4 hiw-wrap">
@@ -136,72 +135,34 @@
   <div class="row-fluid" id="listings" style="display: none;">
     <div class="sidebar mvwq" id="sidebar">
       <div class="inner">
-        <div class="filters" id="filters">
-          <div class="input-prepend">
-            <span class="add-on"><i class="icon-calendar"></i></span>
-            <input class="input-small" placeholder="Leaving on" id="js-sdate-input" type="text">
-            <input class="input-small" placeholder="Check out" id="js-edate-input" type="text">
-          </div>
-          <select class="guestfilter" id="js-guest-input">
-            <option selected disabled value="1">People</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-          </select>
-          <div class="price-filter">
-            <ul class="slider_values">
-              <li class="price-value-min minimax">$<span id="price-value-min">10</span> USD</li>
-              <li class="price-value-max minimax">$<span id="price-value-max">300+</span> USD</li>
-            </ul>
-            <div class="input-large" id="js-price-input"></div>
-          </div>
-          <button class="btn btn-info submit-filter" id="submit-filter">Filter</button>
-          <label class="applyflabel">Apply filters to:</label>
-          <div class="btn-group filter-applyto" id="filter-applyto" data-toggle="buttons-checkbox">
-            <button class="applytobtn btn active" data-to="airbnb" type="button">Airbnb</button>
-            <button class="applytobtn btn" data-to="ridejoy" type="button">Ridejoy</button>
-            <button class="applytobtn btn" data-to="vayable" type="button">Vayable</button>
-          </div>
-        </div>
         <ul class="nav nav-tabs">
-          <li class="active"><a id="js-airbnbmenu" href="#airbnb" data-toggle="tab" title="Airbnb"><img src="img/airbnb.ico"></a></li>
-          <li><a id="js-ridejoymenu" href="#ridejoy" data-toggle="tab" title="Ridejoy"><img src="img/ridejoy.ico"></a></li>
+          <li class="active"><a id="js-ridejoymenu" href="#ridejoy" data-toggle="tab" title="Ridejoy"><img src="img/ridejoy.ico"></a></li>
+          <li><a id="js-airbnbmenu" href="#airbnb" data-toggle="tab" title="Airbnb"><img src="img/airbnb.ico"></a></li>
           <li><a id="js-vayablemenu" href="#vayable" data-toggle="tab" title="Vayable"><img src="img/vayable.ico"></a></li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane active" id="airbnb">
-            <div class="loading" id="airbnb-loading"></div>
-            <table class="table" id="airbnb-table">
-              <tbody class="lists" id="airbnb-list">
+          <div class="tab-pane active" id="ridejoy">
+            <div class="loading" id="ridejoy-loading"></div>
+            <table class="table">
+              <tbody class="lists" id="ridejoy-list">
                 <!-- items are here -->
               </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3"><button class="btn load-more" id="lm-air" type="button" data-loading-text="Loading...">Load more..</button></td>
-                </tr>
-              </tfoot>
             </table>
           </div>
-          <div class="tab-pane" id="ridejoy">
-            <div class="loading" id="ridejoy-loading"></div>
-            <table class="table" id="ridejoy-table">
-              <tbody class="lists" id="ridejoy-list">
+          <div class="tab-pane" id="airbnb">
+            <div class="loading" id="airbnb-loading"></div>
+            <table class="table">
+              <tbody class="lists" id="airbnb-list">
                 <!-- items are here -->
               </tbody>
             </table>
           </div>
           <div class="tab-pane" id="vayable">
             <div class="loading" id="vayable-loading"></div>
-            <table class="table" id="vayable-table">
+            <table class="table">
               <tbody class="lists" id="vayable-list">
                 <!-- items are here -->
               </tbody>
-              <tfoot>
-                <tr>
-                  <td><button class="btn load-more" id="lm-vay" type="button" data-loading-text="Loading...">Load more..</button></td>
-                </tr>
-              </tfoot>
             </table>
           </div>
         </div>
@@ -214,37 +175,9 @@
     </div>
   </div>
 
-  <!-- About Modal -->
-  <div id="about" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="about-outpost" aria-hidden="true">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-      <h3 id="about-outpost">About Outpost</h3>
-    </div>
-    <div class="modal-body">
-      <p>We're a young team of 2 and we're hungry.</p>
-      <p>Sorry if there are bugs or no information available next in your neighborhood, we are adding more P2P networks every day so check again soon!
-      </p>
-      <a href="https://twitter.com/Outpostp2p" class="twitter-follow-button" data-show-count="false">Follow @Outpostp2p</a>
-      <p class="pull-right">
-        Please contact us, we're begging for feedback: <a href="mailto:info@outpostp2p.com">info@outpostp2p.com</a> <br>
-      </p>
-    </div>
-  </div>
-
-  <div class="alert-box" id="alert-box">
-  </div>
-
-
   <!-- TEMPLATES -->
   <script id="tmpl-resultInfo" type="text/template">
     <span id="js-counter"><%= numOfRes %></span> results found for <%= city %>
-  </script>
-
-  <script id="tmpl-alert" type="text/template">
-    <div class="alert <%= type %>">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <%= text %>
-    </div>
   </script>
 
   <script id="tmpl-airbnbRow" type="text/template">
@@ -254,28 +187,18 @@
       <%
         var id = "air" + item.id;
         var json_item = JSON.stringify(item);
-        var price = item.price.substring(0, item.price.indexOf("   "));
         markers.push({
           latLng: Outpost.helpers.genRdmLL(item.neigh),
           data: item,
-          id: id,
-          tag: "air"
+          id: id
         });
       %>
       <tr class="tr-airbnb tr <%= id %>" data-item='<%= json_item %>'>
         <td><img class="img-circle" src="<%= item.profileImg %>"></td>
-        <td class="ownerAdd">
-          <%= item.desc %> <br>
-          <i><%= item.type %></i> - <b><%= price %></b>
-        </td>
-        <td>
-          <a href="<%= item.link %>" target='_blank'>
-            <i class='icon-share' title="go to <%= item.link %>"></i>
-          </a>
-        </td>
+        <td class="ownerAdd"><%= item.desc %></td>
       </tr>
     <% }); %>
-    <% $('#airbnb-table').attr('data-markers', JSON.stringify(markers)); %>
+    <% $('#airbnb-list').attr('data-markers', JSON.stringify(markers)); %>
   </script>
 
   <script id="tmpl-ridejoyRow" type="text/template">
@@ -288,8 +211,7 @@
         markers.push({
           latLng: Outpost.helpers.genRdmLL(item.origin),
           data: item,
-          id: id,
-          tag: "rid"
+          id: id
         });
       %>
       <tr class="tr-ridejoy tr <%= id %>" data-item='<%= json_item %>'>
@@ -298,14 +220,9 @@
           <%= item.origin %> → <%= item.destination %> <br>
           <%= item.dates %>
         </td>
-        <td>
-          <a href="<%= item.link %>" target='_blank'>
-            <i class='icon-share' title="go to <%= item.link %>"></i>
-          </a>
-        </td>
       </tr>
     <% }); %>
-    <% $('#ridejoy-table').attr('data-markers', JSON.stringify(markers)); %>
+    <% $('#ridejoy-list').attr('data-markers', JSON.stringify(markers)); %>
   </script>
 
   <script id="tmpl-vayableRow" type="text/template">
@@ -318,8 +235,7 @@
         markers.push({
           latLng: Outpost.helpers.genRdmLL(item.origin),
           data: item,
-          id: id,
-          tag: "vay"
+          id: id
         });
       %>
       <tr class="tr-vayable tr <%= id %>" data-item='<%= json_item %>'
@@ -327,26 +243,25 @@
         <td class="ownerAdd"><b class="text-white"><%= item.desc %></b></td>
       </tr>
     <% }); %>
-    <% $('#vayable-table').attr('data-markers', JSON.stringify(markers)); %>
+    <% $('#vayable-list').attr('data-markers', JSON.stringify(markers)); %>
   </script>
 
   <!-- DEPENDENCIES -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
   <script src="js/vendor/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
   <script src="js/vendor/underscore-min.js"></script>
   <script src="js/vendor/backbone-min.js"></script>
   <!-- EXTRA LIBRARIES -->
   <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDszynV_XPq7Lgnmb_JAEz2QArQ7RdU5iA&sensor=false&libraries=places"></script>
   <script src="js/vendor/gmap3.js"></script>
   <!-- MVC -->
-  <script src="js/app/tmpl-2.js"></script>
-  <script src="js/app/models-2.js"></script>
-  <script src="js/app/views-2.js"></script>
-  <script src="js/app/router-2.js"></script>
+  <script src="js/app/tmpl-1.js"></script>
+  <script src="js/app/models-1.js"></script>
+  <script src="js/app/views-1.js"></script>
+  <script src="js/app/router-1.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-2.js"></script>
-
+  <script src="js/main-1.js"></script>
   <!-- ANALYTICS & CO. -->
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script>
@@ -355,6 +270,5 @@
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
   </script>
-
 </body>
 </html>

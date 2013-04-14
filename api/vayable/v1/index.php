@@ -1,7 +1,16 @@
 <?php
-  require_once('../simple_html_dom.php');
+  require_once('../../simple_html_dom.php');
   $location = urlencode($_GET["eloc"]);
   $page = $_GET["page"];
+  $min = $_GET["price_min"];
+  $max = $_GET["price_max"];
+
+  $min = 0 + $min;
+  $max = 0 + $max;
+
+  if ($max == 300) {
+    $max = 10000;
+  }
 
   if (!$page)
     $page = 1;
@@ -17,14 +26,17 @@
 
   if (!$tourList->find(".noresults")) {
     foreach($tourList->find('.trip-card') as $aTrip) {
-      $trip['id'] = substr($aTrip->find('a', 0)->href, 13, 4) + 0;
-      $trip['img'] = extract_unit($aTrip->find('.card', 0)->getAttribute("style"), "'", "'");
-      $trip['origin'] = trim($aTrip->find('.tagline', 0)->plaintext);
-      $trip['desc'] = trim($aTrip->find('.title', 0)->plaintext);
-      $trip['price'] = str_replace(' ', '', trim($aTrip->find('.amount', 0)->plaintext));
-      $trip['link'] = "https://www.vayable.com".$aTrip->find('a', 0)->href;
-
-      $output[] = $trip;
+      $price_full = str_replace(' ', '', trim($aTrip->find('.amount', 0)->plaintext));
+      $price = 0 + substr($price_full, 1);
+      if ($price >= $min && $price <= $max) {
+        $trip['id'] = substr($aTrip->find('a', 0)->href, 13, 4) + 0;
+        $trip['img'] = extract_unit($aTrip->find('.card', 0)->getAttribute("style"), "'", "'");
+        $trip['origin'] = trim($aTrip->find('.tagline', 0)->plaintext);
+        $trip['desc'] = trim($aTrip->find('.title', 0)->plaintext);
+        $trip['price'] = $price_full;
+        $trip['link'] = "https://www.vayable.com".$aTrip->find('a', 0)->href;
+        $output[] = $trip;
+      }
     }
   }
 

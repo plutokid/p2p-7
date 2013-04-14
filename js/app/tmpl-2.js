@@ -52,28 +52,30 @@
             '<img src="img/ridejoy.png" alt="coutersy of ridejoy">' +
           '</div>' +
         '</div>' +
-        '<div class="info-img img-polaroid pull-left"><img width="76px" src="' + item.img + '"></div>' +
-        '<div class="info-content pull-left">' +
-          '<ul>' +
-            '<li>' +
-              '<span class="icon-time css-blue"></span>' +
-              '<span>' + item.dates + '</span>' +
-            '</li>' +
-            '<li>' +
-              '<span class="icon-map-marker css-green"></span>' +
-              '<span class="info-origin">' + item.origin + '</span>' +
-            '</li>' +
-            '<li>' +
-              '<span class="icon-money css-red"></span>' +
-              '<span>' + item.price + '</span>' +
-            '</li>' +
-          '</ul>' +
-          '<a data-orig="' + item.origin + '" data-dest="' + item.destination + '" ' +
-           'class="btn btn-small routeit" onclick="Outpost.mvc.views.map.routeRide(this)">' +
-           '<i class="icon-random"></i>&nbsp;See route' +
-          '</a>&nbsp;' +
-          '<a class="btn btn-small info-book-rid" href="' + item.link + '" target="_blank">' +
-           '<i class="icon-check"></i>&nbsp;Grab It</a>' +
+        '<div class="info-picinfo">' +
+          '<div class="info-img img-polaroid pull-left"><img width="76px" src="' + item.img + '"></div>' +
+          '<div class="info-content pull-left">' +
+            '<ul>' +
+              '<li>' +
+                '<span class="icon-time css-blue"></span>' +
+                '<span>' + item.dates + '</span>' +
+              '</li>' +
+              '<li>' +
+                '<span class="icon-map-marker css-green"></span>' +
+                '<span class="info-origin">' + item.origin + '</span>' +
+              '</li>' +
+              '<li>' +
+                '<span class="icon-money css-red"></span>' +
+                '<span>' + item.price + '</span>' +
+              '</li>' +
+            '</ul>' +
+            '<a data-orig="' + item.origin + '" data-dest="' + item.destination + '" ' +
+             'class="btn btn-small routeit" onclick="Outpost.mvc.views.map.routeRide(this)">' +
+             '<i class="icon-random"></i>&nbsp;See route' +
+            '</a>&nbsp;' +
+            '<a class="btn btn-small info-book-rid" href="' + item.link + '" target="_blank">' +
+             '<i class="icon-check"></i>&nbsp;Grab It</a>' +
+          '</div>' +
         '</div>' +
       '</div>';
     },

@@ -233,27 +233,8 @@ a:focus {
 }
 
 @media (max-width: 640px) {
-  body {
-    max-width: 640px !important;
-  }
-  .mobile-inputsearch {
-    float: none !important;
-  }
-  .css-ortext {
-    display: block !important;
-    float: none !important;
-    margin: 0px auto !important;
-  }
-  .mobile-whats {
-    width: 100% !important;
-    float: none !important;
-  }
-  .mobile-whats a {
-    width: 86% !important;
-  }
-  .hiw-wrap {
-    display: block !important;
-    float: none !important;
+  .main-head, .css-logo-bar, .hiw-header {
+    min-width: 940px !important;
   }
   .mvwq {
     display: none !important;
@@ -275,7 +256,7 @@ a:focus {
 }
 
 .twitters iframe {
-  width: 60px !important;
+  width: 57px !important;
 }
 
 
@@ -712,17 +693,14 @@ background-color: #2284A1;
 }
 
 .button:hover{
-
   color:white;
 }
 
 .button:focus{
-
   color:white;
 }
 
 .aroundtext {
-
   margin-left:30px;
   padding-right: 10px;
 
@@ -735,7 +713,7 @@ background-color: #2284A1;
   margin-right: auto;
   margin-top: 0;
   margin-bottom: 0;
-  max-width: 62.5em;
+  max-width: 58.5em;
 }
 
 .inner-search {
@@ -782,7 +760,8 @@ background-color: #2284A1;
 }
 
 .css-whataround {
-  height: 30px;
+  padding: 8px;
+  height: 22px;
   background: #EC5F41 !important;
   transition: background 300ms ease-out;
 }
@@ -806,4 +785,7 @@ background-color: #2284A1;
 .css-searchit:hover {
   transition: background 300ms ease-out;
   background: #2284a1 !important;
+}
+.geolocate-icon {
+  width: 22px;
 }

@@ -4,9 +4,19 @@
   $startDate = $_GET["sdate"];
   $endDate = $_GET["edate"];
   $guests = $_GET["guests"];
+  $page = $_GET["page"];
+  $min = $_GET["price_min"];
+  $max = $_GET["price_max"];
+
+  $min = "&price_min=".$min;
+
+  if ($max == 300)
+    $max = '';
+  else
+    $max = "&price_max=".$max;
 
   $url = "https://www.airbnb.com/s";
-  $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}";
+  $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}{$min}{$max}&page={$page}";
   $url = $url.$qry_str;
   $html = file_get_contents($url);
 

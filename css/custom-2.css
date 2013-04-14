@@ -1,7 +1,5 @@
 body {
   background: #f1f1f1;
-  overflow: auto;
-  font-family:open sans, arial, sans-serif !important;
 }
 
 a {
@@ -114,6 +112,7 @@ a:focus {
 }
 
 .map-cont {
+  position: fixed;
   margin-left:0 !important;
 }
 
@@ -143,7 +142,6 @@ a:focus {
 }
 
 .sidebar {
-  height: 598px;
   width: 350px;
   position: absolute;
   top: 41px;
@@ -331,7 +329,7 @@ a:focus {
 }
 
 .info-desc {
-  height: 50px;
+  min-height: 50px;
 }
 
 .js-closeInfoWindow {
@@ -349,8 +347,13 @@ a:focus {
 
 .info-logo {
   position: absolute;
-  right: 10px;
+  right: 5px;
   top: 20px;
+}
+
+.info-picinfo {
+  height: 95px;
+  background: white;
 }
 
 .info-img {
@@ -358,7 +361,6 @@ a:focus {
 }
 
 .info-text {
-  padding-left: 5px;
   padding-left: 5px;
   color: #fff;
 }
@@ -791,4 +793,64 @@ background-color: #2284A1;
 }
 .geolocate-icon {
   width: 22px;
+}
+
+.load-more {
+  width: 100%;
+}
+
+.alert-box {
+  width: 28em;
+  right: 0;
+  bottom: 0;
+  z-index: 9;
+  position: absolute;
+}
+
+.filters {
+  background: #feffff;
+  background: linear-gradient(to bottom, #F2F2F2 0%, #EFEFEF 38%, #ECECEC 57%, #EAEAEA 100%) repeat scroll 0 0 transparent;
+  padding: 7px;
+}
+
+.guestfilter {
+  width:80px;
+}
+
+.price-filter {
+  width: 220px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.minimax {
+  list-style: none;
+  width: 72px;
+  background: #ddd;
+  border: 1px solid #f1f1f1;
+  border-radius: 3px;
+  padding: 3px;
+  margin-top: -5px;
+}
+
+.price-value-min {
+  float: left;
+}
+
+.price-value-max {
+  float: right;
+}
+
+.slider_values {
+  margin: 0;
+  height: 30px;
+}
+
+.submit-filter {
+  width: 75px;
+  margin-top: -35px;
+}
+
+.applyflabel {
+  display: inline-block;
 }
