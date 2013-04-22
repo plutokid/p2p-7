@@ -15,7 +15,7 @@
     // =======================================================
     airbnb: Backbone.Collection.extend({
       model: Outpost.models.airbnb,
-      url: "http://outpostp2p.com/api/airbnb/",
+      url: "http://outpostp2p.com/api/houserental/",
 
       parse: function(response) {
         return response;

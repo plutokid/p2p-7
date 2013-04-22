@@ -1,5 +1,6 @@
 body {
   background: #f1f1f1;
+  overflow-y: scroll;
 }
 
 a {
@@ -9,13 +10,14 @@ a:hover {
   text-decoration: none;
 }
 a:focus {
-
   text-decoration:none;
 }
 .pac-container:after {
   content: "" !important;
 }
-
+.pac-container {
+  z-index: 1031 !important;
+}
 .pac-item {
   padding: 0.5em;
   -webkit-transition: all 0.1s ease-in;
@@ -43,7 +45,15 @@ a:focus {
 .tooly:hover {
   text-decoration: none;
 }
-
+.inline-block {
+  display: inline-block;
+}
+.va-middle {
+  vertical-align: middle !important;
+}
+.tdfoot {
+  text-align: right !important;
+}
 .css-logo-bar {
   width:100%;
   height:82px;
@@ -146,7 +156,7 @@ a:focus {
   position: absolute;
   top: 41px;
   left: 90px;
-  z-index: 9999;
+  z-index: 1032;
   background-color: rgba(26, 21, 21, 0.75);
 }
 
@@ -165,11 +175,10 @@ a:focus {
 .logos {
   margin-left: 15px;
   margin-right: 15px;
-  opacity: 0.8;
 }
 
 .logos:hover{
-  opacity: 1;
+  opacity: 0.6;
 }
 
 .shares {
@@ -224,10 +233,10 @@ a:focus {
 }
 
 .resultInfo {
+  margin: 0;
   color: black;
-  position: absolute;
-  top: -25px;
-  left: 35%;
+  font-size: 0.8em;
+  text-align: center;
 }
 
 @media (max-width: 640px) {
@@ -272,40 +281,6 @@ a:focus {
   background: rgba(255, 255, 255, 0.3);
 }
 
-@media only screen and (-webkit-min-device-pixel-ratio: 0) and (min-device-width: 1025px) {
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  
-  ::-webkit-scrollbar-button:start:decrement,
-  ::-webkit-scrollbar-button:end:increment {
-    display: block;
-    height: 10px;
-  }
-  
-  ::-webkit-scrollbar-button:vertical:increment {
-    background-color: #fff;
-  }
-  
-  ::-webkit-scrollbar-track-piece {
-    background-color: #ccc;
-    border-radius: 3px;
-  }
-  
-  ::-webkit-scrollbar-thumb:vertical {
-    height: 50px;
-    background-color: orange;
-    border-radius: 3px;
-  }
-  
-  ::-webkit-scrollbar-thumb:horizontal {
-    width: 50px;
-    background-color: #ccc;
-    border-radius: 3px;
-  }
-}
-
 /*INFO WINDOW */
 .js-infowindow {
   cursor: default;
@@ -314,6 +289,11 @@ a:focus {
   width: 300px;
   height: 145px;
   box-shadow: 1px -2px 12px 1px;
+}
+
+.info-imgrentals {
+  width:117px;
+  height:76px; 
 }
 
 .js-infowindow:after {
@@ -430,6 +410,11 @@ a:focus {
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.info-oridest {
+  width: 185px;
+  font-size: 0.9em;
 }
 
 .p2p-main{
@@ -686,7 +671,9 @@ background-color: #A41414;
 background-color: #2284A1;
 
 }
-
+.img-circle {
+  width: 36px;
+}
 .target-icon {
     background: url("../img/icon-target.png") no-repeat scroll 0 0 transparent;
     display: inline-block;
@@ -804,7 +791,7 @@ background-color: #2284A1;
   right: 0;
   bottom: 0;
   z-index: 9;
-  position: absolute;
+  position: fixed;
 }
 
 .filters {
@@ -814,7 +801,7 @@ background-color: #2284A1;
 }
 
 .guestfilter {
-  width:80px;
+  width: 85px;
 }
 
 .price-filter {
@@ -825,7 +812,7 @@ background-color: #2284A1;
 
 .minimax {
   list-style: none;
-  width: 72px;
+  width: 76px;
   background: #ddd;
   border: 1px solid #f1f1f1;
   border-radius: 3px;
@@ -853,4 +840,23 @@ background-color: #2284A1;
 
 .applyflabel {
   display: inline-block;
+}
+.info-imghover {
+  cursor: pointer;
+}
+.info-imghover:hover {
+  border: 1px solid #3d3d3d;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.navbar-form .input-prepend {
+  margin-bottom: 0;
+}
+
+.navbar-form {
+  top: -3px;
+  position: relative;
 }

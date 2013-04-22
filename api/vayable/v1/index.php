@@ -30,6 +30,7 @@
       $price = 0 + substr($price_full, 1);
       if ($price >= $min && $price <= $max) {
         $trip['id'] = substr($aTrip->find('a', 0)->href, 13, 4) + 0;
+        $ride['idtype'] = "vayable";
         $trip['img'] = extract_unit($aTrip->find('.card', 0)->getAttribute("style"), "'", "'");
         $trip['origin'] = trim($aTrip->find('.tagline', 0)->plaintext);
         $trip['desc'] = trim($aTrip->find('.title', 0)->plaintext);
@@ -40,7 +41,7 @@
     }
   }
 
-  $str = trim(json_encode($output));
+  $str = json_encode($output);
   echo $str;
 
 
