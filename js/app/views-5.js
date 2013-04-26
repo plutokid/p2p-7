@@ -120,8 +120,11 @@
         "click #js-whataround": "whatIsAround"
       },
 
-      whatIsAround: function() {
+      whatIsAround: function(e) {
         var geoPromise = Outpost.helpers.ipToGeo();
+        var $node = $(e.currentTarget);
+        $node.attr("disabled", "disabled");
+        $node.text("Locating..");
         geoPromise.done(function(data) {
           Outpost.values.origLocation = data.location;
           Outpost.values.origLocationLat = data.latLng[0];
@@ -137,10 +140,12 @@
 
       initTypeahead: function() {
         var origLocation = $("#js-orig-location-input")[0];
+        var destLocation = $("#js-dest-location-input")[0];
         var options = {
           types: ['(cities)']
         };
         new google.maps.places.Autocomplete(origLocation, options);
+        new google.maps.places.Autocomplete(destLocation, options);
       },
 
       submitForm: function(e) {
@@ -264,6 +269,57 @@
         });
       },
 
+      addMarker: function(item, opts) {
+        var _this = this;
+        _this.$el.gmap3({
+          get: {
+            id: item.markerid,
+            callback: function(marker) {
+              if (typeof marker.getPosition === 'function' && marker.getPosition()) {
+                // do nothing
+              } else {
+                _this.$el.gmap3({
+                  marker: {
+                    latLng: item.latLng || Outpost.helpers.genRdmLL(item.origin),
+                    data: item,
+                    id: item.markerid,
+                    tag: item.prefix,
+                    options: {
+                      icon: opts.icon,
+                      shadow: opts.shadow,
+                      shape: opts.shape
+                    },
+                    events: {
+                      click: function(marker, event, context) {
+                        $('.row-selected').removeClass('row-selected');
+                        $(opts.nodeList).find('.' + context.id).addClass('row-selected');
+                        $(opts.nodeTab).tab('show');
+                        $('body, html').animate({
+                          scrollTop: $('.' + context.id).offset().top
+                        }, 300);
+                      },
+                      mouseover: function(marker, event, context) {
+                        _this.closeInfo();
+                        _this.showInfo(marker, context.data, opts.infoWindowTmpl);
+                        $('.row-selected').removeClass('row-selected');
+                        $(opts.nodeList).find('.' + context.id).addClass('row-selected');
+
+                        marker.setIcon(opts.iconHover);
+                        $(opts.nodeList).find('.' + context.id).addClass('row-hovered');
+                      },
+                      mouseout: function(marker, event, context) {
+                        marker.setIcon(opts.icon);
+                        $(opts.nodeList).find('.' + context.id).removeClass('row-hovered');
+                      }
+                    }
+                  }
+                });
+              }
+            }
+          }
+        });
+      },
+
       relateMarker: function(item, opts) {
         var _this = this;
         var map = this.$el.gmap3("get");
@@ -334,6 +390,15 @@
         this.closeInfo();
       },
 
+      removeMarker: function(markerid) {
+        this.$el.gmap3({
+          clear: {
+            id: markerid
+          }
+        });
+        this.closeInfo();
+      },
+
       redefineMap: function() {
         var _this = this;
         _this.$el.gmap3({
@@ -380,14 +445,9 @@
       el: '#sidebar',
       template: _.template($('#tmpl-resultInfo').html()),
 
-      events: {
-        'click #filter-applyto': 'toggleFilterTo'
-      },
-
       initialize: function() {
         this.updateNavbarRes();
         this.initServices();
-        this.initializeFilterGUI();
       },
 
       toggleFilterTo: function(e) {
@@ -400,44 +460,16 @@
       },
 
       clearAllListings: function() {
-        $('tbody').empty();
+        Outpost.mvc.views.airbnb.clearData();
+        Outpost.mvc.views.ridejoy.clearData();
+        Outpost.mvc.views.vayable.clearData();
+        $('.js-lists').empty();
       },
 
       fetchAll: function() {
         Outpost.mvc.views.airbnb.fetchData();
         Outpost.mvc.views.ridejoy.fetchData();
         Outpost.mvc.views.vayable.fetchData();
-      },
-
-      initializeFilterGUI: function() {
-        $("#js-price-input-rid").slider({
-          range: true,
-          values: [10, 300],
-          min: 1,
-          max: 300,
-          slide: function (event, ui) {
-            $("#price-value-min-rid").text(ui.values[0]);
-            if (ui.values[1] === 300) {
-              $("#price-value-max-rid").text("300+");
-            } else {
-              $("#price-value-max-rid").text(ui.values[1]);
-            }
-          }
-        });
-        $("#js-price-input-hou").slider({
-          range: true,
-          values: [10, 300],
-          min: 1,
-          max: 300,
-          slide: function (event, ui) {
-            $("#price-value-min-hou").text(ui.values[0]);
-            if (ui.values[1] === 300) {
-              $("#price-value-max-hou").text("300+");
-            } else {
-              $("#price-value-max-hou").text(ui.values[1]);
-            }
-          }
-        });
       },
 
       updateNavbarRes: function() {
@@ -460,6 +492,8 @@
     airbnb: Backbone.View.extend({
       el: '#houserental',
       template: _.template($('#tmpl-airbnbRow').html()),
+      divCollection: [],
+      sortType: "relevance",
       itemStore: {
         prefix: "air",
         infoWindowTmpl: Outpost.tmpl.airbnbInfo,
@@ -487,8 +521,18 @@
 
       initialize: function() {
         _.bindAll(this, 'render');
+        this.initSliderGUI();
         this.collection = new Outpost.collections.airbnb();
         this.fetchData();
+      },
+
+      events: {
+        "change #js-sortby-input-hou": "sortBy",
+        "click .tr-airbnb": "openInfoWindow",
+        "click #lm-air": "loadMore",
+        "click .list-img": "loadSLB",
+        "mouseenter .tr-airbnb": "highlightMarker",
+        "mouseleave .tr-airbnb": "normalizeMarker"
       },
 
       slbPic: function(src) {
@@ -504,19 +548,96 @@
         });
       },
 
-      events: {
-        "click .tr-airbnb": "openInfoWindow",
-        'click #submit-filter-hou': 'filterResults',
-        "click #lm-air": "loadMore",
-        "mouseenter .tr-airbnb": "highlightMarker",
-        "mouseleave .tr-airbnb": "normalizeMarker"
+      initSliderGUI: function() {
+        var _this = this;
+        $("#js-price-input-hou").slider({
+          range: true,
+          values: [10, 300],
+          min: 1,
+          max: 300,
+          slide: function (event, ui) {
+            $("#price-value-min-hou").text(ui.values[0]);
+            if (ui.values[1] === 300) {
+              $("#price-value-max-hou").text("300+");
+            } else {
+              $("#price-value-max-hou").text(ui.values[1]);
+            }
+            Outpost.values.airbnb.min = ui.values[0];
+            Outpost.values.airbnb.max = ui.values[1];
+            _this.priceFilter();
+          },
+          change: function() {
+            _this.priceMarkerFilter();
+            Outpost.state.page.air = 1;
+          }
+        });
       },
 
-      filterResults: function() {
-        var filter = Outpost.state.searchFilter;
-        filter.minPrice = $("#js-price-input-hou").slider("values", 0);
-        filter.maxPrice = $("#js-price-input-hou").slider("values", 1);
+      priceFilter: function() {
+        var _this = this;
+        var sorted = _(_this.divCollection).map(function(value) {
+          var item = $(value).data('item');
+          var price = item.price2;
+          if (price >= Outpost.values.airbnb.min && price <= Outpost.values.airbnb.max) {
+            return $(value);
+          }
+        });
+        _this.$el.find('#airbnb-list').html(sorted);
+      },
+
+      priceMarkerFilter: function() {
+        var _this = this;
+        var sorted = _(_this.divCollection).map(function(value) {
+          var item = $(value).data('item');
+          var price = item.price2;
+          if (price >= Outpost.values.airbnb.min && price <= Outpost.values.airbnb.max) {
+            Outpost.mvc.views.map.addMarker(item, _this.itemStore);
+          } else {
+            Outpost.mvc.views.map.removeMarker(item.markerid);
+          }
+        });
+      },
+
+      sortBy: function(e) {
+        this.sortType = $(e.currentTarget).val();
+        this.sortDiv();
+      },
+
+      sortDiv: function() {
+        var sorted;
+        switch (this.sortType) {
+          case "low2high":
+            sorted = $('.tr-airbnb').sort(function (a, b) {
+              var p1 = $(a).data('item').price2;
+              var p2 = $(b).data('item').price2;
+              return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
+            });
+            this.$el.find('#airbnb-list').empty();
+            this.$el.find('#airbnb-list').html(sorted);
+            break;
+          case "high2low":
+            sorted = $('.tr-airbnb').sort(function (a, b) {
+              var p1 = $(a).data('item').price2;
+              var p2 = $(b).data('item').price2;
+              return (p1 > p2) ? -1 : (p1 < p2) ? 1 : 0;
+            });
+            this.$el.find('#airbnb-list').empty();
+            this.$el.find('#airbnb-list').html(sorted);
+           break;
+        }
+        this.divCollection = $('.tr-airbnb');
+      },
+
+      filterResults: function(e) {
+        e.preventDefault();
+        $('#submit-filter-rid').button('loading');
+        Outpost.helpers.defineDestLoc();
         this.clearAndFetch();
+      },
+
+      loadSLB: function(e) {
+        var $node = $(e.currentTarget);
+        this.slbPic($node.attr('src'));
       },
 
       clearAndFetch: function() {
@@ -525,6 +646,7 @@
       },
 
       clearData: function() {
+        this.divCollection = [];
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("air");
         Outpost.state.page.air = 1;
@@ -585,6 +707,8 @@
           $('#js-counter').text(Outpost.state.numOfRes);
           Outpost.mvc.views.map.setMarkers(this.$el.data('markers'), this.itemStore);
           this.$el.removeData('markers');
+          this.sortDiv();
+          this.priceFilter();
         } else if (Outpost.state.page.air !== 1) {
           Outpost.helpers.showAlertBox({
             type: "alert-error",
@@ -595,9 +719,9 @@
           this.$el
            .find('#airbnb-list')
            .html(
-            "<td class='text-center' colspan='3'>" +
+            "<div class='text-center'>" +
             "No rentals in " + Outpost.values.origLocation + " found." +
-            "</td>"
+            "</div>"
            );
         }
       }
@@ -609,6 +733,10 @@
     ridejoy: Backbone.View.extend({
       el: '#rideshare',
       template: _.template($('#tmpl-ridejoyRow').html()),
+      divCollection: [],
+      sortType: "relevance",
+      min: 0,
+      max: 300,
       itemStore: {
         prefix: "rid",
         infoWindowTmpl: Outpost.tmpl.ridejoyInfo,
@@ -636,21 +764,101 @@
 
       initialize: function() {
         _.bindAll(this, 'render');
+        this.initSliderGUI();
         this.collection = new Outpost.collections.ridejoy();
         this.fetchData();
       },
 
       events: {
+        "change #js-sortby-input-rid": "sortBy",
+        'submit #filter-form-rid': 'filterResults',
         "click .tr-ridejoy": "openInfoWindow",
-        'click #submit-filter-rid': 'filterResults',
         "mouseenter .tr-ridejoy": "highlightMarker",
         "mouseleave .tr-ridejoy": "normalizeMarker"
       },
 
-      filterResults: function() {
-        var filter = Outpost.state.searchFilter;
-        filter.minPrice = $("#js-price-input-rid").slider("values", 0);
-        filter.maxPrice = $("#js-price-input-rid").slider("values", 1);
+      initSliderGUI: function() {
+        var _this = this;
+        $("#js-price-input-rid").slider({
+          range: true,
+          values: [10, 300],
+          min: 1,
+          max: 300,
+          slide: function (event, ui) {
+            $("#price-value-min-rid").text(ui.values[0]);
+            if (ui.values[1] === 300) {
+              $("#price-value-max-rid").text("300+");
+            } else {
+              $("#price-value-max-rid").text(ui.values[1]);
+            }
+            _this.min = ui.values[0];
+            _this.max = ui.values[1];
+            _this.priceFilter();
+          },
+          change: function() {
+            _this.priceMarkerFilter();
+          }
+        });
+      },
+
+      priceFilter: function() {
+        var _this = this;
+        var sorted = _(_this.divCollection).map(function(value) {
+          var price = $(value).data('item').price2;
+          if (price >= _this.min && price <= _this.max) {
+            return $(value);
+          }
+        });
+        _this.$el.find('#ridejoy-list').html(sorted);
+      },
+
+      priceMarkerFilter: function() {
+        var _this = this;
+        var sorted = _(_this.divCollection).map(function(value) {
+          var item = $(value).data('item');
+          var price = item.price2;
+          if (price >= _this.min && price <= _this.max) {
+            Outpost.mvc.views.map.addMarker(item, _this.itemStore);
+          } else {
+            Outpost.mvc.views.map.removeMarker(item.markerid);
+          }
+        });
+      },
+
+      sortBy: function(e) {
+        this.sortType = $(e.currentTarget).val();
+        this.sortDiv();
+      },
+
+      sortDiv: function() {
+        var sorted;
+        switch (this.sortType) {
+          case "low2high":
+            sorted = $('.tr-ridejoy').sort(function (a, b) {
+              var p1 = $(a).data('item').price2;
+              var p2 = $(b).data('item').price2;
+              return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
+            });
+            this.$el.find('#ridejoy-list').empty();
+            this.$el.find('#ridejoy-list').html(sorted);
+            break;
+          case "high2low":
+            sorted = $('.tr-ridejoy').sort(function (a, b) {
+              var p1 = $(a).data('item').price2;
+              var p2 = $(b).data('item').price2;
+              return (p1 > p2) ? -1 : (p1 < p2) ? 1 : 0;
+            });
+            this.$el.find('#ridejoy-list').empty();
+            this.$el.find('#ridejoy-list').html(sorted);
+           break;
+        }
+        this.divCollection = $('.tr-ridejoy');
+      },
+
+      filterResults: function(e) {
+        e.preventDefault();
+        $('#submit-filter-rid').button('loading');
+        Outpost.helpers.defineDestLoc();
         this.clearAndFetch();
       },
 
@@ -660,6 +868,7 @@
       },
 
       clearData: function() {
+        this.divCollection = [];
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("rid");
         this.$el
@@ -683,6 +892,9 @@
               type: "alert-error",
               text: "<strong>Sorry!</strong> something went wrong, please try again!"
             });
+          },
+          complete: function() {
+            $('#submit-filter-rid').button('reset');
           }
         });
       },
@@ -716,13 +928,15 @@
           $('#js-counter').text(Outpost.state.numOfRes);
           Outpost.mvc.views.map.setMarkers(this.$el.data('markers'), this.itemStore);
           this.$el.removeData('markers');
+          this.sortDiv();
+          this.priceFilter();
         } else {
           this.$el
            .find('#ridejoy-list')
            .html(
-            "<td class='text-center' colspan='3'>" +
+            "<div class='text-center'>" +
             "No rides found towards " + Outpost.values.origLocation + "." +
-            "</td>"
+            "</div>"
            );
         }
       }
@@ -732,8 +946,12 @@
     // Vayable list view
     // =======================================================
     vayable: Backbone.View.extend({
-      el: '#vayable-table',
+      el: '#tourism',
       template: _.template($('#tmpl-vayableRow').html()),
+      min: 0,
+      max: 300,
+      divCollection: [],
+      sortType: "relevance",
       itemStore: {
         prefix: "vay",
         infoWindowTmpl: Outpost.tmpl.vayableInfo,
@@ -755,21 +973,107 @@
         },
         iconHover: "img/vayable/hover.png",
         nodeList: "#vayable-list",
-        nodeTab: "#js-tourisimmenu",
+        nodeTab: "#js-tourismmenu",
         animation: ""
       },
 
       initialize: function() {
         _.bindAll(this, 'render');
+        this.initSliderGUI();
         this.collection = new Outpost.collections.vayable();
         this.fetchData();
       },
 
       events: {
+        "change #js-sortby-input-tou": "sortBy",
         "click .tr-vayable": "openInfoWindow",
         "click #lm-vay": "loadMore",
+        "click .list-img": "loadSLB",
         "mouseenter .tr-vayable": "highlightMarker",
         "mouseleave .tr-vayable": "normalizeMarker"
+      },
+
+      initSliderGUI: function() {
+        var _this = this;
+        $("#js-price-input-tou").slider({
+          range: true,
+          values: [10, 300],
+          min: 1,
+          max: 300,
+          slide: function (event, ui) {
+            $("#price-value-min-tou").text(ui.values[0]);
+            if (ui.values[1] === 300) {
+              $("#price-value-max-tou").text("300+");
+            } else {
+              $("#price-value-max-tou").text(ui.values[1]);
+            }
+            _this.min = ui.values[0];
+            _this.max = ui.values[1];
+            _this.priceFilter();
+          },
+          change: function() {
+            _this.priceMarkerFilter();
+          }
+        });
+      },
+
+      priceFilter: function() {
+        var _this = this;
+        var sorted = _(_this.divCollection).map(function(value) {
+          var price = $(value).data('item').price2;
+          if (price >= _this.min && price <= _this.max) {
+            return $(value);
+          }
+        });
+        _this.$el.find('#vayable-list').html(sorted);
+      },
+
+      priceMarkerFilter: function() {
+        var _this = this;
+        var sorted = _(_this.divCollection).map(function(value) {
+          var item = $(value).data('item');
+          var price = item.price2;
+          if (price >= _this.min && price <= _this.max) {
+            Outpost.mvc.views.map.addMarker(item, _this.itemStore);
+          } else {
+            Outpost.mvc.views.map.removeMarker(item.markerid);
+          }
+        });
+      },
+
+      sortBy: function(e) {
+        this.sortType = $(e.currentTarget).val();
+        this.sortDiv();
+      },
+
+      sortDiv: function() {
+        var sorted;
+        switch (this.sortType) {
+          case "low2high":
+            sorted = $('.tr-vayable').sort(function (a, b) {
+              var p1 = $(a).data('item').price2;
+              var p2 = $(b).data('item').price2;
+              return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
+            });
+            this.$el.find('#vayable-list').empty();
+            this.$el.find('#vayable-list').html(sorted);
+            break;
+          case "high2low":
+            sorted = $('.tr-vayable').sort(function (a, b) {
+              var p1 = $(a).data('item').price2;
+              var p2 = $(b).data('item').price2;
+              return (p1 > p2) ? -1 : (p1 < p2) ? 1 : 0;
+            });
+            this.$el.find('#vayable-list').empty();
+            this.$el.find('#vayable-list').html(sorted);
+           break;
+        }
+        this.divCollection = $('.tr-vayable');
+      },
+
+      loadSLB: function(e) {
+        var $node = $(e.currentTarget);
+        this.slbPic($node.attr('src'));
       },
 
       slbPic: function(src) {
@@ -780,6 +1084,7 @@
       },
 
       clearData: function() {
+        this.divCollection = [];
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("vay");
         Outpost.state.page.vay = 1;
@@ -840,6 +1145,8 @@
           $('#js-counter').text(Outpost.state.numOfRes);
           Outpost.mvc.views.map.setMarkers(this.$el.data('markers'), this.itemStore);
           this.$el.removeData('markers');
+          this.sortDiv();
+          this.priceFilter();
         } else if (Outpost.state.page.vay !== 1) {
           Outpost.helpers.showAlertBox({
             type: "alert-error",
@@ -848,9 +1155,9 @@
           $('#lm-vay').button('reset');
         } else {
           this.$el.find('#vayable-list').html(
-            "<td class='text-center'>" +
+            "<div class='text-center'>" +
             "No guides in " + Outpost.values.origLocation + " found." +
-            "</td>"
+            "</div>"
           );
         }
       }

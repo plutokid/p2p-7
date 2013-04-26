@@ -5,6 +5,9 @@
 
   // Used for ajax caching
   Outpost.cache = {};
+  for (var i in localStorage) {
+    Outpost.cache[i] = JSON.parse(localStorage[i]);
+  }
 
   // To hold the app state
   Outpost.state = {
@@ -25,7 +28,15 @@
   };
 
   // To hold saved input values
-  Outpost.values = {};
+  Outpost.values = {
+    destLocation: "",
+    destLocationLat: "",
+    destLocationLng: "",
+    airbnb: {
+      min: 0,
+      max: 300
+    }
+  };
 
   // To hold the MVC instatiation
   Outpost.mvc = {
@@ -36,36 +47,55 @@
   // Extra helper functions
   Outpost.helpers = {
     genRdmLL: function(address) {
-      var i;
+      var lat, lng, cached;
+      var options = {
+        url: "http://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&sensor=false",
+        type: "GET",
+        dataType: "json",
+        async: false
+      };
+
+      var randomize = function randomize() {
+        lat = lat + (Math.random()*0.01) -0.004;
+        lng = lng + (Math.random()*0.01) -0.004;
+      };
+
       if (!Outpost.cache[address]) {
-        Outpost.cache[address] = $.ajax({
-          url: "http://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&sensor=false",
-          type: "GET",
-          dataType: "json",
-          async: false
-        });
+        Outpost.cache[address] = $.ajax(options);
       }
 
-      Outpost.cache[address].done(function(data) {
-        var lat, lng;
-        if (data.status === "OK") {
-          lat = data.results[0].geometry.location.lat;
-          lng = data.results[0].geometry.location.lng;
-          lat = lat + (Math.random()*0.01) -0.004;
-          lng = lng + (Math.random()*0.01) -0.004;
-        } else {
+      if (typeof Outpost.cache[address].done === 'function') {
+        Outpost.cache[address].done(function(data) {
+          if (data.status === "OK") {
+            lat = data.results[0].geometry.location.lat;
+            lng = data.results[0].geometry.location.lng;
+            randomize();
+          } else {
+            lat = undefined;
+            lng = undefined;
+          }
+
+        }).fail(function(xmlHttpRequest, textStatus, errorThrown) {
+          Outpost.helpers.showAlertBox({
+            type: "alert-error",
+            text: "<strong>Oops!</strong> something, somehow, somewhere went terribly wrong."
+          });
           lat = undefined;
           lng = undefined;
-        }
-
-        i = [lat, lng];
-      }).fail(function(xmlHttpRequest, textStatus, errorThrown) {
-        Outpost.helpers.showAlertBox({
-          type: "alert-error",
-          text: "<strong>Oops!</strong> something, somehow, somewhere went terribly wrong."
         });
-      });
-      return i;
+      } else {
+        cached = Outpost.cache[address];
+        if (cached.status === 200 && cached.responseJSON.results[0]) {
+          lat = cached.responseJSON.results[0].geometry.location.lat;
+          lng = cached.responseJSON.results[0].geometry.location.lng;
+          randomize();
+        } else {
+          Outpost.cache[address] = $.ajax(options);
+        }
+      }
+
+      localStorage[address] = JSON.stringify(Outpost.cache[address]);
+      return [lat, lng];
     },
 
     ipToGeo: function() {
@@ -99,6 +129,14 @@
       ]);
     },
 
+    defineDestLoc: function() {
+      var orignalLocation = $("#js-dest-location-input").val();
+      var origlatLng = Outpost.helpers.genRdmLL(orignalLocation);
+      Outpost.values.destLocation = orignalLocation;
+      Outpost.values.destLocationLat = origlatLng[0];
+      Outpost.values.destLocationLng = origlatLng[1];
+    },
+
     showAlertBox: function(data) {
       var $alertNodes = $('#alert-box');
       var tmpl = _.template($('#tmpl-alert').html());
@@ -114,7 +152,7 @@
       var tmpl = _.template($('#tmpl-slb').html());
       var html = tmpl(data);
       $alertNodes.html(html);
-      $alertNodes.modal('show');
+      $alertNodes.modal();
     },
 
     resetPages: function() {

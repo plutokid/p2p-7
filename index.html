@@ -2,8 +2,8 @@
 <html class="no-js">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Outpost - Lookup Airbnb, Ridejoy, and Vayable listings all in one place!</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="description" content="Outpost - Plan your trip with peer to peer madness only">
     <meta name="viewport" content="width=device-width">
     <link rel="image_src" href="http://outpostp2p.com/img/fb.png">
@@ -16,7 +16,7 @@
     </style>
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
-    <link rel="stylesheet" href="css/custom-3.css">
+    <link rel="stylesheet" href="css/custom-5.css">
 </head>
 <body>
   <!-- Navbar -->
@@ -33,11 +33,12 @@
           <img class="logo" src="img/nosmoke.png" alt="outpost logo">
           <span class="left">post</span>
         </a>
-        <div class="nav-collapse collapse js-mainmenu">
+        <div class="nav-collapse collapse js-mainmenu" id="js-mainmenu">
           <ul class="nav css-nav">
+            <li><a class="btn-nav" data-toggle="modal" href="#affiliate">Affiliate</a></li>
             <li><a class="btn-nav" data-toggle="modal" href="#about">Contact</a></li>
             <li><a class="btn-nav" href="#how-it-works">How it works</a></li>
-            <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @airbnb, @ridejoy, @vayable, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
+            <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @zimride, @9flats, @vayable, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
           </ul>
         </div>
         <form class="pull-right navbar-form" id="js-refineSearch" style="display:none;">
@@ -62,7 +63,7 @@
   <!-- Landing hero header -->
   <div id="landingpage">
     <div class="main-head">
-      <h2 class="text-center top">Plan your trip with peer to peer madness only.</h2>
+      <h2 class="text-center top">Ride, Rent, and experience <br> stuff from people in any city.</h2>
       <!-- Main form -->
       <div class="css-main-search" id="js-firstSearch">
         <div class="inner-search">
@@ -70,7 +71,7 @@
             <form class="form-inline" id="js-searchForm">
               <div class="inner-form row-fluid">
                 <div class="input-append text-center span8 mobile-inputsearch">
-                  <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="Take me to..." autofocus required>
+                  <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="San Francisco, CA" autofocus required>
                   <button class="btn wearedual btn-info css-searchit" id="searchIt" type="submit">
                     <span class="icon-search css-searchicon"></span>
                     Search
@@ -114,7 +115,7 @@
     </div>
 
     <div id="how-it-works" class="how-it-works">
-      <h2 class="text-center hiw-header">So.. what is Outpost ?</h2>
+      <h3 class="text-center hiw-header">Using Outpost is easy. Here's how it works:</h3>
       <div class="hiw-container">
         <div class="row">
           <div class="hiw-first-wrap span4 hiw-wrap">
@@ -124,7 +125,7 @@
             </div>
             
             <h4 class="hiw-title">Lookup P2P services</h4>
-            <p class="hiw-desc">With Outpost you can check out many person to person services into one spot! We're just 2 weeks old and are working hard everyday to get more marketplace networks into Outpost.</p>
+            <p class="hiw-desc">With Outpost you can check out many person to person services into one spot!</p>
           </div>
 
           <div class="hiw-second-wrap span4 hiw-wrap">
@@ -153,21 +154,22 @@
   <div class="row-fluid" id="listings" style="display: none;">
     <div class="sidebar mvwq" id="sidebar">
       <div class="inner">
+        <!-- Result info -->
         <p class="resultInfo"></p>
         <!-- TabNavs -->
         <ul class="nav nav-tabs">
           <li class="active"><a id="js-ridesharemenu" href="#rideshare" data-toggle="tab" title="rideshare"><img src="img/hipster-car.png"></a></li>
           <li><a id="js-houserentalmenu" href="#houserental" data-toggle="tab" title="houserental"><img src="img/hipster-house.png"></a></li>
-          <li><a id="js-tourisimmenu" href="#tourisim" data-toggle="tab" title="tourisim"><img src="img/hipster-guy.png"></a></li>
+          <li><a id="js-tourismmenu" href="#tourism" data-toggle="tab" title="tourism"><img src="img/hipster-guy.png"></a></li>
         </ul>
         <div class="tab-content">
+          <!-- Rideshare -->
           <div class="tab-pane active" id="rideshare">
             <div class="filters" id="filter-rideshare">
-              <select class="sortfilter" id="js-sortby-input">
-                <option selected disabled value="1">Sort by</option>
-                <option value="low2high">Price: Low to high</option>
-                <option value="high2low">Price: High to low</option>
-              </select>
+              <form class="filter-form" id="filter-form-rid">
+                <input class="filter-origin-location" id="js-dest-location-input" placeholder="From location" type="search">
+                <button class="btn btn-info submit-filter-rid" id="submit-filter-rid" data-loading-text="Loading.." type="submit">Search</button>
+              </form>
               <div class="price-filter">
                 <ul class="slider_values">
                   <li class="price-value-min minimax">$<span id="price-value-min-rid">10</span> USD</li>
@@ -175,15 +177,19 @@
                 </ul>
                 <div class="input-large" id="js-price-input-rid"></div>
               </div>
-              <button class="btn btn-info submit-filter" id="submit-filter-rid">Filter</button>
+              <select class="sortfilter" id="js-sortby-input-rid">
+                <option selected disabled value="nothing">Sort by</option>
+                <option value="low2high">Price: Low to high</option>
+                <option value="high2low">Price: High to low</option>
+              </select>
             </div>
             <div class="loading" id="ridejoy-loading"></div>
-            <table class="table" id="ridejoy-table">
-              <tbody class="lists" id="ridejoy-list">
-                <!-- items are here -->
-              </tbody>
-            </table>
+            <div class="lists js-lists" id="ridejoy-list">
+              <!-- items are here -->
+            </div>
           </div>
+
+          <!-- House rental -->
           <div class="tab-pane" id="houserental">
             <div class="filters" id="filter-houserental">
               <div class="price-filter">
@@ -193,36 +199,40 @@
                 </ul>
                 <div class="input-large" id="js-price-input-hou"></div>
               </div>
-              <button class="btn btn-info submit-filter" id="submit-filter-hou">Filter</button>
+              <select class="sortfilter" id="js-sortby-input-hou">
+                <option selected disabled value="nothing">Sort by</option>
+                <option value="low2high">Price: Low to high</option>
+                <option value="high2low">Price: High to low</option>
+              </select>
             </div>
             <div class="loading" id="airbnb-loading"></div>
-            <table class="table" id="airbnb-table">
-              <tbody class="lists" id="airbnb-list">
-                <!-- items are here -->
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3">
-                    <button class="btn load-more" id="lm-air" type="button" data-loading-text="Loading...">Load more..</button>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+            <div class="lists js-lists" id="airbnb-list">
+              <!-- items are here -->
+            </div>
+            <button class="btn load-more" id="lm-air" type="button" data-loading-text="Loading...">Load more..</button>
           </div>
-          <div class="tab-pane" id="tourisim">
+
+          <!-- Tourism -->
+          <div class="tab-pane" id="tourism">
+            <div class="filters" id="filter-tourism">
+              <div class="price-filter">
+                <ul class="slider_values">
+                  <li class="price-value-min minimax">$<span id="price-value-min-tou">10</span> USD</li>
+                  <li class="price-value-max minimax">$<span id="price-value-max-tou">300+</span> USD</li>
+                </ul>
+                <div class="input-large" id="js-price-input-tou"></div>
+              </div>
+              <select class="sortfilter" id="js-sortby-input-tou">
+                <option selected disabled value="nothing">Sort by</option>
+                <option value="low2high">Price: Low to high</option>
+                <option value="high2low">Price: High to low</option>
+              </select>
+            </div>
             <div class="loading" id="vayable-loading"></div>
-            <table class="table" id="vayable-table">
-              <tbody class="lists" id="vayable-list">
-                <!-- items are here -->
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3">
-                    <button class="btn load-more" id="lm-vay" type="button" data-loading-text="Loading...">Load more..</button>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+            <div class="lists js-lists" id="vayable-list">
+              <!-- items are here -->
+            </div>
+            <button class="btn load-more" id="lm-vay" type="button" data-loading-text="Loading...">Load more..</button>
           </div>
         </div>
       </div>
@@ -251,32 +261,27 @@
     </div>
   </div>
 
+  <!-- Affiliate Modal -->
+  <div id="affiliate" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="affiliate-outpost" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="affiliate-outpost">Affiliate with us</h3>
+    </div>
+    <div class="modal-body">
+      <p>
+        We're still early stage nad looking for p2p networks to feature in our platform. If you own something that you think should be in Outpost, don't hesitate to email us at <a href="mailto:info@outpostp2p.com">info@outpostp2p.com</a>
+      </p>
+      <p>However, if you are a user, you can still suggest us which P2P networks we've missed so we can bring them in Outpost.</p>
+      <p>Thank you for your interest.</p>
+      <a href="https://twitter.com/Outpostp2p" class="twitter-follow-button" data-show-count="false">Follow @Outpostp2p</a>
+    </div>
+  </div>
+
   <div class="alert-box" id="alert-box">
   </div>
 
   <div class="slb modal hide fade" id="slb">
   </div>
-
-  <!-- begin olark code
-  <script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
-  f[z]=function(){
-  (a.s=a.s||[]).push(arguments)};var a=f[z]._={
-  },q=c.methods.length;while(q--){(function(n){f[z][n]=function(){
-  f[z]("call",n,arguments)}})(c.methods[q])}a.l=c.loader;a.i=nt;a.p={
-  0:+new Date};a.P=function(u){
-  a.p[u]=new Date-a.p[0]};function s(){
-  a.P(r);f[z](r)}f.addEventListener?f.addEventListener(r,s,false):f.attachEvent("on"+r,s);var ld=function(){function p(hd){
-  hd="head";return["<",hd,"></",hd,"><",i,' onl' + 'oad="var d=',g,";d.getElementsByTagName('head')[0].",j,"(d.",h,"('script')).",k,"='",l,"//",a.l,"'",'"',"></",i,">"].join("")}var i="body",m=d[i];if(!m){
-  return setTimeout(ld,100)}a.P(1);var j="appendChild",h="createElement",k="src",n=d[h]("div"),v=n[j](d[h](z)),b=d[h]("iframe"),g="document",e="domain",o;n.style.display="none";m.insertBefore(n,m.firstChild).id=z;b.frameBorder="0";b.id=z+"-loader";if(/MSIE[ ]+6/.test(navigator.userAgent)){
-  b.src="javascript:false"}b.allowTransparency="true";v[j](b);try{
-  b.contentWindow[g].open()}catch(w){
-  c[e]=d[e];o="javascript:var d="+g+".open();d.domain='"+d.domain+"';";b[k]=o+"void(0);"}try{
-  var t=b.contentWindow[g];t.write(p());t.close()}catch(x){
-  b[k]=o+'d.write("'+p().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'}a.P(2)};ld()};nt()})({
-  loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure","extend","declare","identify"]});
-  /* custom configuration goes here (www.olark.com/documentation) */
-  olark.identify('9204-674-10-6706');/*]]>*/</script>
-   end olark code -->
 
   <!-- TEMPLATES -->
   <script id="tmpl-resultInfo" type="text/template">
@@ -296,12 +301,63 @@
     </div>
   </script>
 
-  <script id="tmpl-airbnbRow" type="text/template">
+  <script id="tmpl-ridejoyRow" type="text/template">
     <% var markers = []; %>
-    <% _.each(items, function(item) { %>
-      <% Outpost.state.numOfRes++ %>
-      <%
+    <% _.each(items, function(item) {
+      Outpost.state.numOfRes++
+      var id = "rid" + item.id;
+      item.markerid = id;
+      var json_item = JSON.stringify(item);
+      markers.push({
+        latLng: Outpost.helpers.genRdmLL(item.origin),
+        data: item,
+        id: id,
+        tag: "rid"
+      });
+    %>
+      <div class="tr-ridejoy tr css-alist <%= id %>" data-item='<%= json_item %>'>
+        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #ec5f41 245px 5px;">
+          <img class="img-circle" width="36px" height="36px" src="<%= item.img %>">
+          <span><%= item.desc %></span>
+        </span>
+        <div class="list-desc">
+          <span class="list-info">
+            <ul>
+              <li>
+                <span class="icon-time css-blue"></span>
+                <span><%= item.dates %></span>
+              </li>
+              <li>
+                <span class="icon-map-marker css-green"></span>
+                <span class=""><%= item.origin %> → <%= item.destination %></span>
+              </li>
+              <li>
+                <span class="icon-money css-red"></span>
+                <span><b>$<%= item.price2 %></b> per seat</span>
+              </li>
+            </ul>
+          </span>
+        </div>
+        <div class="list-foot">
+          <span>
+            <i class='icon-road'></i>&nbsp;Rideshare
+          </span>
+          <a class="btn btn-small info-book-rid ga-gotovendor pull-right" href="<%= item.link %>" target="_blank">
+            <i class="icon-share"></i>&nbsp;Details
+          </a>
+        </div>
+      </div>
+    <% }); %>
+    <% $('#rideshare').attr('data-markers', JSON.stringify(markers)); %>
+  </script>
+
+  <script id="tmpl-airbnbRow" type="text/template">
+    <% 
+      var markers = [];
+      _.each(items, function(item) {
+        Outpost.state.numOfRes++
         var id = "air" + item.id;
+        item.markerid = id;
         var json_item = JSON.stringify(item);
         var price = "$" + item.price2 + " USD";
         markers.push({
@@ -310,53 +366,46 @@
           id: id,
           tag: "air"
         });
-      %>
-      <tr class="tr-airbnb tr <%= id %>" data-item='<%= json_item %>'>
-        <td class="va-middle"><img class="img-circle" src="<%= item.profileImg %>"></td>
-        <td class="ownerAdd">
-          <%= item.desc %> <br>
-          <i><%= item.type %></i> - <b><%= price %></b>
-        </td>
-        <td class="va-middle tdfoot">
-          <a class="inline-block gotovendor" href="<%= item.link %>" target='_blank'>
-            <i class='icon-share' title="go to <%= item.link %>"></i>
-          </a><br>
-          <img class="align-icon" src="<%= item.iconPath %>">
-        </td>
-      </tr>
-    <% }); %>
-    <% $('#houserental').attr('data-markers', JSON.stringify(markers)); %>
-  </script>
-
-  <script id="tmpl-ridejoyRow" type="text/template">
-    <% var markers = []; %>
-    <% _.each(items, function(item) { %>
-      <% Outpost.state.numOfRes++ %>
-      <%
-        var id = "rid" + item.id;
-        var json_item = JSON.stringify(item);
-        markers.push({
-          latLng: Outpost.helpers.genRdmLL(item.origin),
-          data: item,
-          id: id,
-          tag: "rid"
-        });
-      %>
-      <tr class="tr-ridejoy tr <%= id %>" data-item='<%= json_item %>'>
-        <td class="va-middle"><img class="img-circle" width="26px" src="<%= item.img %>"></td>
-        <td class="ownerAdd">
-          <%= item.origin %> → <%= item.destination %> <br>
-          <%= item.dates %>
-        </td>
-        <td class="va-middle tdfoot">
-          <a class="inline-block gotovendor" href="<%= item.link %>" target='_blank'>
-            <i class='icon-share' title="go to <%= item.link %>"></i>
-          </a><br>
-          <img class="align-icon" src="<%= item.iconPath %>">
-        </td>
-      </tr>
-    <% }); %>
-    <% $('#rideshare').attr('data-markers', JSON.stringify(markers)); %>
+    %>
+      <div class="tr-airbnb tr css-alist <%= id %>" data-item='<%= json_item %>'>
+        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #24b0cf 250px 5px;">
+          <img class="img-circle" width="36px" height="36px" src="<%= item.profileImg %>">
+          <span><%= item.desc %></span>
+        </span>
+        <div class="list-desc">
+          <span class="list-roomImg">
+            <img class="img-polaroid list-img" src="<%= item.roomImg %>">
+          </span>
+          <span class="list-info">
+            <ul>
+              <li>
+                <span class="icon-home css-blue"></span>
+                <span><%= item.type %></span>
+              </li>
+              <li>
+                <span class="icon-map-marker css-green"></span>
+                <span class="list-origin"><%= item.neigh %></span>
+              </li>
+              <li>
+                <span class="icon-money css-red"></span>
+                <span><b>$<%= item.price2 %></b> per night</span>
+              </li>
+            </ul>
+          </span>
+        </div>
+        <div class="list-foot">
+          <span>
+            <i class='icon-home'></i>&nbsp;House rental
+          </span>
+          <a class="btn btn-small info-book-air ga-gotovendor pull-right" href="<%= item.link %>" target="_blank">
+            <i class="icon-share"></i>&nbsp;Details
+          </a>
+        </div>
+      </div>
+    <%
+      });
+      $('#houserental').attr('data-markers', JSON.stringify(markers));
+    %>
   </script>
 
   <script id="tmpl-vayableRow" type="text/template">
@@ -365,6 +414,7 @@
       <% Outpost.state.numOfRes++ %>
       <%
         var id = "vay" + item.id;
+        item.markerid = id;
         var json_item = JSON.stringify(item);
         markers.push({
           latLng: Outpost.helpers.genRdmLL(item.origin),
@@ -373,12 +423,43 @@
           tag: "vay"
         });
       %>
-      <tr class="tr-vayable tr <%= id %>" data-item='<%= json_item %>'
-       style="background: url(<%= item.img %>) no-repeat center center;">
-        <td class="ownerAdd"><b class="text-white"><%= item.desc %></b></td>
-      </tr>
+      <div class="tr-vayable tr css-alist <%= id %>" data-item='<%= json_item %>'>
+        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #95d17b 250px 5px;">
+          <img class="img-circle" width="36px" height="36px" src="<%= item.profileImg %>">
+          <span><%= item.desc %></span>
+        </span>
+        <div class="list-desc">
+          <span class="list-roomImg">
+            <img class="img-polaroid list-img" src="<%= item.img %>">
+          </span>
+          <span class="list-info">
+            <ul>
+              <li>
+                <span class="icon-user css-blue"></span>
+                <span>City guide</span>
+              </li>
+              <li>
+                <span class="icon-map-marker css-green"></span>
+                <span class="list-origin"><%= item.origin %></span>
+              </li>
+              <li>
+                <span class="icon-money css-red"></span>
+                <span><b>$<%= item.price2 %></b> per person</span>
+              </li>
+            </ul>
+          </span>
+        </div>
+        <div class="list-foot">
+          <span>
+            <i class='icon-user'></i>&nbsp;Tourism
+          </span>
+          <a class="btn btn-small info-book-vay ga-gotovendor pull-right" href="<%= item.link %>" target="_blank">
+            <i class="icon-share"></i>&nbsp;Details
+          </a>
+        </div>
+      </div>
     <% }); %>
-    <% $('#vayable-table').attr('data-markers', JSON.stringify(markers)); %>
+    <% $('#tourism').attr('data-markers', JSON.stringify(markers)); %>
   </script>
 
   <!-- DEPENDENCIES -->
@@ -391,16 +472,38 @@
   <script src="//maps.googleapis.com/maps/api/js?&amp;sensor=false&amp;libraries=places"></script>
   <script src="js/vendor/gmap3.js"></script>
   <!-- MVC -->
-  <script src="js/app/tmpl-3.js"></script>
-  <script src="js/app/models-3.js"></script>
-  <script src="js/app/helpers-3.js"></script>
-  <script src="js/app/views-3.js"></script>
-  <script src="js/app/router-3.js"></script>
+  <script src="js/app/tmpl-5.js"></script>
+  <script src="js/app/models-5.js"></script>
+  <script src="js/app/helpers-5.js"></script>
+  <script src="js/app/views-5.js"></script>
+  <script src="js/app/router-5.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-3.js"></script>
+  <script src="js/main-5.js"></script>
+
+
+  <script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
+  f[z]=function(){
+  (a.s=a.s||[]).push(arguments)};var a=f[z]._={
+  },q=c.methods.length;while(q--){(function(n){f[z][n]=function(){
+  f[z]("call",n,arguments)}})(c.methods[q])}a.l=c.loader;a.i=nt;a.p={
+  0:+new Date};a.P=function(u){
+  a.p[u]=new Date-a.p[0]};function s(){
+  a.P(r);f[z](r)}f.addEventListener?f.addEventListener(r,s,false):f.attachEvent("on"+r,s);var ld=function(){function p(hd){
+  hd="head";return["<",hd,"></",hd,"><",i,' onl' + 'oad="var d=',g,";d.getElementsByTagName('head')[0].",j,"(d.",h,"('script')).",k,"='",l,"//",a.l,"'",'"',"></",i,">"].join("")}var i="body",m=d[i];if(!m){
+  return setTimeout(ld,100)}a.P(1);var j="appendChild",h="createElement",k="src",n=d[h]("div"),v=n[j](d[h](z)),b=d[h]("iframe"),g="document",e="domain",o;n.style.display="none";m.insertBefore(n,m.firstChild).id=z;b.frameBorder="0";b.id=z+"-loader";if(/MSIE[ ]+6/.test(navigator.userAgent)){
+  b.src="javascript:false"}b.allowTransparency="true";v[j](b);try{
+  b.contentWindow[g].open()}catch(w){
+  c[e]=d[e];o="javascript:var d="+g+".open();d.domain='"+d.domain+"';";b[k]=o+"void(0);"}try{
+  var t=b.contentWindow[g];t.write(p());t.close()}catch(x){
+  b[k]=o+'d.write("'+p().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'}a.P(2)};ld()};nt()})({
+  loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure","extend","declare","identify"]});
+  /* custom configuration goes here (www.olark.com/documentation) */
+  olark.identify('9204-674-10-6706');/*]]>*/</script>
+
 
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
   </script>
+
   <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-39723359-1']);
@@ -411,5 +514,6 @@
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
+
 </body>
 </html>

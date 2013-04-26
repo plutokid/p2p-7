@@ -31,7 +31,7 @@
     });
 
     // sidebar goto icon
-    $('#sidebar').on("click", ".gotovendor", function() {
+    $('#sidebar').on("click", ".ga-gotovendor", function() {
       _gaq.push(['_trackEvent',
         "sidebar",
         "gotolink",

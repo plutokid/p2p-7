@@ -77,6 +77,7 @@
       $ride['destination'] = $origin[1];
       $ride['desc'] = trim($aRide->find('h4', 0)->plaintext);
       $ride['price'] = $price_full;
+      $ride['price2'] = $price;
 
       $output[] = $ride;
     }
@@ -108,6 +109,7 @@
         $ride['destination'] = trim($aRide->find('.destination', 0)->plaintext);
         $ride['desc'] = trim($aRide->find('.extra_info', 0)->plaintext);
         $ride['price'] = $price_full;
+        $ride['price2'] = $price;
         $ride['iconPath'] = "img/ridejoy.ico";
         $ride['infoWindowIcon'] = "img/ridejoy.png";
         $ride['link'] = trim($aRide->find('.view_details', 0)->href);

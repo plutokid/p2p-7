@@ -16,7 +16,7 @@ a:focus {
   content: "" !important;
 }
 .pac-container {
-  z-index: 1031 !important;
+  z-index: 1035 !important;
 }
 .pac-item {
   padding: 0.5em;
@@ -84,7 +84,6 @@ a:focus {
   text-align: center;
 }
 
-
 .tr:hover {
   background-color: #ddd;
 }
@@ -99,10 +98,6 @@ a:focus {
 
 .row-hovered {
   background-color: #ddd;
-}
-
-.tr-vayable.row-hovered {
-  opacity: 0.9;
 }
 
 .ownerAdd {
@@ -157,15 +152,11 @@ a:focus {
   top: 41px;
   left: 90px;
   z-index: 1032;
-  background-color: rgba(26, 21, 21, 0.75);
+  background-color: rgba(0, 0, 0, 0.22);
 }
 
 .inner {
-  background: #f1f1f1;
-  overflow: hidden;
-  width: 335px;
-  margin: -8px auto 0 auto;
-  border-radius: 10px 10px 0 0;
+  /* nothing */
 }
 
 .inner:hover {
@@ -234,26 +225,10 @@ a:focus {
 
 .resultInfo {
   margin: 0;
-  color: black;
-  font-size: 0.8em;
+  color: white;
+  font-size: 0.9em;
   text-align: center;
-}
-
-@media (max-width: 640px) {
-  .main-head, .css-logo-bar, .hiw-header {
-    min-width: 940px !important;
-  }
-  .mvwq {
-    display: none !important;
-  }
-  .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
-    margin-left: 0px;
-    margin-right: 0px;
-  }
-  body {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
+  background: #2980B9;
 }
 
 .navbar-inner {
@@ -264,16 +239,6 @@ a:focus {
 
 .twitters iframe {
   width: 57px !important;
-}
-
-
-.tr-vayable {
-  height: 80px;
-  background-size: cover;
-}
-
-.tr-vayable:hover {
-  opacity: 0.9;
 }
 
 .text-white {
@@ -501,6 +466,9 @@ a:focus {
   width:10px;
 }
 .nav-tabs {
+  background: #ECF0F1;
+  border: 2px solid #2980B9;
+  border-bottom: 0;
   margin: 0 !important;
 }
 
@@ -640,7 +608,7 @@ padding-top: 5px;
  /*END HOW IT WORKS*/
  
 .top {
-  padding-top: 100px;
+  margin-top: 90px;
   color: #d8d8d8;
 }
 
@@ -756,6 +724,7 @@ background-color: #2284A1;
   height: 22px;
   background: #EC5F41 !important;
   transition: background 300ms ease-out;
+  width: 168px;
 }
 
 .css-whataround:hover {
@@ -783,7 +752,15 @@ background-color: #2284A1;
 }
 
 .load-more {
-  width: 100%;
+  width: 95%;
+  margin: 10px 8px;
+  color: white;
+  background: #3498DB;
+}
+
+.load-more:hover {
+  background: #2980B9;
+  color: white;
 }
 
 .alert-box {
@@ -797,7 +774,10 @@ background-color: #2284A1;
 .filters {
   background: #feffff;
   background: linear-gradient(to bottom, #F2F2F2 0%, #EFEFEF 38%, #ECECEC 57%, #EAEAEA 100%) repeat scroll 0 0 transparent;
-  padding: 7px;
+  padding: 7px 7px 7px 8px;
+  border-radius: 0 0 4px 4px;
+  border: 2px solid #2980B9;
+  border-top: 0; 
 }
 
 .guestfilter {
@@ -859,4 +839,106 @@ background-color: #2284A1;
 .navbar-form {
   top: -3px;
   position: relative;
+}
+
+/* sidebar div listing */
+.lists {
+  margin: 0 5px;
+}
+.css-alist {
+  margin: 10px 5px 15px;
+  font-size: 0.82em;
+  background: #fff;
+  border-radius: 9px;
+}
+
+.list-head {
+  color: white;
+  display: block;
+  padding: 5px;
+  border-radius: 3px 3px 0 0;
+}
+
+.list-desc {
+  height: 75px;
+}
+
+.list-roomImg {
+  float: right;
+  margin-right: 5px;
+  margin-top: -12px;
+}
+
+.list-img {
+  width: 114px;
+  height: 74px;
+  transition: border 0.1s linear;
+}
+
+.list-img:hover {
+  border: solid 1px #C0392B;
+}
+
+.list-info {
+  display: inline-block;
+  padding: 5px 0 0 5px;
+}
+
+.list-info ul {
+  list-style: none;
+  margin: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+.list-foot {
+  background: #ECF0F1;
+  padding: 5px 5px 10px 5px;
+}
+
+.list-origin {
+  text-overflow: ellipsis;
+  width: 171px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* sort */
+.sortfilter {
+  width: 100px;
+}
+
+.filter-origin-location {
+  width: 210px;
+  margin-right: 4px;
+}
+
+.submit-filter-rid {
+  width: 95px;
+  margin-top: -10px;
+}
+
+.price-filter {
+  width: 220px;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.sortfilter {
+  width: 100px;
+  margin-top: -25px;
+}
+
+.filter-form {
+  margin: 0;
+}
+
+.seperator {
+  background: rgba(0, 0, 0, 0.23);
+  width: 94%;
+  height: 16px;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 700;
+  position: absolute;
 }
