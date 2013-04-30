@@ -1,4 +1,4 @@
-(function(window, $, _, Backbone) {
+(function(window, $, _, Parse) {
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
@@ -7,167 +7,70 @@
     // =======================================================
     // Main App View
     // =======================================================
-    main: Backbone.View.extend({
+    main: Parse.View.extend({
       initialize: function() {
+        // Initialize 
+        Outpost.mvc.views.navBar = new Outpost.views.navBar();
+
         // Initialize the router module
-        new Outpost.routes.AppRouter();
-        Backbone.history.start();
+        Outpost.mvc.router = new Outpost.routes.AppRouter();
+        Parse.history.start();
 
         // Initialize the menu
-        Outpost.mvc.views.searchForm = new Outpost.views.searchForm();
-        Outpost.mvc.views.navBar = new Outpost.views.navBar();
+        // Outpost.mvc.views.searchForm = new Outpost.views.searchForm();
       }
     }),
 
     // =======================================================
     // Navbar View
     // =======================================================
-    navBar: Backbone.View.extend({
+    navBar: Parse.View.extend({
       el: '#js-navbar',
-
-      initialize: function() {
-      },
+      template: _.template($('#tmpl-navbar').html()),
 
       events: {
-        "submit #js-refineSearch": "refineSearch"
+        "click .js-logout": "logoutUser"
       },
-
-      refineSearch: function(e) {
-        e.preventDefault();
-        this.setFilterVar();
-        Outpost.state.numOfRes = 0;
-        Outpost.helpers.defineOrigLoc();
-        Outpost.helpers.resetPages();
-        Outpost.mvc.views.map.removeAllMarkers();
-        Outpost.mvc.views.map.redefineMap();
-        Outpost.mvc.views.sideBar.updateNavbarRes();
-        Outpost.mvc.views.sideBar.clearAllListings();
-        Outpost.mvc.views.sideBar.fetchAll();
-      },
-
-      setFilterVar: function() {
-        var filter = Outpost.state.searchFilter;
-        var calculateNumOfNights = function() {
-          var sdate = $('#js-sdate-input').datepicker("getDate");
-          var edate = $("#js-edate-input").datepicker("getDate");
-          var diff = 0;
-          if (sdate && edate) {
-            diff = Math.floor((edate.getTime() - sdate.getTime()) / 86400000);
-          }
-
-          return diff;
-        };
-
-        filter.sdate = $('#js-sdate-input').val();
-        filter.edate = $('#js-edate-input').val();
-        filter.guests = $('#js-guest-input').val() || 1;
-        filter.numOfNights = calculateNumOfNights(filter.sdate, filter.edate);
-      },
-
-      initRefineGUI: function() {
-        $('#js-refineSearch').show();
-        var $sdate = $('#js-sdate-input');
-        var $edate = $("#js-edate-input");
-
-        var customRange = function customRange(input) {
-          var minDate;
-          var startDateVal = $sdate.val();
-          if (input.id === 'js-edate-input') {
-            if (startDateVal) {
-              minDate = new Date(startDateVal);
-              minDate.setDate(minDate.getDate() + 1);
-              return {
-                minDate: minDate
-              };
-            } else {
-              return {
-                minDate: 1
-              };
-            }
-          }
-        };
-
-        $sdate.datepicker({
-          minDate: 0,
-          inline: true,
-          onClose: function(selectedDate) {
-            $edate.focus();
-          }
-        });
-
-        $edate.datepicker({
-          inline: true,
-          beforeShow: customRange,
-          onClose: function() {
-            $('#js-guest-input').focus();
-          }
-        });
-      }
-    }),
-
-    // =======================================================
-    // Search form
-    // =======================================================
-    searchForm: Backbone.View.extend({
-      el: '#js-firstSearch',
 
       initialize: function() {
-        this.initTypeahead();
+        var user = Parse.User.current();
+        var data = {};
+        var fullname;
+        if (user) {
+          fullname = user.get("fullname");
+          data.name = fullname.substring(0, fullname.indexOf(' '));
+          data.name = data.name || fullname;
+          data.isSocial = false;
+        }
+
+        new Outpost.views.loginModal();
+        new Outpost.views.signupModal();
+        this.render(data);
       },
 
-      events: {
-        "submit #js-searchForm": "submitForm",
-        "click #js-whataround": "whatIsAround"
+      logoutUser: function() {
+        Parse.User.logOut();
+        this.render({});
       },
 
-      whatIsAround: function(e) {
-        var geoPromise = Outpost.helpers.ipToGeo();
-        var $node = $(e.currentTarget);
-        $node.attr("disabled", "disabled");
-        $node.text("Locating..");
-        geoPromise.done(function(data) {
-          Outpost.values.origLocation = data.location;
-          Outpost.values.origLocationLat = data.latLng[0];
-          Outpost.values.origLocationLng = data.latLng[1];
-          Outpost.mvc.views.map = new Outpost.views.map();
-          _gaq.push(['_trackEvent',
-            "mainsearch",
-            "gpslocate",
-            data.location
-          ]);
-        });
-      },
-
-      initTypeahead: function() {
-        var origLocation = $("#js-orig-location-input")[0];
-        var destLocation = $("#js-dest-location-input")[0];
-        var options = {
-          types: ['(cities)']
-        };
-        new google.maps.places.Autocomplete(origLocation, options);
-        new google.maps.places.Autocomplete(destLocation, options);
-      },
-
-      submitForm: function(e) {
-        e.preventDefault();
-        Outpost.helpers.defineOrigLoc();
-        Outpost.mvc.views.map = new Outpost.views.map();
+      render: function(data) {
+        this.$el.html(this.template(data));
       }
     }),
 
     // =======================================================
     // Map view
     // =======================================================
-    map: Backbone.View.extend({
-      el: '#map',
+    map: Parse.View.extend({
+      el: "#map",
       isInterested: false,
 
       initialize: function() {
-        $('.js-mainmenu').remove();
-        this.setMapTerrain();
+        // $('.js-mainmenu').remove();
+        // this.setMapTerrain();
         this.render();
-        Outpost.mvc.views.sideBar = new Outpost.views.sideBar();
-        Outpost.mvc.views.navBar.initRefineGUI();
+        this.$el.css('height', Outpost.state.rMapHeight);
+        // Outpost.mvc.views.navBar.initRefineGUI();
       },
 
       closeInfo: function() {
@@ -221,14 +124,12 @@
       },
 
       setMapTerrain: function() {
-        var $searchInput = $('#js-orig-location-input').detach();
-        $searchInput
-         .removeClass("css-input-sea wearedual span11")
-         .prependTo("#js-refineSearch");
-        $('#landingpage').remove();
-        $('#listings').show();
-        $('.inner').css('min-height', Outpost.state.rMapHeight + 8);
-        this.$el.css('height', Outpost.state.rMapHeight);
+        // var $searchInput = $('#js-orig-location-input').detach();
+        // $searchInput
+        //  .removeClass("css-input-sea wearedual span11")
+        //  .prependTo("#js-refineSearch");
+        // $('#landingpage').remove();
+        // $('#listings').show();
       },
 
       setMarkers: function(markers, opts) {
@@ -426,12 +327,15 @@
       },
 
       render: function() {
+        this.$el.gmap3('destroy');
         this.$el.gmap3({
           map: {
-            address: Outpost.values.origLocation,
+            // put latlng instead since we got them anyways..
+            latLng: [Outpost.values.origLocationLat, Outpost.values.origLocationLng],
             options: {
               zoom: 13,
-              mapTypeControl: false
+              mapTypeControl: false,
+              styles: Outpost.mapstyle
             }
           }
         });
@@ -441,13 +345,13 @@
     // =======================================================
     // Sidebar view
     // =======================================================
-    sideBar: Backbone.View.extend({
+    sideBar: Parse.View.extend({
       el: '#sidebar',
-      template: _.template($('#tmpl-resultInfo').html()),
+      template: Outpost.helpers.renderTemplate,
+      templateOffline: _.template($('#tmpl-resultInfo').html()),
 
       initialize: function() {
-        this.updateNavbarRes();
-        this.initServices();
+        this.render();
       },
 
       toggleFilterTo: function(e) {
@@ -473,7 +377,7 @@
       },
 
       updateNavbarRes: function() {
-        $('.resultInfo').html(this.template({
+        $('.resultInfo').html(this.templateOffline({
           numOfRes: Outpost.state.numOfRes,
           city: Outpost.values.origLocation
         }));
@@ -483,14 +387,125 @@
         Outpost.mvc.views.airbnb = new Outpost.views.airbnb();
         Outpost.mvc.views.ridejoy = new Outpost.views.ridejoy();
         Outpost.mvc.views.vayable = new Outpost.views.vayable();
+      },
+
+      render: function() {
+        var _this = this;
+        _this.template('sidebar.html', {}).done(function(tmpl) {
+          _this.$el.html(tmpl);
+          _this.updateNavbarRes();
+          _this.initServices();
+        });
+      }
+    }),
+
+    // =======================================================
+    // Refine Search view
+    // =======================================================
+    refineSearch: Parse.View.extend({
+      el: '#refine-search',
+      template: _.template($('#tmpl-refine-search').html()),
+
+      initialize: function() {
+        this.render();
+      },
+
+      events: {
+        "submit #js-refineSearch": "refineSearch"
+      },
+
+      refineSearch: function(e) {
+        e.preventDefault();
+        var value = $('#js-search-again').val();
+        var path = "!/mapview/" + value;
+        this.setFilterVar();
+        Outpost.state.numOfRes = 0;
+        Outpost.helpers.defineOrigLoc(value);
+        Outpost.helpers.resetPages();
+        Outpost.mvc.views.map.removeAllMarkers();
+        Outpost.mvc.views.map.redefineMap();
+        Outpost.mvc.views.sideBar.updateNavbarRes();
+        Outpost.mvc.views.sideBar.clearAllListings();
+        Outpost.mvc.views.sideBar.fetchAll();
+        Outpost.mvc.router.navigate(path);
+      },
+
+      setFilterVar: function() {
+        var filter = Outpost.state.searchFilter;
+        var calculateNumOfNights = function() {
+          var sdate = $('#js-sdate-input').datepicker("getDate");
+          var edate = $("#js-edate-input").datepicker("getDate");
+          var diff = 0;
+          if (sdate && edate) {
+            diff = Math.floor((edate.getTime() - sdate.getTime()) / 86400000);
+          }
+
+          return diff;
+        };
+
+        filter.sdate = $('#js-sdate-input').val();
+        filter.edate = $('#js-edate-input').val();
+        filter.guests = $('#js-guest-input').val() || 1;
+        filter.numOfNights = calculateNumOfNights(filter.sdate, filter.edate);
+      },
+
+      initRefineGUI: function() {
+        var $sdate = $('#js-sdate-input');
+        var $edate = $("#js-edate-input");
+
+        var customRange = function customRange(input) {
+          var minDate;
+          var startDateVal = $sdate.val();
+          if (input.id === 'js-edate-input') {
+            if (startDateVal) {
+              minDate = new Date(startDateVal);
+              minDate.setDate(minDate.getDate() + 1);
+              return {
+                minDate: minDate
+              };
+            } else {
+              return {
+                minDate: 1
+              };
+            }
+          }
+        };
+
+        $sdate.datepicker({
+          minDate: 0,
+          inline: true,
+          onClose: function(selectedDate) {
+            $edate.focus();
+          }
+        });
+
+        $edate.datepicker({
+          inline: true,
+          beforeShow: customRange,
+          onClose: function() {
+            $('#js-guest-input').focus();
+          }
+        });
+
+        var input = document.getElementById('js-search-again');
+        input.value = Outpost.values.origLocation;
+        var options = {
+          types: ['(cities)']
+        };
+        new google.maps.places.Autocomplete(input, options);
+      },
+
+      render: function() {
+        this.$el.html(this.template());
+        this.initRefineGUI();
       }
     }),
 
     // =======================================================
     // Airbnb list view
     // =======================================================
-    airbnb: Backbone.View.extend({
-      el: '#houserental',
+    airbnb: Parse.View.extend({
+      el: '#sidebar',
       template: _.template($('#tmpl-airbnbRow').html()),
       divCollection: [],
       sortType: "relevance",
@@ -530,14 +545,13 @@
         "change #js-sortby-input-hou": "sortBy",
         "click .tr-airbnb": "openInfoWindow",
         "click #lm-air": "loadMore",
-        "click .list-img": "loadSLB",
+        "click .hou-listimg": "loadSLB",
         "mouseenter .tr-airbnb": "highlightMarker",
         "mouseleave .tr-airbnb": "normalizeMarker"
       },
 
       slbPic: function(src) {
         var data;
-
         // for Airbnb (WPE)
         src = src.replace("x_small", "large");
 
@@ -705,8 +719,8 @@
             items: collection
           }));
           $('#js-counter').text(Outpost.state.numOfRes);
-          Outpost.mvc.views.map.setMarkers(this.$el.data('markers'), this.itemStore);
-          this.$el.removeData('markers');
+          Outpost.mvc.views.map.setMarkers(this.$el.find('#houserental').data('markers'), this.itemStore);
+          this.$el.find('#houserental').removeData('markers');
           this.sortDiv();
           this.priceFilter();
         } else if (Outpost.state.page.air !== 1) {
@@ -730,8 +744,8 @@
     // =======================================================
     // Ridejoy list view
     // =======================================================
-    ridejoy: Backbone.View.extend({
-      el: '#rideshare',
+    ridejoy: Parse.View.extend({
+      el: '#sidebar',
       template: _.template($('#tmpl-ridejoyRow').html()),
       divCollection: [],
       sortType: "relevance",
@@ -926,8 +940,8 @@
             items: collection
           }));
           $('#js-counter').text(Outpost.state.numOfRes);
-          Outpost.mvc.views.map.setMarkers(this.$el.data('markers'), this.itemStore);
-          this.$el.removeData('markers');
+          Outpost.mvc.views.map.setMarkers(this.$el.find('#rideshare').data('markers'), this.itemStore);
+          this.$el.find('#rideshare').removeData('markers');
           this.sortDiv();
           this.priceFilter();
         } else {
@@ -945,8 +959,8 @@
     // =======================================================
     // Vayable list view
     // =======================================================
-    vayable: Backbone.View.extend({
-      el: '#tourism',
+    vayable: Parse.View.extend({
+      el: '#sidebar',
       template: _.template($('#tmpl-vayableRow').html()),
       min: 0,
       max: 300,
@@ -988,14 +1002,14 @@
         "change #js-sortby-input-tou": "sortBy",
         "click .tr-vayable": "openInfoWindow",
         "click #lm-vay": "loadMore",
-        "click .list-img": "loadSLB",
+        "click .tou-listimg": "loadSLB",
         "mouseenter .tr-vayable": "highlightMarker",
         "mouseleave .tr-vayable": "normalizeMarker"
       },
 
       initSliderGUI: function() {
         var _this = this;
-        $("#js-price-input-tou").slider({
+        _this.$el.find("#js-price-input-tou").slider({
           range: true,
           values: [10, 300],
           min: 1,
@@ -1143,8 +1157,8 @@
             items: collection
           }));
           $('#js-counter').text(Outpost.state.numOfRes);
-          Outpost.mvc.views.map.setMarkers(this.$el.data('markers'), this.itemStore);
-          this.$el.removeData('markers');
+          Outpost.mvc.views.map.setMarkers(this.$el.find('#tourism').data('markers'), this.itemStore);
+          this.$el.find('#tourism').removeData('markers');
           this.sortDiv();
           this.priceFilter();
         } else if (Outpost.state.page.vay !== 1) {
@@ -1161,6 +1175,241 @@
           );
         }
       }
+    }),
+
+    // =======================================================
+    // Home - Page
+    // =======================================================
+    indexPage: Parse.View.extend({
+      el: "#pg-home",
+      template: Outpost.helpers.renderTemplate,
+
+      initialize: function() {
+        this.render();
+      },
+
+      events: {
+        "submit #js-searchForm": "submitForm",
+        "click #js-whataround": "whatIsAround"
+      },
+
+      whatIsAround: function(e) {
+        var _this = this;
+        var geoPromise = Outpost.helpers.ipToGeo();
+        var $node = $(e.currentTarget);
+        $node.attr("disabled", "disabled");
+        $node.text("Locating..");
+        geoPromise.done(function(data) {
+          Outpost.values.origLocation = data.location;
+          Outpost.values.origLocationLat = data.latLng[0];
+          Outpost.values.origLocationLng = data.latLng[1];
+          _this.navigateTo(data.location, false);
+          _gaq.push(['_trackEvent',
+            "mainsearch",
+            "gpslocate",
+            data.location
+          ]);
+        });
+      },
+
+      submitForm: function(e) {
+        e.preventDefault();
+        this.navigateTo($("#js-orig-location-input").val(), true);
+      },
+
+      navigateTo: function(value, isFromSearch) {
+        Outpost.values.isFromSearch = isFromSearch;
+        var path = "!/mapview/" + value;
+        Outpost.mvc.router.navigate(path, true);
+      },
+
+      render: function() {
+        var _this = this;
+        $('.pg-page').empty();
+        _this.template('home.html', {}).done(function(tmpl) {
+          _this.$el.html(tmpl);
+        });
+      }
+    }),
+
+    // =======================================================
+    // Mapview - Page
+    // =======================================================
+    mapPage: Parse.View.extend({
+      el: "#pg-mapview",
+      template: Outpost.helpers.renderTemplate,
+
+      initialize: function() {
+        this.render();
+      },
+
+      events: {
+      },
+
+      render: function() {
+        var views = Outpost.mvc.views;
+        $('.pg-page').empty();
+        if (views.map) {
+          views.map.render();
+          views.sideBar.render();
+          views.refineSearch.render();
+        } else {
+          views.map = new Outpost.views.map();
+          views.sideBar = new Outpost.views.sideBar();
+          views.refineSearch = new Outpost.views.refineSearch();
+        }
+      }
+    }),
+
+    // =======================================================
+    // Signup - Modal
+    // =======================================================
+    signupModal: Parse.View.extend({
+      el: '#js-signup-modal',
+
+      initialize: function() {
+        this.render();
+      },
+
+      events: {
+        "submit #js-signup-form": "submitSignup",
+        "click #js-su-show-passwd": "showPassword"
+      },
+
+      submitSignup: function(e) {
+        var $nodeArr;
+        var $target = $(e.target);
+        if ($target.parsley('validate')) {
+          $nodeArr = [
+            $target,
+            $target.find('#js-su-fullname'),
+            $target.find('#js-su-email'),
+            $target.find('#js-su-password')
+          ];
+          $target.find("#js-su-submit").attr("disabled", "true");
+          this.signUpUser($nodeArr);
+          Outpost.state.$loader.show();
+        }
+        e.preventDefault();
+      },
+
+      signUpUser: function($nodeArr) {
+        var user = new Parse.User();
+        user.set("fullname", $nodeArr[1].val());
+        user.set("username", $nodeArr[2].val());
+        user.set("password", $nodeArr[3].val());
+
+        user.signUp(null, {
+          success: function(user) {
+            var data = {};
+            var fullname;
+
+            Outpost.state.$loader.hide();
+            $('#js-signup-modal').modal('hide');
+            $nodeArr[0].find("#js-su-submit").removeAttr("disabled");
+            $nodeArr[0][0].reset();
+
+            fullname = user.get("fullname");
+            data.name = fullname.substring(0, fullname.indexOf(' '));
+            data.name = data.name || fullname;
+            data.isSocial = false;
+            Outpost.mvc.views.navBar.render(data);
+          },
+          error: function(user, error) {
+            Outpost.state.$loader.hide();
+            $nodeArr[0].find("#js-su-submit").removeAttr("disabled");
+            alert("Error: " + error.code + " " + error.message);
+          }
+        });
+      },
+
+      showPassword: function(e) {
+        var $target = $(e.target);
+        if ($target.is(':checked')) {
+          $('#js-su-password').attr('type', 'text');
+        } else {
+          $('#js-su-password').attr('type', 'password');
+        }
+      },
+
+      render: function() {
+        // nothin'
+      }
+    }),
+
+
+    // =======================================================
+    // Login - Modal
+    // =======================================================
+    loginModal: Parse.View.extend({
+      el: '#js-login-modal',
+
+      initialize: function() {
+        this.render();
+      },
+
+      events: {
+        "submit #js-login-form": "submitLogin",
+        "click #js-lo-show-passwd": "showPassword"
+      },
+
+      submitLogin: function(e) {
+        var $nodeArr;
+        var $target = $(e.target);
+        if ($target.parsley('validate')) {
+          $nodeArr = [
+            $target,
+            $target.find('#js-lo-email'),
+            $target.find('#js-lo-password')
+          ];
+          $target.find("#js-lo-submit").attr("disabled", "true");
+          this.signInUser($nodeArr);
+          Outpost.state.$loader.show();
+        }
+        e.preventDefault();
+      },
+
+      signInUser: function($nodeArr) {
+        Parse.User.logIn($nodeArr[1].val(), $nodeArr[2].val(), {
+          success: function(user) {
+            var data = {};
+            var fullname;
+
+            Outpost.state.$loader.hide();
+            $('#js-login-modal').modal('hide');
+            $nodeArr[0].find("#js-lo-submit").removeAttr("disabled");
+            $nodeArr[0][0].reset();
+
+            fullname = user.get("fullname");
+            data.name = fullname.substring(0, fullname.indexOf(' '));
+            data.name = data.name || fullname;
+            data.isSocial = false;
+            Outpost.mvc.views.navBar.render(data);
+            Outpost.helpers.showAlertBox({
+              text: "You're logged in, happy hunting!&nbsp;",
+              type: "alertbox-success"
+            });
+          },
+          error: function(user, error) {
+            Outpost.state.$loader.hide();
+            $nodeArr[0].find("#js-lo-submit").removeAttr("disabled");
+            alert("Error: " + error.code + " " + error.message);
+          }
+        });
+      },
+
+      showPassword: function(e) {
+        var $target = $(e.target);
+        if ($target.is(':checked')) {
+          $('#js-lo-password').attr('type', 'text');
+        } else {
+          $('#js-lo-password').attr('type', 'password');
+        }
+      },
+
+      render: function() {
+        // nothin'
+      }
     })
   };
-})(window, jQuery, _, Backbone, undefined);
+})(window, jQuery, _, Parse, undefined);

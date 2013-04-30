@@ -1,4 +1,6 @@
 body {
+  padding-top: 60px;
+  padding-bottom: 40px;
   background: #f1f1f1;
   overflow-y: scroll;
 }
@@ -16,7 +18,7 @@ a:focus {
   content: "" !important;
 }
 .pac-container {
-  z-index: 1035 !important;
+  z-index: 1054 !important;
 }
 .pac-item {
   padding: 0.5em;
@@ -112,13 +114,10 @@ a:focus {
   max-width: none;
 }
 
-#listings {
-  margin-top: -20px;
-}
-
 .map-cont {
-  position: fixed;
+  position: fixed !important;
   margin-left:0 !important;
+  margin-top: -20px;
 }
 
 .tr {
@@ -155,9 +154,16 @@ a:focus {
   background-color: rgba(0, 0, 0, 0.22);
 }
 
-.inner {
-  /* nothing */
+
+.bs-load {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  color: #3498db;
+  padding: 5px;
+  z-index: 9999;
 }
+
 
 .inner:hover {
   overflow: auto;
@@ -837,8 +843,13 @@ background-color: #2284A1;
 }
 
 .navbar-form {
-  top: -3px;
-  position: relative;
+  top: 45px;
+  position: fixed;
+  z-index: 1028;
+  right: 25px;
+  background-color: rgba(52, 73, 94, 0.85);
+  padding: 7px;
+  border-radius: 3px;
 }
 
 /* sidebar div listing */

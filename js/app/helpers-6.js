@@ -1,11 +1,15 @@
-(function(window, $, _, Backbone) {
+(function(window, $, _, Parse) {
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
 
   // Used for ajax caching
   Outpost.cache = {};
+  Outpost.HTMLcache = {};
   for (var i in localStorage) {
+    if (i.substr(0, 5) === "Parse") {
+      continue;
+    }
     Outpost.cache[i] = JSON.parse(localStorage[i]);
   }
 
@@ -13,6 +17,7 @@
   Outpost.state = {
     rMapHeight: $(window).height() - 41,
     numOfRes: 0,
+    $loader: $('#js-bsload'),
     page: {
       vay: 1,
       air: 1
@@ -32,6 +37,7 @@
     destLocation: "",
     destLocationLat: "",
     destLocationLng: "",
+    isFromSearch: true,
     airbnb: {
       min: 0,
       max: 300
@@ -43,6 +49,74 @@
     views: {},
     models: {}
   };
+
+  Outpost.mapstyle = [{
+      "stylers": [{
+          "visibility": "off"
+      }]
+  }, {
+      "featureType": "road",
+          "stylers": [{
+          "visibility": "on"
+      }, {
+          "color": "#ffffff"
+      }]
+  }, {
+      "featureType": "road.arterial",
+          "stylers": [{
+          "visibility": "on"
+      }, {
+          "color": "#fee379"
+      }]
+  }, {
+      "featureType": "road.highway",
+          "stylers": [{
+          "visibility": "on"
+      }, {
+          "color": "#fee379"
+      }]
+  }, {
+      "featureType": "landscape",
+          "stylers": [{
+          "visibility": "on"
+      }, {
+          "color": "#f3f4f4"
+      }]
+  }, {
+      "featureType": "water",
+          "stylers": [{
+          "visibility": "on"
+      }, {
+          "color": "#7fc8ed"
+      }]
+  }, {}, {
+      "featureType": "road",
+          "elementType": "labels",
+          "stylers": [{
+          "visibility": "off"
+      }]
+  }, {
+      "featureType": "poi.park",
+          "elementType": "geometry.fill",
+          "stylers": [{
+          "visibility": "on"
+      }, {
+          "color": "#83cead"
+      }]
+  }, {
+      "elementType": "labels",
+          "stylers": [{
+          "visibility": "on"
+      }]
+  }, {
+      "featureType": "landscape.man_made",
+          "elementType": "geometry",
+          "stylers": [{
+          "weight": 0.9
+      }, {
+          "visibility": "off"
+      }]
+  }];
 
   // Extra helper functions
   Outpost.helpers = {
@@ -78,7 +152,8 @@
         }).fail(function(xmlHttpRequest, textStatus, errorThrown) {
           Outpost.helpers.showAlertBox({
             type: "alert-error",
-            text: "<strong>Oops!</strong> something, somehow, somewhere went terribly wrong."
+            text: "<strong>Oops!</strong> something, somehow," +
+                  "somewhere went terribly wrong."
           });
           lat = undefined;
           lng = undefined;
@@ -98,6 +173,37 @@
       return [lat, lng];
     },
 
+    renderTemplate: function(tmpl_name, tmpl_data) {
+      var ajaxPromise,
+          tmpl_dir,
+          tmpl_url,
+          dff = $.Deferred();
+
+      if (!Outpost.HTMLcache[tmpl_name]) {
+        tmpl_dir = '/html';
+        tmpl_url = tmpl_dir + '/' + tmpl_name;
+        Outpost.HTMLcache[tmpl_name] = $.ajax({
+          url: tmpl_url,
+          method: 'GET',
+          dataType: 'html',
+          beforeSend: function() {
+            if (Outpost.state.$loader.is(":hidden")) {
+              Outpost.state.$loader.show();
+            }
+          },
+          complete: function() {
+            Outpost.state.$loader.hide();
+          }
+        });
+      }
+
+      Outpost.HTMLcache[tmpl_name].done(function(data){
+        dff.resolve(_.template(data)(tmpl_data));
+      });
+
+      return dff.promise();
+    },
+
     ipToGeo: function() {
       var dff = $.Deferred();
       var ipajax = $.ajax({
@@ -108,7 +214,9 @@
 
       ipajax.done(function(data) {
         dff.resolve({
-          location: data.city + ", " + data.region_code + ", " + data.country_code,
+          location: data.city + ", " +
+                    data.region_code + ", " +
+                    data.country_code,
           latLng: [data.latitude, data.longitude]
         });
       });
@@ -116,8 +224,7 @@
       return dff.promise();
     },
 
-    defineOrigLoc: function() {
-      var orignalLocation = $("#js-orig-location-input").val();
+    defineOrigLoc: function(orignalLocation) {
       var origlatLng = Outpost.helpers.genRdmLL(orignalLocation);
       Outpost.values.origLocation = orignalLocation;
       Outpost.values.origLocationLat = origlatLng[0];
@@ -161,4 +268,4 @@
       }
     }
   };
-})(window, jQuery, _, Backbone, undefined);
+})(window, jQuery, _, Parse, undefined);

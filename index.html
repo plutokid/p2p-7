@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Outpost - Lookup Airbnb, Ridejoy, and Vayable listings all in one place!</title>
@@ -8,239 +8,108 @@
     <meta name="viewport" content="width=device-width">
     <link rel="image_src" href="http://outpostp2p.com/img/fb.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <style>
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
-    <link rel="stylesheet" href="css/custom-5.css">
+    <link rel="stylesheet" href="css/custom-6.css">
 </head>
 <body>
-  <!-- Navbar -->
-  <div class="navbar navbar-inverse navbar-fixed-top" id="js-navbar">
-    <div class="navbar-inner">
-      <div class="container" style="padding-top: 3px;">
-        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
-        <a class="header-logo-link" href="/">
-          <span class="left">Ou</span>
-          <img class="logo" src="img/nosmoke.png" alt="outpost logo">
-          <span class="left">post</span>
-        </a>
-        <div class="nav-collapse collapse js-mainmenu" id="js-mainmenu">
-          <ul class="nav css-nav">
-            <li><a class="btn-nav" data-toggle="modal" href="#affiliate">Affiliate</a></li>
-            <li><a class="btn-nav" data-toggle="modal" href="#about">Contact</a></li>
-            <li><a class="btn-nav" href="#how-it-works">How it works</a></li>
-            <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @zimride, @9flats, @vayable, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
-          </ul>
+  <div class="bs-load" id="js-bsload" style="display:none">
+    <span class="icon-spinner icon-spin icon-2x"></span>
+  </div>
+
+  <header id="js-navbar">
+    <!-- Menu injection goes here -->
+  </header>
+
+  <main id="js-page">
+    <section class="pg-page" id="pg-home"></section>
+    <section id="pg-mapview">
+      <aside class="pg-page" id="sidebar"></aside>
+      <aside class="pg-page" id="refine-search"></aside>
+      <article class="pg-page span12 map map-cont" id="map"></article>
+    </section>
+  </main>
+
+  <footer id="js-footer">
+    <!-- Tons of static links supposed to go here -->
+  </footer>
+  <div id="js-modals-section">
+    <!-- Modals goes here -->
+  </div>
+
+  <div class="alert-box" id="alert-box">
+  </div>
+
+  <div class="slb modal hide fade" id="slb">
+  </div>
+
+  <!-- Login Modal -->
+  <div id="js-login-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="login-outpost" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="login-outpost">Login</h3>
+    </div>
+    <div class="modal-body">
+    <form class="form-horizontal" id="js-login-form" data-validate="parsley">
+      <div class="control-group">
+        <label class="control-label" for="js-lo-email">Email</label>
+        <div class="controls">
+          <input id="js-lo-email" data-trigger="change" data-required="true" data-type="email" data-required-message="Email is Required" data-type-email-message="Please enter a valid email address" type="email" placeholder="example@xyz.com">
         </div>
-        <form class="pull-right navbar-form" id="js-refineSearch" style="display:none;">
-          <div class="input-prepend">
-            <span class="add-on"><i class="icon-calendar"></i></span>
-            <input class="input-small" placeholder="Leaving on" id="js-sdate-input" type="text">
-            <input class="input-small" placeholder="Check out" id="js-edate-input" type="text">
-          </div>
-          <select class="guestfilter" id="js-guest-input">
-            <option selected disabled value="1">People</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-          </select>
-          <button class="btn btn-info refineSearchbtn" id="refineSearchbtn" type="submit">Search</button>
-        </form>
       </div>
+      <div class="control-group">
+        <label class="control-label" for="js-lo-password">Password</label>
+        <div class="controls">
+          <input id="js-lo-password" data-required="true"  data-required-message="Password is required" data-minlength="6" data-minlength-message="Password should be at least 6 characters" type="password" placeholder="Password">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <label class="checkbox">
+            <input id="js-lo-show-passwd" data-mincheck="0" data-group="mygroup" type="checkbox"> Show password
+          </label>
+          <button type="submit" class="btn" id="js-lo-submit">Login</button>
+        </div>
+      </div>
+    </form>
     </div>
   </div>
 
-  <!-- Landing hero header -->
-  <div id="landingpage">
-    <div class="main-head">
-      <h2 class="text-center top">Ride, Rent, and experience <br> stuff from people in any city.</h2>
-      <!-- Main form -->
-      <div class="css-main-search" id="js-firstSearch">
-        <div class="inner-search">
-          <div class="search-bar-wrapper">
-            <form class="form-inline" id="js-searchForm">
-              <div class="inner-form row-fluid">
-                <div class="input-append text-center span8 mobile-inputsearch">
-                  <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="San Francisco, CA" autofocus required>
-                  <button class="btn wearedual btn-info css-searchit" id="searchIt" type="submit">
-                    <span class="icon-search css-searchicon"></span>
-                    Search
-                  </button>
-                </div>
-                <div class="span1 css-ortext">or</div>
-                <div class="span3 mobile-whats">
-                  <a class="btn css-whataround btn-danger" id="js-whataround" href="javascript:void(0)">
-                    <img class="geolocate-icon" src="img/icon-target.png" alt="geolocate">
-                    <span class="">What's around me ?</span>
-                  </a>
-                </div>
-              </div>
-            </form>
+  <!-- Signup Modal -->
+  <div id="js-signup-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signup-outpost" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="signup-outpost">Signup</h3>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal" id="js-signup-form" data-validate="parsley">
+        <div class="control-group">
+          <label class="control-label" for="js-su-fullname">Name</label>
+          <div class="controls">
+            <input id="js-su-fullname" data-required="true" data-required-message="First Name is required" type="text" placeholder="First Name">
           </div>
         </div>
-      </div>
-    </div>
-    <!-- horizontal logo bar -->
-    <div class="css-logo-bar">
-      <div class="css-container">
-        <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridesharing, carpooling and buses - Zimride" href="https://www.zimride.com/" target="_blank">
-          <img width="128px" src="img/zimride-final.png" alt="zimride logo">
-        </a>
-        <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="BlaBlaCar connects drivers with empty seats and people travelling the same way - Over 3 Million trusted members saving up to 70% on inter-city travel!" href="https://www.blablacar.com/" target="_blank">
-          <img width="128px" src="img/blablacar-final.png" alt="blablacar logo">
-        </a>
-        <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vacation rentals, private rooms, sublets by the night - Accommodations on Airbnb" href="https://www.airbnb.com/" target="_blank">
-          <img width="128px" src="img/airbnb_logo_edited.png" alt="airbnb logo">
-        </a>
-        <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridejoy | Rideshare and carpool with friendly people." href="http://ridejoy.com/" target="_blank">
-          <img width="128px" src="img/ridejoy_logo_edited.png" alt="ridejoy logo">
-        </a>
-        <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vayable - Tours, trips and other things to do on vacation" href="https://www.vayable.com/" target="_blank">
-          <img width="128px" src="img/vayable_logo_edited.png" alt="vayable logo">
-        </a>
-        <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="private rooms, holiday house, accommodations" href="https://www.9flats.com/" target="_blank">
-          <img width="128px" src="img/9flats-final.png" alt="9flats logo">
-        </a>
-      </div>
-    </div>
-
-    <div id="how-it-works" class="how-it-works">
-      <h3 class="text-center hiw-header">Using Outpost is easy. Here's how it works:</h3>
-      <div class="hiw-container">
-        <div class="row">
-          <div class="hiw-first-wrap span4 hiw-wrap">
-            <div class="hiw hiw-first">
-              <div class="hiw-num" style="color:#ec5f41">1</div>
-              <div class="hiw-icon"><div class="icon-map-search icon-search icon-large"></div></div>
-            </div>
-            
-            <h4 class="hiw-title">Lookup P2P services</h4>
-            <p class="hiw-desc">With Outpost you can check out many person to person services into one spot!</p>
-          </div>
-
-          <div class="hiw-second-wrap span4 hiw-wrap">
-            <div class="hiw hiw-second">
-              <div class="hiw-num" style="color:#24b0cf">2</div>
-
-              <div class="hiw-icon"><div class="hiw icon-map-marker icon-large"></div></div>
-            </div>
-            <h4 class="hiw-title">One search to rule them all!</h4>
-            <p class="hiw-desc">Knowing where everything is, it'll be easier to plan and book a trip.</p>
-          </div>
-
-          <div class="hiw-third-wrap span4 hiw-wrap">
-            <div class="hiw hiw-third">
-              <div class="hiw-num" style="color:#95d17b">3</div>
-              <div class="hiw-icon"><img src="img/box-car.png" alt="car icon"></div>
-            </div>
-            <h4 class="hiw-title">Pack up and travel</h4>
-            <p class="hiw-desc">Pick a ride share to get to your destination or just walk there.</p>
+        <div class="control-group">
+          <label class="control-label" for="js-su-email">Email</label>
+          <div class="controls">
+            <input id="js-su-email" data-trigger="change" data-required="true" data-type="email" data-required-message="Email is Required" data-type-email-message="Please enter a valid email address" type="email" placeholder="example@xyz.com">
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <!-- Map and Sidebar -->
-  <div class="row-fluid" id="listings" style="display: none;">
-    <div class="sidebar mvwq" id="sidebar">
-      <div class="inner">
-        <!-- Result info -->
-        <p class="resultInfo"></p>
-        <!-- TabNavs -->
-        <ul class="nav nav-tabs">
-          <li class="active"><a id="js-ridesharemenu" href="#rideshare" data-toggle="tab" title="rideshare"><img src="img/hipster-car.png"></a></li>
-          <li><a id="js-houserentalmenu" href="#houserental" data-toggle="tab" title="houserental"><img src="img/hipster-house.png"></a></li>
-          <li><a id="js-tourismmenu" href="#tourism" data-toggle="tab" title="tourism"><img src="img/hipster-guy.png"></a></li>
-        </ul>
-        <div class="tab-content">
-          <!-- Rideshare -->
-          <div class="tab-pane active" id="rideshare">
-            <div class="filters" id="filter-rideshare">
-              <form class="filter-form" id="filter-form-rid">
-                <input class="filter-origin-location" id="js-dest-location-input" placeholder="From location" type="search">
-                <button class="btn btn-info submit-filter-rid" id="submit-filter-rid" data-loading-text="Loading.." type="submit">Search</button>
-              </form>
-              <div class="price-filter">
-                <ul class="slider_values">
-                  <li class="price-value-min minimax">$<span id="price-value-min-rid">10</span> USD</li>
-                  <li class="price-value-max minimax">$<span id="price-value-max-rid">300+</span> USD</li>
-                </ul>
-                <div class="input-large" id="js-price-input-rid"></div>
-              </div>
-              <select class="sortfilter" id="js-sortby-input-rid">
-                <option selected disabled value="nothing">Sort by</option>
-                <option value="low2high">Price: Low to high</option>
-                <option value="high2low">Price: High to low</option>
-              </select>
-            </div>
-            <div class="loading" id="ridejoy-loading"></div>
-            <div class="lists js-lists" id="ridejoy-list">
-              <!-- items are here -->
-            </div>
-          </div>
-
-          <!-- House rental -->
-          <div class="tab-pane" id="houserental">
-            <div class="filters" id="filter-houserental">
-              <div class="price-filter">
-                <ul class="slider_values">
-                  <li class="price-value-min minimax">$<span id="price-value-min-hou">10</span> USD</li>
-                  <li class="price-value-max minimax">$<span id="price-value-max-hou">300+</span> USD</li>
-                </ul>
-                <div class="input-large" id="js-price-input-hou"></div>
-              </div>
-              <select class="sortfilter" id="js-sortby-input-hou">
-                <option selected disabled value="nothing">Sort by</option>
-                <option value="low2high">Price: Low to high</option>
-                <option value="high2low">Price: High to low</option>
-              </select>
-            </div>
-            <div class="loading" id="airbnb-loading"></div>
-            <div class="lists js-lists" id="airbnb-list">
-              <!-- items are here -->
-            </div>
-            <button class="btn load-more" id="lm-air" type="button" data-loading-text="Loading...">Load more..</button>
-          </div>
-
-          <!-- Tourism -->
-          <div class="tab-pane" id="tourism">
-            <div class="filters" id="filter-tourism">
-              <div class="price-filter">
-                <ul class="slider_values">
-                  <li class="price-value-min minimax">$<span id="price-value-min-tou">10</span> USD</li>
-                  <li class="price-value-max minimax">$<span id="price-value-max-tou">300+</span> USD</li>
-                </ul>
-                <div class="input-large" id="js-price-input-tou"></div>
-              </div>
-              <select class="sortfilter" id="js-sortby-input-tou">
-                <option selected disabled value="nothing">Sort by</option>
-                <option value="low2high">Price: Low to high</option>
-                <option value="high2low">Price: High to low</option>
-              </select>
-            </div>
-            <div class="loading" id="vayable-loading"></div>
-            <div class="lists js-lists" id="vayable-list">
-              <!-- items are here -->
-            </div>
-            <button class="btn load-more" id="lm-vay" type="button" data-loading-text="Loading...">Load more..</button>
+        <div class="control-group">
+          <label class="control-label" for="js-su-password">Password</label>
+          <div class="controls">
+            <input id="js-su-password" data-required="true"  data-required-message="Password is required" data-minlength="6" data-minlength-message="Password should be at least 6 characters" type="password" placeholder="Password">
           </div>
         </div>
-      </div>
-    </div>
-    <div class="span12 map-cont">
-      <div class="map" id="map">
-       <!-- Map goes here -->
-      </div>
+        <div class="control-group">
+          <div class="controls">
+            <label class="checkbox">
+              <input id="js-su-show-passwd" data-mincheck="0" data-group="mygroup" type="checkbox"> Show password
+            </label>
+            <button type="submit" class="btn" id="js-su-submit">Create account</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -251,8 +120,14 @@
       <h3 id="about-outpost">About Outpost</h3>
     </div>
     <div class="modal-body">
-      <p>We're a young team of 2 and we're hungry.</p>
-      <p>Sorry if there are bugs or no information available next in your neighborhood, we are adding more P2P networks every day so check again soon!
+      <p>Outpost is a search engine that aggregates listings from many peer to peer websites 
+        such as Airbnb, Ridejoy, Vayable, etc. and lists them into one place. Users can plan 
+        their trip using sharing economy services only and compare prices between the appropriate 
+        networks. The service allows them to book rideshares, places to stay and activities at
+        the most affordable prices available. This new way of travelling is based solely on non-commercial
+        services and allows users to discover unique experiences at their destination that no commercial
+        service can offer. Human hosts, drivers and guides that are eager to show you the secrets of their
+        city make Outpost the new way to travel.
       </p>
       <a href="https://twitter.com/Outpostp2p" class="twitter-follow-button" data-show-count="false">Follow @Outpostp2p</a>
       <p class="pull-right">
@@ -269,7 +144,7 @@
     </div>
     <div class="modal-body">
       <p>
-        We're still early stage nad looking for p2p networks to feature in our platform. If you own something that you think should be in Outpost, don't hesitate to email us at <a href="mailto:info@outpostp2p.com">info@outpostp2p.com</a>
+        We're still early stage and looking for p2p networks to feature in our platform. If you own something that you think should be in Outpost, don't hesitate to email us at <a href="mailto:info@outpostp2p.com">info@outpostp2p.com</a>
       </p>
       <p>However, if you are a user, you can still suggest us which P2P networks we've missed so we can bring them in Outpost.</p>
       <p>Thank you for your interest.</p>
@@ -277,17 +152,66 @@
     </div>
   </div>
 
-  <div class="alert-box" id="alert-box">
-  </div>
+  <!-- NAVBAR MENU TMPL -->
+  <script id="tmpl-navbar" type="text/template">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container" style="padding-top: 3px;">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="header-logo-link" href="/">
+            <span class="left">Ou</span>
+            <img class="logo" src="img/nosmoke.png" alt="outpost logo">
+            <span class="left">post</span>
+          </a>
+          <div class="nav-collapse collapse js-mainmenu" id="js-mainmenu">
+            <ul class="nav css-nav">
+              <li><a class="btn-nav" data-toggle="modal" href="#affiliate">Affiliate</a></li>
+              <li><a class="btn-nav" data-toggle="modal" href="#about">About</a></li>
+              <% if (!name) { %>
+              <li><a class="btn-nav" data-toggle="modal" href="#js-signup-modal">Sign up</a></li>
+              <li><a class="btn-nav" data-toggle="modal" href="#js-login-modal">Login</a></li>
+              <% } else { %>
+              <li><a class="btn-nav"><%= name %></a></li>
+              <li><a class="btn-nav js-logout" href="javascript:void(0)">Logout</a></li>
+              <% } %>
+              <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @zimride, @9flats, @vayable, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
 
-  <div class="slb modal hide fade" id="slb">
-  </div>
+  <!-- REFINE SEARCH TMPL -->
+  <script id="tmpl-refine-search" type="text/template">
+    <form class="navbar-form" id="js-refineSearch">
+      <input type="search" id="js-search-again">
+      <div class="input-prepend">
+        <span class="add-on"><i class="icon-calendar"></i></span>
+        <input class="input-small" placeholder="Leaving on" id="js-sdate-input" type="text">
+        <input class="input-small" placeholder="Check out" id="js-edate-input" type="text">
+      </div>
+      <select class="guestfilter" id="js-guest-input">
+        <option selected disabled value="1">People</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <button class="btn btn-info refineSearchbtn" id="refineSearchbtn" type="submit">Search</button>
+    </form>
+  </script>
 
-  <!-- TEMPLATES -->
+  <!-- RESULT FOuND TMPL -->
   <script id="tmpl-resultInfo" type="text/template">
     <span id="js-counter"><%= numOfRes %></span> results found for <%= city %>
   </script>
 
+  <!-- ALERT BOX TMPL -->
   <script id="tmpl-alert" type="text/template">
     <div class="alert <%= type %>">
       <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -295,6 +219,7 @@
     </div>
   </script>
 
+  <!-- LIGHT BOX IMG TMPL -->
   <script id="tmpl-slb" type="text/template">
     <div class="modal-body">
       <img src="<%= src %>">
@@ -374,7 +299,7 @@
         </span>
         <div class="list-desc">
           <span class="list-roomImg">
-            <img class="img-polaroid list-img" src="<%= item.roomImg %>">
+            <img class="img-polaroid list-img hou-listimg" src="<%= item.roomImg %>">
           </span>
           <span class="list-info">
             <ul>
@@ -430,7 +355,7 @@
         </span>
         <div class="list-desc">
           <span class="list-roomImg">
-            <img class="img-polaroid list-img" src="<%= item.img %>">
+            <img class="img-polaroid list-img tou-listimg" src="<%= item.img %>">
           </span>
           <span class="list-info">
             <ul>
@@ -467,18 +392,20 @@
   <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
   <script src="js/vendor/bootstrap.min.js"></script>
   <script src="js/vendor/underscore-min.js"></script>
+  <script src="http://www.parsecdn.com/js/parse-1.2.7.min.js"></script>
   <script src="js/vendor/backbone-min.js"></script>
+  <script src="js/vendor/parsley.js"></script>
   <!-- EXTRA LIBRARIES -->
   <script src="//maps.googleapis.com/maps/api/js?&amp;sensor=false&amp;libraries=places"></script>
   <script src="js/vendor/gmap3.js"></script>
   <!-- MVC -->
-  <script src="js/app/tmpl-5.js"></script>
-  <script src="js/app/models-5.js"></script>
-  <script src="js/app/helpers-5.js"></script>
-  <script src="js/app/views-5.js"></script>
-  <script src="js/app/router-5.js"></script>
+  <script src="js/app/tmpl-6.js"></script>
+  <script src="js/app/models-6.js"></script>
+  <script src="js/app/helpers-6.js"></script>
+  <script src="js/app/views-6.js"></script>
+  <script src="js/app/router-6.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-5.js"></script>
+  <script src="js/main-6.js"></script>
 
 
   <script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){

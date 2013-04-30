@@ -1,0 +1,102 @@
+<!-- Landing hero header -->
+<div id="landingpage">
+  <div class="main-head">
+    <h2 class="text-center top">Ride, Rent, and experience <br> a new way to travel.</h2>
+    <!-- Main form -->
+    <div class="css-main-search" id="js-firstSearch">
+      <div class="inner-search">
+        <div class="search-bar-wrapper">
+          <form class="form-inline" id="js-searchForm">
+            <div class="inner-form row-fluid">
+              <div class="input-append text-center span8 mobile-inputsearch">
+                <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="San Francisco, CA" autofocus required>
+                <button class="btn wearedual btn-info css-searchit" id="searchIt" type="submit">
+                  <span class="icon-search css-searchicon"></span>
+                  Search
+                </button>
+              </div>
+              <div class="span1 css-ortext">or</div>
+              <div class="span3 mobile-whats">
+                <a class="btn css-whataround btn-danger" id="js-whataround" href="javascript:void(0)">
+                  <img class="geolocate-icon" src="../img/icon-target.png" alt="geolocate">
+                  <span class="">What's around me ?</span>
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- horizontal logo bar -->
+  <div class="css-logo-bar">
+    <div class="css-container">
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridesharing, carpooling and buses - Zimride" href="https://www.zimride.com/" target="_blank">
+        <img width="128px" src="../img/zimride-final.png" alt="zimride logo">
+      </a>
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="BlaBlaCar connects drivers with empty seats and people travelling the same way - Over 3 Million trusted members saving up to 70% on inter-city travel!" href="https://www.blablacar.com/" target="_blank">
+        <img width="128px" src="../img/blablacar-final.png" alt="blablacar logo">
+      </a>
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vacation rentals, private rooms, sublets by the night - Accommodations on Airbnb" href="https://www.airbnb.com/" target="_blank">
+        <img width="128px" src="../img/airbnb_logo_edited.png" alt="airbnb logo">
+      </a>
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridejoy | Rideshare and carpool with friendly people." href="http://ridejoy.com/" target="_blank">
+        <img width="128px" src="../img/ridejoy_logo_edited.png" alt="ridejoy logo">
+      </a>
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vayable - Tours, trips and other things to do on vacation" href="https://www.vayable.com/" target="_blank">
+        <img width="128px" src="../img/vayable_logo_edited.png" alt="vayable logo">
+      </a>
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="private rooms, holiday house, accommodations" href="https://www.9flats.com/" target="_blank">
+        <img width="128px" src="../img/9flats-final.png" alt="9flats logo">
+      </a>
+    </div>
+  </div>
+
+  <div id="how-it-works" class="how-it-works">
+    <h3 class="text-center hiw-header">Using Outpost is easy. Here's how it works:</h3>
+    <div class="hiw-container">
+      <div class="row">
+        <div class="hiw-first-wrap span4 hiw-wrap">
+          <div class="hiw hiw-first">
+            <div class="hiw-num" style="color:#ec5f41">1</div>
+            <div class="hiw-icon"><div class="icon-map-search icon-search icon-large"></div></div>
+          </div>
+          
+          <h4 class="hiw-title">Lookup P2P services</h4>
+          <p class="hiw-desc">With Outpost you can check out many person to person services into one spot!</p>
+        </div>
+
+        <div class="hiw-second-wrap span4 hiw-wrap">
+          <div class="hiw hiw-second">
+            <div class="hiw-num" style="color:#24b0cf">2</div>
+
+            <div class="hiw-icon"><div class="hiw icon-map-marker icon-large"></div></div>
+          </div>
+          <h4 class="hiw-title">One search to rule them all!</h4>
+          <p class="hiw-desc">Knowing where everything is, it'll be easier to plan and book a trip.</p>
+        </div>
+
+        <div class="hiw-third-wrap span4 hiw-wrap">
+          <div class="hiw hiw-third">
+            <div class="hiw-num" style="color:#95d17b">3</div>
+            <div class="hiw-icon"><img src="../img/box-car.png" alt="car icon"></div>
+          </div>
+          <h4 class="hiw-title">Pack up and travel</h4>
+          <p class="hiw-desc">Pick a ride share to get to your destination or just walk there.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    $('.pac-container').remove();
+    var input = document.getElementById('js-orig-location-input');
+    var options = {
+      types: ['(cities)']
+    };
+    var autocomplete = new google.maps.places.Autocomplete(input, options);
+    // Load logo tooltips
+    $('.tooly').tooltip();
+  })();
+</script>

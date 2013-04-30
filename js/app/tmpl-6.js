@@ -1,4 +1,4 @@
-(function(window, $, _, Backbone) {
+(function(window, $, _, Parse) {
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
@@ -126,4 +126,4 @@
       '</div>';
     }
   };
-})(window, jQuery, _, Backbone, undefined);
+})(window, jQuery, _, Parse, undefined);

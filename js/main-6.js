@@ -1,13 +1,14 @@
 (function(window, $) {
+  Parse.initialize(
+    "FFCnkzXkmqFWwKf4u0S4aISPKBaft8H0d42JhKb8",
+    "mOlLt8cwIbHvz7vc6gtjOXfRO5rmfpcQLL4UJBF7"
+  );
   $(document).ready(function() {
     $.ajaxSetup({
       timeout: 10000
     });
     // IE9 ajax fix
     $.support.cors = true;
-
-    // Load logo tooltips
-    $('.tooly').tooltip();
 
     // Initializes the MVC
     new Outpost.views.main();
