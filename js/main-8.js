@@ -1,12 +1,13 @@
 (function(window, $) {
   Parse.initialize(
-    "FFCnkzXkmqFWwKf4u0S4aISPKBaft8H0d42JhKb8",
-    "mOlLt8cwIbHvz7vc6gtjOXfRO5rmfpcQLL4UJBF7"
+    "3BO6CIc8cRGVVoTCdnSk8VtcHWlo662UbPOQKl1K",
+    "faZUcHycuTHBvrV0kTcqoTtpZsNQauN8IuXDLY7j"
   );
+
+  $.ajaxSetup({
+    timeout: 10000
+  });
   $(document).ready(function() {
-    $.ajaxSetup({
-      timeout: 10000
-    });
     // IE9 ajax fix
     $.support.cors = true;
 
@@ -18,7 +19,7 @@
       _gaq.push(['_trackEvent',
         "navbar",
         $(this).text(),
-        Outpost.values.origLocation
+        Outpost.values.destLocation
       ]);
     });
 

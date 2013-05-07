@@ -5,9 +5,9 @@
 
   Outpost.tmpl = {
     // =======================================================
-    //  Airbnb Infowindow
+    //  houserental Infowindow
     // =======================================================
-    airbnbInfo : function(item) {
+    houserentalInfo : function(item) {
       var numOfNights = Outpost.state.searchFilter.numOfNights;
       var subtotal  = item.price2 * numOfNights;
       var nightStr;
@@ -27,7 +27,7 @@
             '<img src="' + item.infoWindowIcon + '">' +
           '</div>' +
         '</div>' +
-        '<div class="info-img img-polaroid pull-left info-imghover"><img class="info-imgrentals" src="' + item.roomImg + '" onclick="javascript:Outpost.mvc.views.airbnb.slbPic(this.src)"></div>' +
+        '<div class="info-img img-polaroid pull-left info-imghover"><img class="info-imgrentals" src="' + item.roomImg + '" data-id="air' + item.id + '" onclick="javascript:Outpost.mvc.views.houserental.loadSLB(this)"></div>' +
         '<div class="info-content pull-left">' +
           '<ul>' +
             '<li>' +
@@ -50,9 +50,9 @@
       '</div>';
     },
     // =======================================================
-    //  Ridejoy Infowindow
+    //  rideshare Infowindow
     // =======================================================
-    ridejoyInfo : function(item) {
+    rideshareInfo : function(item) {
       return '' +
       '<div class="js-infowindow">' +
         '<div class="info-desc css-bgred">' +
@@ -91,19 +91,19 @@
     },
 
     // =======================================================
-    //  Vayable Infowindow
+    //  tourism Infowindow
     // =======================================================
-    vayableInfo : function(item) {
+    tourismInfo : function(item) {
       return '' +
       '<div class="js-infowindow">' +
         '<div class="info-desc css-bggreen">' +
           '<a class="icon-remove js-closeInfoWindow css-bggreen" onmouseover="Outpost.mvc.views.map.closeInfo()"></a>' +
           '<div class="info-text">' + item.desc + '</div>' +
           '<div class="info-logo">' +
-            '<img src="img/vayable.png" alt="coutersy of vayable">' +
+            '<img src="' + item.infoWindowIcon + '">' +
           '</div>' +
         '</div>' +
-        '<div class="info-img img-polaroid pull-left info-imghover"><img style="width:128px;" src="' + item.img + '" onclick="javascript:Outpost.mvc.views.vayable.slbPic(this.src)"></div>' +
+        '<div class="info-img img-polaroid pull-left info-imghover"><img style="width:128px;" src="' + item.img + '" onclick="javascript:Outpost.mvc.views.tourism.slbPic(this.src)"></div>' +
         '<div class="info-content pull-left">' +
           '<ul>' +
             '<li>' +

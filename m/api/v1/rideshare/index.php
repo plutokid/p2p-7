@@ -14,14 +14,6 @@
   $guests = $_GET["guests"];
   $guests = 0 + $guests;
 
-  $min = $_GET["price_min"];
-  $max = $_GET["price_max"];
-  $min = 0 + $min;
-  $max = 0 + $max;
-  if ($max == 300) {
-    $max = 10000;
-  }
-
   $output = array();
   $idarr = array();
 
@@ -40,7 +32,7 @@
   foreach($poolList->find('.ride_list a') as $aRide) {
     $price_full = trim($aRide->find('.price_box p', 0)->plaintext);
     $price = 0 + substr($price_full, 1);
-    if ($price >= $min && $price <= $max && $ride['img'] = $aRide->find('img', 0)->src) {
+    if ($ride['img'] = $aRide->find('img', 0)->src) {
       $seat = $aRide->find('.count', 0)->plaintext;
       if ($seat) {
         $seat = 0 + $seat;
@@ -101,21 +93,20 @@
 
       $price_full = trim($aRide->find('.seats_container', 0)->plaintext);
       $price = 0 + substr($price_full, 1);
-      if ($price >= $min && $price <= $max) {
-        $ride['idtype'] = "ridejoy";
-        $ride['dates'] = $date;
-        $ride['img'] = $aRide->find('img', 0)->src;
-        $ride['origin'] = trim($aRide->find('.origin', 0)->plaintext);
-        $ride['destination'] = trim($aRide->find('.destination', 0)->plaintext);
-        $ride['desc'] = trim($aRide->find('.extra_info', 0)->plaintext);
-        $ride['price'] = $price_full;
-        $ride['price2'] = $price;
-        $ride['iconPath'] = "img/ridejoy.ico";
-        $ride['infoWindowIcon'] = "img/ridejoy.png";
-        $ride['link'] = trim($aRide->find('.view_details', 0)->href);
+      $ride['idtype'] = "ridejoy";
+      $ride['dates'] = $date;
+      $ride['img'] = $aRide->find('img', 0)->src;
+      $ride['origin'] = trim($aRide->find('.origin', 0)->plaintext);
+      $ride['destination'] = trim($aRide->find('.destination', 0)->plaintext);
+      $ride['desc'] = trim($aRide->find('.extra_info', 0)->plaintext);
+      $ride['price'] = $price_full;
+      $ride['price2'] = $price;
+      $ride['iconPath'] = "img/ridejoy.ico";
+      $ride['infoWindowIcon'] = "img/ridejoy.png";
+      $ride['link'] = trim($aRide->find('.view_details', 0)->href);
 
-        $output[] = $ride;
-      }
+      $output[] = $ride;
+      
     }
   }
 
@@ -133,7 +124,7 @@
   foreach($poolList->find('.trip') as $aRide) {
     $price_full = trim($aRide->find('.price', 0)->plaintext);
     $price = 0 + filter_var($price_full, FILTER_SANITIZE_NUMBER_INT);
-    if ($price >= $min && $price <= $max) {
+
       $seat = $aRide->find('.availability strong', 0)->plaintext;
       if ($seat) {
         $seat = 0 + $seat;
@@ -164,7 +155,7 @@
       $ride['price2'] = $price;
 
       $output[] = $ride;
-    }
+
   }
 
   echo json_encode($output);

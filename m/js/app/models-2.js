@@ -15,7 +15,7 @@
     // =======================================================
     airbnb: Backbone.Collection.extend({
       model: Outpost.models.airbnb,
-      url: "http://outpostp2p.com/api/airbnb/",
+      url: "http://m.outpost.travel/api/airbnb/",
 
       parse: function(response) {
         return response;
@@ -48,7 +48,7 @@
     // =======================================================
     ridejoy: Backbone.Collection.extend({
       model: Outpost.models.ridejoy,
-      url: "http://outpostp2p.com/api/ridejoy/v1/",
+      url: "http://m.outpost.travel/api/ridejoy/v1/",
 
       parse: function(response) {
         return response;
@@ -80,7 +80,7 @@
     // =======================================================
     vayable: Backbone.Collection.extend({
       model: Outpost.models.vayable,
-      url: "http://outpostp2p.com/api/vayable/v1/",
+      url: "http://m.outpost.travel/api/vayable/v1/",
 
       parse: function(response) {
         return response;

@@ -1,7 +1,7 @@
 <!-- Landing hero header -->
 <div id="landingpage">
   <div class="main-head">
-    <h2 class="text-center top">Ride, Rent, and experience <br> a new way to travel.</h2>
+    <h3 class="text-center top">Find Rideshares, House Rentals, and Local Guides <br> from multiple sources around the world.</h3>
     <!-- Main form -->
     <div class="css-main-search" id="js-firstSearch">
       <div class="inner-search">
@@ -9,7 +9,7 @@
           <form class="form-inline" id="js-searchForm">
             <div class="inner-form row-fluid">
               <div class="input-append text-center span8 mobile-inputsearch">
-                <input class="css-input-sea wearedual span11" id="js-orig-location-input" type="search" autocomplete="off" placeholder="San Francisco, CA" autofocus required>
+                <input class="css-input-sea wearedual span11" id="js-dest-location-input" type="search" autocomplete="off" placeholder="San Francisco, CA" autofocus required>
                 <button class="btn wearedual btn-info css-searchit" id="searchIt" type="submit">
                   <span class="icon-search css-searchicon"></span>
                   Search
@@ -31,22 +31,22 @@
   <!-- horizontal logo bar -->
   <div class="css-logo-bar">
     <div class="css-container">
-      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridesharing, carpooling and buses - Zimride" href="https://www.zimride.com/" target="_blank">
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridesharing, carpooling and buses - Zimride" href="javascript:void(0)" target="_blank">
         <img width="128px" src="../img/zimride-final.png" alt="zimride logo">
       </a>
-      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="BlaBlaCar connects drivers with empty seats and people travelling the same way - Over 3 Million trusted members saving up to 70% on inter-city travel!" href="https://www.blablacar.com/" target="_blank">
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="BlaBlaCar connects drivers with empty seats and people travelling the same way - Over 3 Million trusted members saving up to 70% on inter-city travel!" href="javascript:void(0)" target="_blank">
         <img width="128px" src="../img/blablacar-final.png" alt="blablacar logo">
       </a>
-      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vacation rentals, private rooms, sublets by the night - Accommodations on Airbnb" href="https://www.airbnb.com/" target="_blank">
-        <img width="128px" src="../img/airbnb_logo_edited.png" alt="airbnb logo">
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vacation rentals, private rooms, sublets by the night - Accommodations on houserental" href="javascript:void(0)" target="_blank">
+        <img width="128px" src="../img/airbnb_logo_edited.png" alt="houserental logo">
       </a>
-      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridejoy | Rideshare and carpool with friendly people." href="http://ridejoy.com/" target="_blank">
-        <img width="128px" src="../img/ridejoy_logo_edited.png" alt="ridejoy logo">
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="rideshare | Rideshare and carpool with friendly people." href="javascript:void(0)" target="_blank">
+        <img width="128px" src="../img/ridejoy_logo_edited.png" alt="rideshare logo">
       </a>
-      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vayable - Tours, trips and other things to do on vacation" href="https://www.vayable.com/" target="_blank">
-        <img width="128px" src="../img/vayable_logo_edited.png" alt="vayable logo">
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="tourism - Tours, trips and other things to do on vacation" href="javascript:void(0)" target="_blank">
+        <img width="128px" src="../img/vayable_logo_edited.png" alt="tourism logo">
       </a>
-      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="private rooms, holiday house, accommodations" href="https://www.9flats.com/" target="_blank">
+      <a class="tooly logos" data-toggle="tooltip" data-placement="top" title="private rooms, holiday house, accommodations" href="javascript:void(0)" target="_blank">
         <img width="128px" src="../img/9flats-final.png" alt="9flats logo">
       </a>
     </div>
@@ -63,7 +63,7 @@
           </div>
           
           <h4 class="hiw-title">Lookup P2P services</h4>
-          <p class="hiw-desc">With Outpost you can check out many person to person services into one spot!</p>
+          <p class="hiw-desc">With Outpost you can check out many peer to peer services in one spot!</p>
         </div>
 
         <div class="hiw-second-wrap span4 hiw-wrap">
@@ -90,13 +90,16 @@
 </div>
 <script>
   (function() {
-    $('.pac-container').remove();
-    var input = document.getElementById('js-orig-location-input');
+    var input = document.getElementById('js-dest-location-input');
     var options = {
       types: ['(cities)']
     };
     var autocomplete = new google.maps.places.Autocomplete(input, options);
     // Load logo tooltips
     $('.tooly').tooltip();
+
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+      $('#js-searchForm').trigger("submit");
+    });
   })();
 </script>

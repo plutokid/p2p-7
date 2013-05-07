@@ -2,7 +2,6 @@ body {
   padding-top: 60px;
   padding-bottom: 40px;
   background: #f1f1f1;
-  overflow-y: scroll;
 }
 
 a {
@@ -42,6 +41,10 @@ a:focus {
 .pac-selected {
   background: #274c74 !important;
   color: #fff;
+}
+
+.info-details {
+  float: right;
 }
 
 .tooly:hover {
@@ -149,14 +152,14 @@ a:focus {
   width: 350px;
   position: absolute;
   top: 41px;
-  left: 90px;
+  left: 84px;
   z-index: 1032;
   background-color: rgba(0, 0, 0, 0.22);
 }
 
 
 .bs-load {
-  position: absolute;
+  position: fixed;
   top: 3px;
   left: 50%;
   color: #3498db;
@@ -184,6 +187,11 @@ a:focus {
 
 .st_twitter_hcount {
   padding-top: 7px;
+}
+
+
+.refineSearchbtn {
+  margin-top: 4px;
 }
 
 .loading {
@@ -244,7 +252,7 @@ a:focus {
 }
 
 .twitters iframe {
-  width: 57px !important;
+  width: 82px !important;
 }
 
 .text-white {
@@ -628,7 +636,7 @@ background-color: #A41414;
 
 }
 .red-bg {
-    background: none repeat scroll 0 0 #EC5F41;
+  background: none repeat scroll 0 0 #EC5F41;
 }
 
 .blue-bg {
@@ -846,7 +854,7 @@ background-color: #2284A1;
   top: 45px;
   position: fixed;
   z-index: 1028;
-  right: 25px;
+  right: 21px;
   background-color: rgba(52, 73, 94, 0.85);
   padding: 7px;
   border-radius: 3px;
@@ -952,4 +960,98 @@ background-color: #2284A1;
   margin-top: 10px;
   font-weight: 700;
   position: absolute;
+}
+
+.css-socialicon {
+  border-right: 1px solid #fff;
+  padding: 12px 7px 12px 0;
+}
+
+/* CAROUSEL */
+.carousel-indicators {
+  cursor: pointer;
+}
+
+.carousel-indicators li:hover {
+  background-color: #f1f1f1;
+}
+
+.carousel-caption {
+  color: white;
+}
+
+.modal {
+  width: 639px;
+}
+
+.air-modal-header {
+  border-radius: 3px 3px 0 0;
+  color: white;
+  border: 0;
+}
+
+.modal-img {
+  width: 100%;
+}
+
+.air-modal-body {
+  padding: 0;
+  height: 426px;
+  max-height: 426px;
+}
+
+.air-carousel {
+  margin: 0;
+}
+
+.air-modal-footer {
+  padding: 10px 10px 7px;
+  background-color: #ECF0F1;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 #fff;
+  text-align: left;
+}
+
+.air-nav-foot {
+  display: inline-block;
+  margin: 0;
+}
+
+.carousel-details-text {
+  padding: 8px;
+  white-space: pre-wrap;
+}
+
+.css-details-text {
+  width: 380px;
+  float: left;
+}
+
+.css-details-ameneties {
+  float: left;
+  width: 240px;
+  padding-top: 10px;
+}
+
+.details-address {
+  margin: 0;
+  padding-left: 10px;
+}
+
+.tab-streetview {
+  height: 426px;
+}
+
+.aReview {
+  margin: 10px 10px 0 10px;
+  padding: 8px;
+  background: #f1f1f1;
+}
+
+.css-imgnamebig {
+  margin-left: 5px; 
+}
+/*done*/
+.white-arrow {
+  color: white;
 }

@@ -15,9 +15,6 @@
         // Initialize the router module
         Outpost.mvc.router = new Outpost.routes.AppRouter();
         Parse.history.start();
-
-        // Initialize the menu
-        // Outpost.mvc.views.searchForm = new Outpost.views.searchForm();
       }
     }),
 
@@ -35,12 +32,8 @@
       initialize: function() {
         var user = Parse.User.current();
         var data = {};
-        var fullname;
         if (user) {
-          fullname = user.get("fullname");
-          data.name = fullname.substring(0, fullname.indexOf(' '));
-          data.name = data.name || fullname;
-          data.isSocial = false;
+          data.name = user.get("first_name");
         }
 
         new Outpost.views.loginModal();
@@ -66,11 +59,7 @@
       isInterested: false,
 
       initialize: function() {
-        // $('.js-mainmenu').remove();
-        // this.setMapTerrain();
         this.render();
-        this.$el.css('height', Outpost.state.rMapHeight);
-        // Outpost.mvc.views.navBar.initRefineGUI();
       },
 
       closeInfo: function() {
@@ -123,15 +112,6 @@
         return false;
       },
 
-      setMapTerrain: function() {
-        // var $searchInput = $('#js-orig-location-input').detach();
-        // $searchInput
-        //  .removeClass("css-input-sea wearedual span11")
-        //  .prependTo("#js-refineSearch");
-        // $('#landingpage').remove();
-        // $('#listings').show();
-      },
-
       setMarkers: function(markers, opts) {
         var _this = this;
         _this.$el.gmap3({
@@ -146,7 +126,11 @@
             events: {
               click: function(marker, event, context) {
                 $('.row-selected').removeClass('row-selected');
-                $(opts.nodeList).find('.' + context.id).addClass('row-selected');
+
+                $(opts.nodeList)
+                  .find('.' + context.id)
+                    .addClass('row-selected');
+
                 $(opts.nodeTab).tab('show');
                 $('body, html').animate({
                   scrollTop: $('.' + context.id).offset().top
@@ -156,14 +140,20 @@
                 _this.closeInfo();
                 _this.showInfo(marker, context.data, opts.infoWindowTmpl);
                 $('.row-selected').removeClass('row-selected');
-                $(opts.nodeList).find('.' + context.id).addClass('row-selected');
+                $(opts.nodeList)
+                  .find('.' + context.id)
+                    .addClass('row-selected');
 
                 marker.setIcon(opts.iconHover);
-                $(opts.nodeList).find('.' + context.id).addClass('row-hovered');
+                $(opts.nodeList)
+                  .find('.' + context.id)
+                    .addClass('row-hovered');
               },
               mouseout: function(marker, event, context) {
                 marker.setIcon(opts.icon);
-                $(opts.nodeList).find('.' + context.id).removeClass('row-hovered');
+                $(opts.nodeList)
+                  .find('.' + context.id)
+                    .removeClass('row-hovered');
               }
             }
           }
@@ -176,12 +166,13 @@
           get: {
             id: item.markerid,
             callback: function(marker) {
-              if (typeof marker.getPosition === 'function' && marker.getPosition()) {
+              if (typeof marker.getPosition === 'function' &&
+                                                        marker.getPosition()) {
                 // do nothing
               } else {
                 _this.$el.gmap3({
                   marker: {
-                    latLng: item.latLng || Outpost.helpers.genRdmLL(item.origin),
+                    latLng:item.latLng || Outpost.helpers.genRdmLL(item.origin),
                     data: item,
                     id: item.markerid,
                     tag: item.prefix,
@@ -193,7 +184,11 @@
                     events: {
                       click: function(marker, event, context) {
                         $('.row-selected').removeClass('row-selected');
-                        $(opts.nodeList).find('.' + context.id).addClass('row-selected');
+
+                        $(opts.nodeList)
+                          .find('.' + context.id)
+                            .addClass('row-selected');
+
                         $(opts.nodeTab).tab('show');
                         $('body, html').animate({
                           scrollTop: $('.' + context.id).offset().top
@@ -201,16 +196,22 @@
                       },
                       mouseover: function(marker, event, context) {
                         _this.closeInfo();
-                        _this.showInfo(marker, context.data, opts.infoWindowTmpl);
+                        _this.showInfo(marker,context.data,opts.infoWindowTmpl);
                         $('.row-selected').removeClass('row-selected');
-                        $(opts.nodeList).find('.' + context.id).addClass('row-selected');
+                        $(opts.nodeList)
+                          .find('.' + context.id)
+                            .addClass('row-selected');
 
                         marker.setIcon(opts.iconHover);
-                        $(opts.nodeList).find('.' + context.id).addClass('row-hovered');
+                        $(opts.nodeList)
+                          .find('.' + context.id)
+                            .addClass('row-hovered');
                       },
                       mouseout: function(marker, event, context) {
                         marker.setIcon(opts.icon);
-                        $(opts.nodeList).find('.' + context.id).removeClass('row-hovered');
+                        $(opts.nodeList)
+                          .find('.' + context.id)
+                            .removeClass('row-hovered');
                       }
                     }
                   }
@@ -229,7 +230,8 @@
             name: "marker",
             id: opts.prefix + item.id,
             callback: function(marker) {
-              if (typeof marker.getPosition === 'function' && marker.getPosition()) {
+              if (typeof marker.getPosition === 'function' &&
+                                                        marker.getPosition()) {
                 map.panTo(marker.getPosition());
                 _this.closeInfo();
                 _this.showInfo(marker, item, opts.infoWindowTmpl);
@@ -304,7 +306,7 @@
         var _this = this;
         _this.$el.gmap3({
           getlatlng: {
-            address: Outpost.values.origLocation,
+            address: Outpost.values.destLocation,
             callback: function(results) {
               if (results) {
                 _this.$el.gmap3({
@@ -318,7 +320,8 @@
               } else {
                 Outpost.helpers.showAlertBox({
                   type: "alert-error",
-                  text: "<strong>Hmm..</strong> I coudln't recognize this location!"
+                  text: "<strong>Hmm..</strong> " +
+                        "I coudln't recognize this location!"
                 });
               }
             }
@@ -330,8 +333,8 @@
         this.$el.gmap3('destroy');
         this.$el.gmap3({
           map: {
-            // put latlng instead since we got them anyways..
-            latLng: [Outpost.values.origLocationLat, Outpost.values.origLocationLng],
+            latLng: [Outpost.values.destLocationLat,
+                    Outpost.values.destLocationLng],
             options: {
               zoom: 13,
               mapTypeControl: false,
@@ -364,34 +367,34 @@
       },
 
       clearAllListings: function() {
-        Outpost.mvc.views.airbnb.clearData();
-        Outpost.mvc.views.ridejoy.clearData();
-        Outpost.mvc.views.vayable.clearData();
+        Outpost.mvc.views.houserental.clearData();
+        Outpost.mvc.views.rideshare.clearData();
+        Outpost.mvc.views.tourism.clearData();
         $('.js-lists').empty();
       },
 
       fetchAll: function() {
-        Outpost.mvc.views.airbnb.fetchData();
-        Outpost.mvc.views.ridejoy.fetchData();
-        Outpost.mvc.views.vayable.fetchData();
+        Outpost.mvc.views.houserental.fetchData();
+        Outpost.mvc.views.rideshare.fetchData();
+        Outpost.mvc.views.tourism.fetchData();
       },
 
       updateNavbarRes: function() {
         $('.resultInfo').html(this.templateOffline({
           numOfRes: Outpost.state.numOfRes,
-          city: Outpost.values.origLocation
+          city: Outpost.values.destLocation
         }));
       },
 
       initServices: function() {
-        Outpost.mvc.views.airbnb = new Outpost.views.airbnb();
-        Outpost.mvc.views.ridejoy = new Outpost.views.ridejoy();
-        Outpost.mvc.views.vayable = new Outpost.views.vayable();
+        Outpost.mvc.views.houserental = new Outpost.views.houserental();
+        Outpost.mvc.views.rideshare = new Outpost.views.rideshare();
+        Outpost.mvc.views.tourism = new Outpost.views.tourism();
       },
 
       render: function() {
         var _this = this;
-        _this.template('sidebar.html', {}).done(function(tmpl) {
+        _this.template('sidebar-1.html', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           _this.updateNavbarRes();
           _this.initServices();
@@ -417,10 +420,11 @@
       refineSearch: function(e) {
         e.preventDefault();
         var value = $('#js-search-again').val();
-        var path = "!/mapview/" + value;
+        var path = "!/mapview/" + encodeURI(value);
         this.setFilterVar();
         Outpost.state.numOfRes = 0;
-        Outpost.helpers.defineOrigLoc(value);
+        Outpost.helpers.defineDestLoc(value);
+        Outpost.helpers.defineOrigLoc();
         Outpost.helpers.resetPages();
         Outpost.mvc.views.map.removeAllMarkers();
         Outpost.mvc.views.map.redefineMap();
@@ -449,117 +453,70 @@
         filter.numOfNights = calculateNumOfNights(filter.sdate, filter.edate);
       },
 
-      initRefineGUI: function() {
-        var $sdate = $('#js-sdate-input');
-        var $edate = $("#js-edate-input");
-
-        var customRange = function customRange(input) {
-          var minDate;
-          var startDateVal = $sdate.val();
-          if (input.id === 'js-edate-input') {
-            if (startDateVal) {
-              minDate = new Date(startDateVal);
-              minDate.setDate(minDate.getDate() + 1);
-              return {
-                minDate: minDate
-              };
-            } else {
-              return {
-                minDate: 1
-              };
-            }
-          }
-        };
-
-        $sdate.datepicker({
-          minDate: 0,
-          inline: true,
-          onClose: function(selectedDate) {
-            $edate.focus();
-          }
-        });
-
-        $edate.datepicker({
-          inline: true,
-          beforeShow: customRange,
-          onClose: function() {
-            $('#js-guest-input').focus();
-          }
-        });
-
-        var input = document.getElementById('js-search-again');
-        input.value = Outpost.values.origLocation;
-        var options = {
-          types: ['(cities)']
-        };
-        new google.maps.places.Autocomplete(input, options);
-      },
-
       render: function() {
         this.$el.html(this.template());
-        this.initRefineGUI();
       }
     }),
 
     // =======================================================
-    // Airbnb list view
+    // houserental list view
     // =======================================================
-    airbnb: Parse.View.extend({
+    houserental: Parse.View.extend({
       el: '#sidebar',
-      template: _.template($('#tmpl-airbnbRow').html()),
+      template: _.template($('#tmpl-houserentalRow').html()),
+      min: 0,
+      max: 300,
       divCollection: [],
-      sortType: "relevance",
       itemStore: {
         prefix: "air",
-        infoWindowTmpl: Outpost.tmpl.airbnbInfo,
+        sortType: "relevance",
+        infoWindowTmpl: Outpost.tmpl.houserentalInfo,
         icon: new google.maps.MarkerImage(
-          'img/airbnb/image.png',
+          'img/houserental/image.png',
           new google.maps.Size(39,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
         shadow: new google.maps.MarkerImage(
-          'img/airbnb/shadow.png',
+          'img/houserental/shadow.png',
           new google.maps.Size(67,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
         shape: {
-          coord: [25,0,28,1,30,2,31,3,32,4,33,5,34,6,35,7,36,8,36,9,37,10,37,11,38,12,38,13,38,14,38,15,38,16,38,17,38,18,38,19,38,20,38,21,38,22,38,23,37,24,37,25,36,26,35,27,35,28,34,29,34,30,33,31,32,32,32,33,31,34,30,35,30,36,29,37,28,38,28,39,27,40,27,41,26,42,25,43,25,44,24,45,23,46,23,47,22,48,21,49,17,49,16,48,15,47,15,46,14,45,13,44,13,43,12,42,11,41,11,40,10,39,10,38,9,37,8,36,8,35,7,34,6,33,6,32,5,31,5,30,4,29,3,28,3,27,2,26,1,25,1,24,0,23,0,22,0,21,0,20,0,19,0,18,0,17,0,16,0,15,0,14,0,13,0,12,1,11,1,10,2,9,2,8,3,7,4,6,5,5,6,4,7,3,8,2,10,1,13,0,25,0],
+          coord: Outpost.values.coord,
           type: 'poly'
         },
-        iconHover: "img/airbnb/hover.png",
-        nodeList: "#airbnb-list",
+        iconHover: "img/houserental/hover.png",
+        nodeList: "#houserental-list",
         nodeTab: "#js-houserentalmenu",
+        nodeUnit: ".tr-houserental",
         animation: ""
       },
 
       initialize: function() {
         _.bindAll(this, 'render');
         this.initSliderGUI();
-        this.collection = new Outpost.collections.airbnb();
+        this.collection = new Outpost.collections.houserental();
         this.fetchData();
       },
 
       events: {
         "change #js-sortby-input-hou": "sortBy",
-        "click .tr-airbnb": "openInfoWindow",
+        "click .tr-houserental": "openInfoWindow",
         "click #lm-air": "loadMore",
         "click .hou-listimg": "loadSLB",
-        "mouseenter .tr-airbnb": "highlightMarker",
-        "mouseleave .tr-airbnb": "normalizeMarker"
+        "click .info-details": "loadSLB",
+        "mouseenter .tr-houserental": "highlightMarker",
+        "mouseleave .tr-houserental": "normalizeMarker"
       },
 
-      slbPic: function(src) {
-        var data;
-        // for Airbnb (WPE)
-        src = src.replace("x_small", "large");
+      getMin: function() {
+        return this.min;
+      },
 
-        // for 9flats
-        src = src.replace("small", "large");
-        Outpost.helpers.showSLB({
-          src: src
-        });
+      getMax: function() {
+        return this.max;
       },
 
       initSliderGUI: function() {
@@ -576,8 +533,8 @@
             } else {
               $("#price-value-max-hou").text(ui.values[1]);
             }
-            Outpost.values.airbnb.min = ui.values[0];
-            Outpost.values.airbnb.max = ui.values[1];
+            _this.min = ui.values[0];
+            _this.max = ui.values[1];
             _this.priceFilter();
           },
           change: function() {
@@ -587,74 +544,44 @@
         });
       },
 
+      loadSLB: function(e) {
+        var $node = $(e.currentTarget || e);
+        var data = $("." + $node.data('id')).data('item');
+        Outpost.helpers.showCarousel(data);
+      },
+
       priceFilter: function() {
-        var _this = this;
-        var sorted = _(_this.divCollection).map(function(value) {
-          var item = $(value).data('item');
-          var price = item.price2;
-          if (price >= Outpost.values.airbnb.min && price <= Outpost.values.airbnb.max) {
-            return $(value);
-          }
+        Outpost.helpers.priceFilter({
+          itemStore: this.itemStore,
+          collection: this.divCollection,
+          min: this.min,
+          max: this.max
         });
-        _this.$el.find('#airbnb-list').html(sorted);
       },
 
       priceMarkerFilter: function() {
-        var _this = this;
-        var sorted = _(_this.divCollection).map(function(value) {
-          var item = $(value).data('item');
-          var price = item.price2;
-          if (price >= Outpost.values.airbnb.min && price <= Outpost.values.airbnb.max) {
-            Outpost.mvc.views.map.addMarker(item, _this.itemStore);
-          } else {
-            Outpost.mvc.views.map.removeMarker(item.markerid);
-          }
+        Outpost.helpers.priceMarkerFilter({
+          itemStore: this.itemStore,
+          collection: this.divCollection,
+          min: this.min,
+          max: this.max
         });
       },
 
       sortBy: function(e) {
-        this.sortType = $(e.currentTarget).val();
+        this.itemStore.sortType = $(e.currentTarget).val();
         this.sortDiv();
       },
 
       sortDiv: function() {
-        var sorted;
-        switch (this.sortType) {
-          case "low2high":
-            sorted = $('.tr-airbnb').sort(function (a, b) {
-              var p1 = $(a).data('item').price2;
-              var p2 = $(b).data('item').price2;
-              return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
-            });
-            this.$el.find('#airbnb-list').empty();
-            this.$el.find('#airbnb-list').html(sorted);
-            break;
-          case "high2low":
-            sorted = $('.tr-airbnb').sort(function (a, b) {
-              var p1 = $(a).data('item').price2;
-              var p2 = $(b).data('item').price2;
-              return (p1 > p2) ? -1 : (p1 < p2) ? 1 : 0;
-            });
-            this.$el.find('#airbnb-list').empty();
-            this.$el.find('#airbnb-list').html(sorted);
-           break;
-        }
-        this.divCollection = $('.tr-airbnb');
-      },
-
-      filterResults: function(e) {
-        e.preventDefault();
-        $('#submit-filter-rid').button('loading');
-        Outpost.helpers.defineDestLoc();
-        this.clearAndFetch();
-      },
-
-      loadSLB: function(e) {
-        var $node = $(e.currentTarget);
-        this.slbPic($node.attr('src'));
+        Outpost.helpers.sortDiv({
+          itemStore: this.itemStore
+        });
+        this.divCollection = $('.tr-houserental');
       },
 
       clearAndFetch: function() {
+        Outpost.state.page.air = 1;
         this.clearData();
         this.fetchData();
       },
@@ -665,7 +592,7 @@
         Outpost.mvc.views.map.removeMarkers("air");
         Outpost.state.page.air = 1;
         this.$el
-         .find('#airbnb-list')
+         .find('#houserental-list')
          .empty();
       },
 
@@ -677,7 +604,7 @@
 
       fetchData: function() {
         var _this = this;
-        var $loading = $('#airbnb-loading');
+        var $loading = $('#houserental-loading');
         var $loadMore = $('#lm-air');
         this.collection.fetch({
           beforeSend: function() {
@@ -688,6 +615,15 @@
             $loading.hide();
             $loadMore.button('reset');
             _this.render();
+          },
+          error: function() {
+            Outpost.helpers.showAlertBox({
+              type: "alert-error",
+              text: "<strong>Sorry!</strong>" +
+                    "something went wrong! Trying again.."
+            });
+            $('#lm-air').button('reset');
+            this.clearAndFetch();
           }
         });
       },
@@ -715,12 +651,15 @@
       render: function() {
         var collection = this.collection.toJSON();
         if (collection.length) {
-          this.$el.find('#airbnb-list').append(this.template({
+          $('#houserental-list').append(this.template({
             items: collection
           }));
           $('#js-counter').text(Outpost.state.numOfRes);
-          Outpost.mvc.views.map.setMarkers(this.$el.find('#houserental').data('markers'), this.itemStore);
-          this.$el.find('#houserental').removeData('markers');
+          Outpost.mvc.views.map.setMarkers(
+            $('#houserental').data('markers'),
+            this.itemStore
+          );
+          $('#houserental').removeData('markers');
           this.sortDiv();
           this.priceFilter();
         } else if (Outpost.state.page.air !== 1) {
@@ -731,10 +670,10 @@
           $('#lm-air').button('reset');
         } else {
           this.$el
-           .find('#airbnb-list')
+           .find('#houserental-list')
            .html(
             "<div class='text-center'>" +
-            "No rentals in " + Outpost.values.origLocation + " found." +
+            "No rentals in " + Outpost.values.destLocation + " found." +
             "</div>"
            );
         }
@@ -742,53 +681,53 @@
     }),
 
     // =======================================================
-    // Ridejoy list view
+    // rideshare list view
     // =======================================================
-    ridejoy: Parse.View.extend({
+    rideshare: Parse.View.extend({
       el: '#sidebar',
-      template: _.template($('#tmpl-ridejoyRow').html()),
-      divCollection: [],
-      sortType: "relevance",
+      template: _.template($('#tmpl-rideshareRow').html()),
       min: 0,
       max: 300,
+      divCollection: [],
       itemStore: {
         prefix: "rid",
-        infoWindowTmpl: Outpost.tmpl.ridejoyInfo,
+        sortType: "relevance",
+        infoWindowTmpl: Outpost.tmpl.rideshareInfo,
         icon: new google.maps.MarkerImage(
-          'img/ridejoy/image.png',
+          'img/rideshare/image.png',
           new google.maps.Size(39,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
         shadow: new google.maps.MarkerImage(
-          'img/ridejoy/shadow.png',
+          'img/rideshare/shadow.png',
           new google.maps.Size(67,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
         shape: {
-          coord: [25,0,28,1,30,2,31,3,32,4,33,5,34,6,35,7,36,8,36,9,37,10,37,11,38,12,38,13,38,14,38,15,38,16,38,17,38,18,38,19,38,20,38,21,38,22,38,23,37,24,37,25,36,26,35,27,35,28,34,29,34,30,33,31,32,32,31,33,31,34,30,35,30,36,29,37,28,38,28,39,27,40,26,41,26,42,25,43,25,44,24,45,23,46,23,47,22,48,21,49,17,49,16,48,15,47,15,46,14,45,13,44,13,43,12,42,12,41,11,40,10,39,10,38,9,37,8,36,8,35,7,34,7,33,6,32,5,31,5,30,4,29,3,28,3,27,2,26,1,25,1,24,1,23,0,22,0,21,0,20,0,19,0,18,0,17,0,16,0,15,0,14,0,13,0,12,1,11,1,10,2,9,2,8,3,7,4,6,5,5,6,4,7,3,9,2,10,1,13,0,25,0],
+          coord: Outpost.values.coord,
           type: 'poly'
         },
-        iconHover: "img/ridejoy/hover.png",
-        nodeList: "#ridejoy-list",
+        iconHover: "img/rideshare/hover.png",
+        nodeList: "#rideshare-list",
         nodeTab: "#js-ridesharemenu",
+        nodeUnit: ".tr-rideshare",
         animation: ""
       },
 
       initialize: function() {
         _.bindAll(this, 'render');
         this.initSliderGUI();
-        this.collection = new Outpost.collections.ridejoy();
+        this.collection = new Outpost.collections.rideshare();
         this.fetchData();
       },
 
       events: {
         "change #js-sortby-input-rid": "sortBy",
-        'submit #filter-form-rid': 'filterResults',
-        "click .tr-ridejoy": "openInfoWindow",
-        "mouseenter .tr-ridejoy": "highlightMarker",
-        "mouseleave .tr-ridejoy": "normalizeMarker"
+        "click .tr-rideshare": "openInfoWindow",
+        "mouseenter .tr-rideshare": "highlightMarker",
+        "mouseleave .tr-rideshare": "normalizeMarker"
       },
 
       initSliderGUI: function() {
@@ -816,64 +755,33 @@
       },
 
       priceFilter: function() {
-        var _this = this;
-        var sorted = _(_this.divCollection).map(function(value) {
-          var price = $(value).data('item').price2;
-          if (price >= _this.min && price <= _this.max) {
-            return $(value);
-          }
+        Outpost.helpers.priceFilter({
+          itemStore: this.itemStore,
+          collection: this.divCollection,
+          min: this.min,
+          max: this.max
         });
-        _this.$el.find('#ridejoy-list').html(sorted);
       },
 
       priceMarkerFilter: function() {
-        var _this = this;
-        var sorted = _(_this.divCollection).map(function(value) {
-          var item = $(value).data('item');
-          var price = item.price2;
-          if (price >= _this.min && price <= _this.max) {
-            Outpost.mvc.views.map.addMarker(item, _this.itemStore);
-          } else {
-            Outpost.mvc.views.map.removeMarker(item.markerid);
-          }
+        Outpost.helpers.priceMarkerFilter({
+          itemStore: this.itemStore,
+          collection: this.divCollection,
+          min: this.min,
+          max: this.max
         });
       },
 
       sortBy: function(e) {
-        this.sortType = $(e.currentTarget).val();
+        this.itemStore.sortType = $(e.currentTarget).val();
         this.sortDiv();
       },
 
       sortDiv: function() {
-        var sorted;
-        switch (this.sortType) {
-          case "low2high":
-            sorted = $('.tr-ridejoy').sort(function (a, b) {
-              var p1 = $(a).data('item').price2;
-              var p2 = $(b).data('item').price2;
-              return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
-            });
-            this.$el.find('#ridejoy-list').empty();
-            this.$el.find('#ridejoy-list').html(sorted);
-            break;
-          case "high2low":
-            sorted = $('.tr-ridejoy').sort(function (a, b) {
-              var p1 = $(a).data('item').price2;
-              var p2 = $(b).data('item').price2;
-              return (p1 > p2) ? -1 : (p1 < p2) ? 1 : 0;
-            });
-            this.$el.find('#ridejoy-list').empty();
-            this.$el.find('#ridejoy-list').html(sorted);
-           break;
-        }
-        this.divCollection = $('.tr-ridejoy');
-      },
-
-      filterResults: function(e) {
-        e.preventDefault();
-        $('#submit-filter-rid').button('loading');
-        Outpost.helpers.defineDestLoc();
-        this.clearAndFetch();
+        Outpost.helpers.sortDiv({
+          itemStore: this.itemStore
+        });
+        this.divCollection = $('.tr-rideshare');
       },
 
       clearAndFetch: function() {
@@ -886,13 +794,13 @@
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("rid");
         this.$el
-         .find('#ridejoy-list')
+         .find('#rideshare-list')
          .empty();
       },
 
       fetchData: function() {
         var _this = this;
-        var $loading = $('#ridejoy-loading');
+        var $loading = $('#rideshare-loading');
         this.collection.fetch({
           beforeSend: function() {
             $loading.show();
@@ -904,8 +812,10 @@
           error: function() {
             Outpost.helpers.showAlertBox({
               type: "alert-error",
-              text: "<strong>Sorry!</strong> something went wrong, please try again!"
+              text: "<strong>Sorry!</strong>" +
+                    "something went wrong! Trying again.."
             });
+            this.clearAndFetch();
           },
           complete: function() {
             $('#submit-filter-rid').button('reset');
@@ -936,20 +846,23 @@
       render: function() {
         var collection = this.collection.toJSON();
         if (collection.length) {
-          this.$el.find('#ridejoy-list').append(this.template({
+          $('#rideshare-list').append(this.template({
             items: collection
           }));
           $('#js-counter').text(Outpost.state.numOfRes);
-          Outpost.mvc.views.map.setMarkers(this.$el.find('#rideshare').data('markers'), this.itemStore);
-          this.$el.find('#rideshare').removeData('markers');
+          Outpost.mvc.views.map.setMarkers(
+            $('#rideshare').data('markers'),
+            this.itemStore
+          );
+          $('#rideshare').removeData('markers');
           this.sortDiv();
           this.priceFilter();
         } else {
           this.$el
-           .find('#ridejoy-list')
+           .find('#rideshare-list')
            .html(
             "<div class='text-center'>" +
-            "No rides found towards " + Outpost.values.origLocation + "." +
+            "No rides found towards " + Outpost.values.destLocation + "." +
             "</div>"
            );
         }
@@ -957,59 +870,60 @@
     }),
 
     // =======================================================
-    // Vayable list view
+    // tourism list view
     // =======================================================
-    vayable: Parse.View.extend({
+    tourism: Parse.View.extend({
       el: '#sidebar',
-      template: _.template($('#tmpl-vayableRow').html()),
+      template: _.template($('#tmpl-tourismRow').html()),
       min: 0,
       max: 300,
       divCollection: [],
-      sortType: "relevance",
       itemStore: {
         prefix: "vay",
-        infoWindowTmpl: Outpost.tmpl.vayableInfo,
+        sortType: "relevance",
+        infoWindowTmpl: Outpost.tmpl.tourismInfo,
         icon: new google.maps.MarkerImage(
-          'img/vayable/image.png',
+          'img/tourism/image.png',
           new google.maps.Size(39,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
         shadow: new google.maps.MarkerImage(
-          'img/vayable/shadow.png',
+          'img/tourism/shadow.png',
           new google.maps.Size(67,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
         shape: {
-          coord: [26,0,28,1,30,2,31,3,32,4,33,5,34,6,35,7,36,8,36,9,37,10,37,11,38,12,38,13,38,14,38,15,38,16,38,17,38,18,38,19,38,20,38,21,38,22,38,23,37,24,37,25,36,26,36,27,35,28,34,29,34,30,33,31,32,32,32,33,31,34,30,35,30,36,29,37,28,38,28,39,27,40,26,41,26,42,25,43,25,44,24,45,23,46,23,47,22,48,21,49,17,49,16,48,15,47,15,46,14,45,13,44,13,43,12,42,12,41,11,40,10,39,10,38,9,37,8,36,8,35,7,34,6,33,6,32,5,31,4,30,4,29,3,28,3,27,2,26,1,25,1,24,1,23,0,22,0,21,0,20,0,19,0,18,0,17,0,16,0,15,0,14,0,13,0,12,1,11,1,10,2,9,2,8,3,7,4,6,5,5,6,4,7,3,9,2,10,1,13,0,26,0],
+          coord: Outpost.values.coord,
           type: 'poly'
         },
-        iconHover: "img/vayable/hover.png",
-        nodeList: "#vayable-list",
+        iconHover: "img/tourism/hover.png",
+        nodeList: "#tourism-list",
         nodeTab: "#js-tourismmenu",
+        nodeUnit: ".tr-tourism",
         animation: ""
       },
 
       initialize: function() {
         _.bindAll(this, 'render');
         this.initSliderGUI();
-        this.collection = new Outpost.collections.vayable();
+        this.collection = new Outpost.collections.tourism();
         this.fetchData();
       },
 
       events: {
         "change #js-sortby-input-tou": "sortBy",
-        "click .tr-vayable": "openInfoWindow",
+        "click .tr-tourism": "openInfoWindow",
         "click #lm-vay": "loadMore",
         "click .tou-listimg": "loadSLB",
-        "mouseenter .tr-vayable": "highlightMarker",
-        "mouseleave .tr-vayable": "normalizeMarker"
+        "mouseenter .tr-tourism": "highlightMarker",
+        "mouseleave .tr-tourism": "normalizeMarker"
       },
 
       initSliderGUI: function() {
         var _this = this;
-        _this.$el.find("#js-price-input-tou").slider({
+        $("#js-price-input-tou").slider({
           range: true,
           values: [10, 300],
           min: 1,
@@ -1031,60 +945,6 @@
         });
       },
 
-      priceFilter: function() {
-        var _this = this;
-        var sorted = _(_this.divCollection).map(function(value) {
-          var price = $(value).data('item').price2;
-          if (price >= _this.min && price <= _this.max) {
-            return $(value);
-          }
-        });
-        _this.$el.find('#vayable-list').html(sorted);
-      },
-
-      priceMarkerFilter: function() {
-        var _this = this;
-        var sorted = _(_this.divCollection).map(function(value) {
-          var item = $(value).data('item');
-          var price = item.price2;
-          if (price >= _this.min && price <= _this.max) {
-            Outpost.mvc.views.map.addMarker(item, _this.itemStore);
-          } else {
-            Outpost.mvc.views.map.removeMarker(item.markerid);
-          }
-        });
-      },
-
-      sortBy: function(e) {
-        this.sortType = $(e.currentTarget).val();
-        this.sortDiv();
-      },
-
-      sortDiv: function() {
-        var sorted;
-        switch (this.sortType) {
-          case "low2high":
-            sorted = $('.tr-vayable').sort(function (a, b) {
-              var p1 = $(a).data('item').price2;
-              var p2 = $(b).data('item').price2;
-              return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
-            });
-            this.$el.find('#vayable-list').empty();
-            this.$el.find('#vayable-list').html(sorted);
-            break;
-          case "high2low":
-            sorted = $('.tr-vayable').sort(function (a, b) {
-              var p1 = $(a).data('item').price2;
-              var p2 = $(b).data('item').price2;
-              return (p1 > p2) ? -1 : (p1 < p2) ? 1 : 0;
-            });
-            this.$el.find('#vayable-list').empty();
-            this.$el.find('#vayable-list').html(sorted);
-           break;
-        }
-        this.divCollection = $('.tr-vayable');
-      },
-
       loadSLB: function(e) {
         var $node = $(e.currentTarget);
         this.slbPic($node.attr('src'));
@@ -1097,13 +957,43 @@
         });
       },
 
+      priceFilter: function() {
+        Outpost.helpers.priceFilter({
+          itemStore: this.itemStore,
+          collection: this.divCollection,
+          min: this.min,
+          max: this.max
+        });
+      },
+
+      priceMarkerFilter: function() {
+        Outpost.helpers.priceMarkerFilter({
+          itemStore: this.itemStore,
+          collection: this.divCollection,
+          min: this.min,
+          max: this.max
+        });
+      },
+
+      sortBy: function(e) {
+        this.itemStore.sortType = $(e.currentTarget).val();
+        this.sortDiv();
+      },
+
+      sortDiv: function() {
+        Outpost.helpers.sortDiv({
+          itemStore: this.itemStore
+        });
+        this.divCollection = $('.tr-tourism');
+      },
+
       clearData: function() {
         this.divCollection = [];
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("vay");
         Outpost.state.page.vay = 1;
         this.$el
-         .find('#vayable-list')
+         .find('#tourism-list')
          .empty();
       },
 
@@ -1115,7 +1005,7 @@
 
       fetchData: function() {
         var _this = this;
-        var $loading = $('#vayable-loading');
+        var $loading = $('#tourism-loading');
         var $loadMore = $('#lm-vay');
         this.collection.fetch({
           beforeSend: function() {
@@ -1126,6 +1016,15 @@
             $loading.hide();
             $loadMore.button('reset');
             _this.render();
+          },
+          error: function() {
+            Outpost.helpers.showAlertBox({
+              type: "alert-error",
+              text: "<strong>Sorry!</strong>" +
+                    "something went wrong! Trying again.."
+            });
+            $('#lm-vay').button('reset');
+            this.clearAndFetch();
           }
         });
       },
@@ -1153,12 +1052,15 @@
       render: function() {
         var collection = this.collection.toJSON();
         if (collection.length) {
-          this.$el.find('#vayable-list').append(this.template({
+          $('#tourism-list').append(this.template({
             items: collection
           }));
           $('#js-counter').text(Outpost.state.numOfRes);
-          Outpost.mvc.views.map.setMarkers(this.$el.find('#tourism').data('markers'), this.itemStore);
-          this.$el.find('#tourism').removeData('markers');
+          Outpost.mvc.views.map.setMarkers(
+            $('#tourism').data('markers'),
+            this.itemStore
+          );
+          $('#tourism').removeData('markers');
           this.sortDiv();
           this.priceFilter();
         } else if (Outpost.state.page.vay !== 1) {
@@ -1168,9 +1070,9 @@
           });
           $('#lm-vay').button('reset');
         } else {
-          this.$el.find('#vayable-list').html(
+          $('#tourism-list').html(
             "<div class='text-center'>" +
-            "No guides in " + Outpost.values.origLocation + " found." +
+            "No guides in " + Outpost.values.destLocation + " found." +
             "</div>"
           );
         }
@@ -1200,9 +1102,8 @@
         $node.attr("disabled", "disabled");
         $node.text("Locating..");
         geoPromise.done(function(data) {
-          Outpost.values.origLocation = data.location;
-          Outpost.values.origLocationLat = data.latLng[0];
-          Outpost.values.origLocationLng = data.latLng[1];
+          Outpost.helpers.defineLocFromIp(data);
+          Outpost.state.isOriginOnly = true;
           _this.navigateTo(data.location, false);
           _gaq.push(['_trackEvent',
             "mainsearch",
@@ -1214,19 +1115,19 @@
 
       submitForm: function(e) {
         e.preventDefault();
-        this.navigateTo($("#js-orig-location-input").val(), true);
+        this.navigateTo($("#js-dest-location-input").val(), true);
       },
 
       navigateTo: function(value, isFromSearch) {
         Outpost.values.isFromSearch = isFromSearch;
-        var path = "!/mapview/" + value;
+        var path = "!/mapview/" + encodeURI(value);
         Outpost.mvc.router.navigate(path, true);
       },
 
       render: function() {
         var _this = this;
         $('.pg-page').empty();
-        _this.template('home.html', {}).done(function(tmpl) {
+        _this.template('home-1.html', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
         });
       }
@@ -1243,7 +1144,8 @@
         this.render();
       },
 
-      events: {
+      resizeMap: function() {
+        console.log("this");
       },
 
       render: function() {
@@ -1257,6 +1159,7 @@
           views.map = new Outpost.views.map();
           views.sideBar = new Outpost.views.sideBar();
           views.refineSearch = new Outpost.views.refineSearch();
+          new Outpost.views.houModal();
         }
       }
     }),
@@ -1273,7 +1176,19 @@
 
       events: {
         "submit #js-signup-form": "submitSignup",
-        "click #js-su-show-passwd": "showPassword"
+        "click #js-su-show-passwd": "showPassword",
+        "click #js-fb-su": "connectFB"
+      },
+
+      connectFB: function() {
+        Parse.FacebookUtils.logIn('email', {
+          success: function(user) {
+            Outpost.helpers.connectFB(user);
+          },
+          error: function(user, error) {
+            // do nothing
+          }
+        });
       },
 
       submitSignup: function(e) {
@@ -1282,7 +1197,7 @@
         if ($target.parsley('validate')) {
           $nodeArr = [
             $target,
-            $target.find('#js-su-fullname'),
+            $target.find('#js-su-first_name'),
             $target.find('#js-su-email'),
             $target.find('#js-su-password')
           ];
@@ -1295,24 +1210,22 @@
 
       signUpUser: function($nodeArr) {
         var user = new Parse.User();
-        user.set("fullname", $nodeArr[1].val());
+        user.set("first_name", $nodeArr[1].val());
         user.set("username", $nodeArr[2].val());
+        user.set("email", $nodeArr[2].val());
         user.set("password", $nodeArr[3].val());
 
         user.signUp(null, {
           success: function(user) {
             var data = {};
-            var fullname;
+            var first_name;
 
             Outpost.state.$loader.hide();
             $('#js-signup-modal').modal('hide');
             $nodeArr[0].find("#js-su-submit").removeAttr("disabled");
             $nodeArr[0][0].reset();
 
-            fullname = user.get("fullname");
-            data.name = fullname.substring(0, fullname.indexOf(' '));
-            data.name = data.name || fullname;
-            data.isSocial = false;
+            data.name = user.get("first_name");
             Outpost.mvc.views.navBar.render(data);
           },
           error: function(user, error) {
@@ -1337,7 +1250,6 @@
       }
     }),
 
-
     // =======================================================
     // Login - Modal
     // =======================================================
@@ -1350,7 +1262,19 @@
 
       events: {
         "submit #js-login-form": "submitLogin",
-        "click #js-lo-show-passwd": "showPassword"
+        "click #js-lo-show-passwd": "showPassword",
+        "click #js-fb-lo": "connectFB"
+      },
+
+      connectFB: function() {
+        Parse.FacebookUtils.logIn('email', {
+          success: function(user) {
+            Outpost.helpers.connectFB(user);
+          },
+          error: function(user, error) {
+            // do nothing
+          }
+        });
       },
 
       submitLogin: function(e) {
@@ -1373,17 +1297,16 @@
         Parse.User.logIn($nodeArr[1].val(), $nodeArr[2].val(), {
           success: function(user) {
             var data = {};
-            var fullname;
+            var first_name;
 
             Outpost.state.$loader.hide();
             $('#js-login-modal').modal('hide');
             $nodeArr[0].find("#js-lo-submit").removeAttr("disabled");
             $nodeArr[0][0].reset();
 
-            fullname = user.get("fullname");
-            data.name = fullname.substring(0, fullname.indexOf(' '));
-            data.name = data.name || fullname;
-            data.isSocial = false;
+            first_name = user.get("first_name");
+            data.name = first_name.substring(0, first_name.indexOf(' '));
+            data.name = data.name || first_name;
             Outpost.mvc.views.navBar.render(data);
             Outpost.helpers.showAlertBox({
               text: "You're logged in, happy hunting!&nbsp;",
@@ -1409,6 +1332,49 @@
 
       render: function() {
         // nothin'
+      }
+    }),
+
+    // =======================================================
+    // Houserental - Modal
+    // =======================================================
+    houModal: Parse.View.extend({
+      el: '#hou-slb',
+
+      initialize: function() {
+        // do nothing
+      },
+
+      events: {
+        "click .menu-streetview": "loadStreetView",
+        "hide .modal": "showOverflow",
+        "show .modal": "hideOverflow"
+      },
+
+      loadStreetView: function(e) {
+        var latLng = $(e.currentTarget).data('latlng');
+        var street = new google.maps.LatLng(latLng[0],latLng[1]);
+        var panoramaOptions = {
+          position: street,
+          pov: {
+            heading: 34,
+            pitch: 10
+          }
+        };
+
+        new google.maps.StreetViewPanorama(
+          $('.tab-streetview')[0],
+          panoramaOptions
+        );
+      },
+
+      showOverflow: function() {
+        $('body').css("overflow-y", "scroll");
+        $('.modal-backdrop').remove();
+      },
+
+      hideOverflow: function() {
+        $('body').css("overflow-y", "hidden");
       }
     })
   };

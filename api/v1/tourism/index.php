@@ -1,5 +1,5 @@
 <?php
-  require_once('../simple_html_dom.php');
+  require_once('../../simple_html_dom.php');
   $location = urlencode($_GET["eloc"]);
   $page = $_GET["page"];
 
@@ -17,18 +17,24 @@
 
   if (!$tourList->find(".noresults")) {
     foreach($tourList->find('.trip-card') as $aTrip) {
+      $price_full = str_replace(' ', '', trim($aTrip->find('.amount', 0)->plaintext));
+      $price = 0 + substr($price_full, 1);
       $trip['id'] = substr($aTrip->find('a', 0)->href, 13, 4) + 0;
+      $trip['idtype'] = "vayable";
+      $trip['infoWindowIcon'] = "img/vayable.png";
+      $trip['profileImg'] = "img/noprofile.jpg";
       $trip['img'] = extract_unit($aTrip->find('.card', 0)->getAttribute("style"), "'", "'");
       $trip['origin'] = trim($aTrip->find('.tagline', 0)->plaintext);
-      $trip['desc'] = trim($aTrip->find('.title', 0)->plaintext);
-      $trip['price'] = str_replace(' ', '', trim($aTrip->find('.amount', 0)->plaintext));
+      $trip['desc'] = str_replace("'", "", trim($aTrip->find('.title', 0)->plaintext));
+      $trip['price'] = $price_full;
+      $trip['price2'] = $price;
+      $trip['infoWindowIcon'] = "img/vayable.png";
       $trip['link'] = "https://www.vayable.com".$aTrip->find('a', 0)->href;
-
       $output[] = $trip;
     }
   }
 
-  $str = trim(json_encode($output));
+  $str = json_encode($output);
   echo $str;
 
 

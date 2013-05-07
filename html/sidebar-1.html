@@ -1,22 +1,18 @@
 <!-- Map and Sidebar -->
   <div class="sidebar mvwq">
-    <div class="inner">
+    <div class="inner" id="js-inner">
       <!-- Result info -->
       <p class="resultInfo"></p>
       <!-- TabNavs -->
       <ul class="nav nav-tabs">
-        <li class="active"><a id="js-ridesharemenu" href="#rideshare" data-toggle="tab" title="rideshare"><img src="../img/hipster-car.png"></a></li>
-        <li><a id="js-houserentalmenu" href="#houserental" data-toggle="tab" title="houserental"><img src="../img/hipster-house.png"></a></li>
+        <li class="active"><a class="css-red" id="js-ridesharemenu" href="#rideshare" data-toggle="tab" title="rideshare"><img src="../img/hipster-car.png"> Rideshares</a></li>
+        <li><a id="js-houserentalmenu" href="#houserental" data-toggle="tab" title="houserental"><img src="../img/hipster-house.png"> Houserentals</a></li>
         <li><a id="js-tourismmenu" href="#tourism" data-toggle="tab" title="tourism"><img src="../img/hipster-guy.png"></a></li>
       </ul>
       <div class="tab-content">
         <!-- Rideshare -->
         <div class="tab-pane active" id="rideshare">
           <div class="filters" id="filter-rideshare">
-            <form class="filter-form" id="filter-form-rid">
-              <input class="filter-origin-location" id="js-dest-location-input" placeholder="From location" type="search">
-              <button class="btn btn-info submit-filter-rid" id="submit-filter-rid" data-loading-text="Loading.." type="submit">Search</button>
-            </form>
             <div class="price-filter">
               <ul class="slider_values">
                 <li class="price-value-min minimax">$<span id="price-value-min-rid">10</span> USD</li>
@@ -30,8 +26,8 @@
               <option value="high2low">Price: High to low</option>
             </select>
           </div>
-          <div class="loading" id="ridejoy-loading"></div>
-          <div class="lists js-lists" id="ridejoy-list">
+          <div class="loading" id="rideshare-loading"></div>
+          <div class="lists js-lists" id="rideshare-list">
             <!-- items are here -->
           </div>
         </div>
@@ -52,8 +48,8 @@
               <option value="high2low">Price: High to low</option>
             </select>
           </div>
-          <div class="loading" id="airbnb-loading"></div>
-          <div class="lists js-lists" id="airbnb-list">
+          <div class="loading" id="houserental-loading"></div>
+          <div class="lists js-lists" id="houserental-list">
             <!-- items are here -->
           </div>
           <button class="btn load-more" id="lm-air" type="button" data-loading-text="Loading...">Load more..</button>
@@ -75,8 +71,8 @@
               <option value="high2low">Price: High to low</option>
             </select>
           </div>
-          <div class="loading" id="vayable-loading"></div>
-          <div class="lists js-lists" id="vayable-list">
+          <div class="loading" id="tourism-loading"></div>
+          <div class="lists js-lists" id="tourism-list">
             <!-- items are here -->
           </div>
           <button class="btn load-more" id="lm-vay" type="button" data-loading-text="Loading...">Load more..</button>
@@ -85,11 +81,57 @@
     </div>
   </div>
 <script>
-  var destLocation = $("#js-dest-location-input")[0];
+  // Initializes the city typeahead for orig and dest location
   var options = {
     types: ['(cities)']
   };
-  new google.maps.places.Autocomplete(destLocation, options);
-  $('.inner').css('min-height', Outpost.state.rMapHeight + 8);
-  // TODO: date inputs
+  new google.maps.places.Autocomplete($('#js-orig-location-input')[0], options);
+  new google.maps.places.Autocomplete($('#js-search-again')[0], options);
+  $('#js-search-again').val(Outpost.values.destLocation);
+
+  $('#map').css('height', Outpost.state.rMapHeight);
+  $('#js-inner').css('min-height', Outpost.state.rMapHeight + 8);
+  
+  // Initiialize datepicker inputs
+  var $sdate = $('#js-sdate-input');
+  var $edate = $("#js-edate-input");
+
+  var customRange = function customRange(input) {
+    var minDate;
+    var startDateVal = $sdate.val();
+    if (input.id === 'js-edate-input') {
+      if (startDateVal) {
+        minDate = new Date(startDateVal);
+        minDate.setDate(minDate.getDate() + 1);
+        return {
+          minDate: minDate
+        };
+      } else {
+        return {
+          minDate: 1
+        };
+      }
+    }
+  };
+
+  $sdate.datepicker({
+    minDate: 0,
+    inline: true,
+    onClose: function(selectedDate) {
+      $edate.focus();
+    }
+  });
+
+  $edate.datepicker({
+    inline: true,
+    beforeShow: customRange,
+    onClose: function() {
+      $('#js-guest-input').focus();
+    }
+  });
+
+  $(window).resize(function() {
+    Outpost.state.rMapHeight = $(window).height() - 41;
+    $('#map').css('height', Outpost.state.rMapHeight);
+  });
 </script>
