@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
-    <link rel="stylesheet" href="css/custom-8.css">
+    <link rel="stylesheet" href="css/custom-15.css">
 </head>
 <body>
   <div class="bs-load" id="js-bsload" style="display:none">
@@ -29,6 +29,7 @@
       <aside class="pg-page" id="refine-search"></aside>
       <article class="pg-page span12 map map-cont" id="map"></article>
     </section>
+    <section id="pg-listview"></section>
   </main>
 
   <footer id="js-footer">
@@ -192,6 +193,7 @@
               <li><a class="btn-nav js-logout" href="javascript:void(0)">Logout</a></li>
               <% } %>
               <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @zimride, @9flats, @tourism, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
+              <li class='shares twitters'><a href="https://twitter.com/Outpostp2p" class="twitter-follow-button" data-show-count="true"></a></li>
               <li class='shares'><div class="fb-like" data-href="https://www.facebook.com/outpost.travel" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div></li>
             </ul>
           </div>
@@ -360,6 +362,10 @@
     </div>
   </script>
 
+  <script id="tmpl-aListinPage" type="text/template">
+    
+  </script>
+
   <script id="tmpl-rideshareRow" type="text/template">
     <% var markers = []; %>
     <% _.each(items, function(item) {
@@ -368,7 +374,7 @@
       item.markerid = id;
       var json_item = JSON.stringify(item);
       markers.push({
-        latLng: Outpost.helpers.genRdmLL(item.origin),
+        latLng: Outpost.helpers.genRdmLLCC(item.origin).latLng,
         data: item,
         id: id,
         tag: "rid"
@@ -401,9 +407,14 @@
           <span>
             <i class='icon-road'></i>&nbsp;Rideshare
           </span>
-          <a class="btn btn-small info-book-rid ga-gotovendor pull-right" href="<%= item.link %>" target="_blank">
-            Details&nbsp;<i class="icon-play"></i>
-          </a>
+          <div class="rid-button-group pull-right">
+            <a data-orig="<%= item.origin %>" data-dest="<%= item.destination %>" class="btn btn-small routeit">
+              See route&nbsp;<i class="icon-random"></i>
+            </a>
+            <a class="btn btn-small info-book-rid ga-gotovendor" href="<%= item.link %>" target="_blank">
+              Grab a seat&nbsp;<i class="icon-share"></i>
+            </a>
+          </div>
         </div>
       </div>
     <% }); %>
@@ -420,7 +431,7 @@
         var json_item = JSON.stringify(item);
         var price = "$" + item.price2 + " USD";
         markers.push({
-          latLng: item.latLng || Outpost.helpers.genRdmLL(item.neigh),
+          latLng: item.latLng || Outpost.helpers.genRdmLLCC(item.neigh).latLng,
           data: item,
           id: id,
           tag: "air"
@@ -476,7 +487,7 @@
         item.markerid = id;
         var json_item = JSON.stringify(item);
         markers.push({
-          latLng: Outpost.helpers.genRdmLL(item.origin),
+          latLng: Outpost.helpers.genRdmLLCC(item.origin).latLng,
           data: item,
           id: id,
           tag: "vay"
@@ -513,7 +524,7 @@
             <i class='icon-user'></i>&nbsp;Tourism
           </span>
           <a class="btn btn-small info-book-vay ga-gotovendor pull-right" href="<%= item.link %>" target="_blank">
-            Details&nbsp;<i class="icon-play"></i>
+            Book It&nbsp;<i class="icon-share"></i>
           </a>
         </div>
       </div>
@@ -528,18 +539,19 @@
   <script src="js/vendor/underscore-min.js"></script>
   <script src="js/vendor/parse-1.2.7.min.js"></script>
   <script src="js/vendor/backbone-min.js"></script>
-  <script src="js/vendor/parsley.js"></script>
   <!-- EXTRA LIBRARIES -->
   <script src="//maps.googleapis.com/maps/api/js?&amp;sensor=false&amp;libraries=places"></script>
   <script src="js/vendor/gmap3.js"></script>
+  <script src="js/vendor/parsley.js"></script>
+  <script src="js/vendor/waypoints.min.js"></script>
   <!-- MVC -->
-  <script src="js/app/tmpl-8.js"></script>
-  <script src="js/app/models-8.js"></script>
-  <script src="js/app/helpers-8.js"></script>
-  <script src="js/app/views-9.js"></script>
-  <script src="js/app/router-8.js"></script>
+  <script src="js/app/tmpl-15.js"></script>
+  <script src="js/app/models-15.js"></script>
+  <script src="js/app/helpers-15.js"></script>
+  <script src="js/app/views-15.js"></script>
+  <script src="js/app/router-15.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-8.js"></script>
+  <script src="js/main-15.js"></script>
   <!-- FACEBOOK SDK -->
   <div id="fb-root"></div>
   <script>

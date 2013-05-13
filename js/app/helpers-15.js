@@ -2,15 +2,27 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-
+  var debug = false;
+  Outpost.rev = "-15";
   // Used for ajax caching
   Outpost.cache = {};
   Outpost.HTMLcache = {};
+  Outpost.listingsCache = {};
   for (var i in localStorage) {
-    if (i.substr(0, 5) === "Parse") {
+    var sub = i.substr(0, 5);
+    if (sub === "Parse") {
+      continue;
+    } else if (sub === "Pages" && !debug) {
+      Outpost.HTMLcache[i] = JSON.parse(localStorage[i]);
       continue;
     }
     Outpost.cache[i] = JSON.parse(localStorage[i]);
+  }
+
+  if (!debug) {
+    for (var j in sessionStorage) {
+      Outpost.listingsCache[j] = JSON.parse(sessionStorage[j]);
+    }
   }
 
   // To hold the app state
@@ -21,7 +33,8 @@
     isOriginOnly: false,
     page: {
       vay: 1,
-      air: 1
+      air: 1,
+      rid: 1
     },
     searchFilter: {
       sdate: "",
@@ -30,7 +43,10 @@
       minPrice: 0,
       maxPrice: 300,
       numOfNights: 0
-    }
+    },
+    readyHOU: false,
+    readyRID: true,
+    readyTOU: false
   };
 
   // To hold saved input values
@@ -42,6 +58,7 @@
     destLocationLat: "",
     destLocationLng: "",
     isFromSearch: true,
+    numOfTimeout: 0,
     coord: [25,0,28,1,30,2,31,3,32,4,33,5,34,6,35,7,36,8,36,9,37,10,37,11,38,
             12,38,13,38,14,38,15,38,16,38,17,38,18,38,19,38,20,38,21,38,22,38,
             23,37,24,37,25,36,26,35,27,35,28,34,29,34,30,33,31,32,32,32,33,31,
@@ -61,37 +78,47 @@
 
   // Extra helper functions
   Outpost.helpers = {
-    genRdmLL: function(address) {
-      var lat, lng, cached;
-      var options = {
-        url: "http://maps.googleapis.com/maps/api/geocode/json",
-        data: {
-          address: address,
-          sensor: false
-        },
-        type: "GET",
-        dataType: "json",
-        async: false
-      };
+    options: {
+      url: "http://maps.googleapis.com/maps/api/geocode/json",
+      data: {
+        address: "",
+        sensor: false
+      },
+      type: "GET",
+      dataType: "json",
+      async: false
+    },
 
-      var randomize = function randomize() {
-        lat = lat + (Math.random()*0.01) -0.004;
-        lng = lng + (Math.random()*0.01) -0.004;
-      };
+    randomize: function(x) {
+      return x + (Math.random()*0.01) -0.004;
+    },
 
+    genRdmLLCC: function(address) {
+      var lat, lng, cached, city, state, parts,
+          country, response, length, i, objectData = {};
+      var _this = this;
+      _this.options.data.address = address;
       if (!Outpost.cache[address]) {
-        Outpost.cache[address] = $.ajax(options);
+        Outpost.cache[address] = $.ajax(_this.options);
       }
 
       if (typeof Outpost.cache[address].done === 'function') {
         Outpost.cache[address].done(function(data) {
           if (data.status === "OK") {
-            lat = data.results[0].geometry.location.lat;
-            lng = data.results[0].geometry.location.lng;
-            randomize();
+            lat = _this.randomize(data.results[0].geometry.location.lat);
+            lng = _this.randomize(data.results[0].geometry.location.lng);
+            parts = data.results[0].address_components;
+            length = parts.length;
+            for (i = 0; i < length; i++) {
+              if (parts[i].types[0] === "country") {
+                objectData["country"] = parts[i].short_name;
+              } else if (parts[i].short_name.length <= 2) {
+                objectData["state"] = parts[i].short_name;
+              }
+            }
           } else {
-            lat = undefined;
-            lng = undefined;
+            objectData.lat = undefined;
+            objectData.lng = undefined;
           }
 
         }).fail(function(xmlHttpRequest, textStatus, errorThrown) {
@@ -105,29 +132,43 @@
         });
       } else {
         cached = Outpost.cache[address];
-        if (cached.status === 200 && cached.responseJSON.results[0]) {
-          lat = cached.responseJSON.results[0].geometry.location.lat;
-          lng = cached.responseJSON.results[0].geometry.location.lng;
-          randomize();
+        response = cached.responseJSON.results[0];
+        if (cached.status === 200 && response) {
+          lat = _this.randomize(response.geometry.location.lat);
+          lng = _this.randomize(response.geometry.location.lng);
+          objectData.latLng = [lat, lng];
+          parts = response.address_components;
+          length = parts.length;
+          for (i = 0; i < length; i++) {
+            if (parts[i].types[0] === "country") {
+              objectData["country"] = parts[i].short_name;
+            } else if (parts[i].short_name.length <= 2) {
+              objectData["state"] = parts[i].short_name;
+            }
+          }
         } else {
-          Outpost.cache[address] = $.ajax(options);
+          Outpost.cache[address] = $.ajax(_this.options);
         }
       }
 
+      objectData.latLng = [lat, lng];
       localStorage[address] = JSON.stringify(Outpost.cache[address]);
-      return [lat, lng];
+      return objectData;
     },
 
     renderTemplate: function(tmpl_name, tmpl_data) {
       var ajaxPromise,
           tmpl_dir,
           tmpl_url,
-          dff = $.Deferred();
+          dff = $.Deferred(),
+          cached,
+          version = Outpost.rev,
+          page = "Pages" + tmpl_name + version;
 
-      if (!Outpost.HTMLcache[tmpl_name]) {
+      if (!Outpost.HTMLcache[page]) {
         tmpl_dir = '/html';
-        tmpl_url = tmpl_dir + '/' + tmpl_name;
-        Outpost.HTMLcache[tmpl_name] = $.ajax({
+        tmpl_url = tmpl_dir + '/' + tmpl_name + version + ".html";
+        Outpost.HTMLcache[page] = $.ajax({
           url: tmpl_url,
           method: 'GET',
           dataType: 'html',
@@ -141,12 +182,27 @@
           }
         });
       }
-
-      Outpost.HTMLcache[tmpl_name].done(function(data){
-        dff.resolve(_.template(data)(tmpl_data));
-      });
+      if (typeof Outpost.HTMLcache[page].done === 'function') {
+        Outpost.HTMLcache[page].done(function(data){
+          localStorage[page] = JSON.stringify(Outpost.HTMLcache[page]);
+          dff.resolve(_.template(data)(tmpl_data));
+        });
+      } else {
+        cached = Outpost.HTMLcache[page].responseText;
+        dff.resolve(_.template(cached)(tmpl_data));
+      }
 
       return dff.promise();
+    },
+
+    genSearchQuery: function() {
+      var str = "";
+      var x = Outpost.values;
+      var y = Outpost.state.searchFilter;
+      str += x.origLocation + x.destLocation + y.sdate + y.edate + y.guests;
+      str += String(Outpost.state.isOriginOnly) + String(x.isFromSearch);
+      str = str.replace(/ /g, "");
+      return str;
     },
 
     loadAPI: function(url) {
@@ -190,7 +246,10 @@
           location: data.city + ", " +
                     data.region_code + ", " +
                     data.country_code,
-          latLng: [data.latitude, data.longitude]
+          latLng: [data.latitude, data.longitude],
+          country: data.country_code,
+          state: data.region_code,
+          city: data.city
         });
       });
 
@@ -198,10 +257,14 @@
     },
 
     defineDestLoc: function(destLocation) {
-      var destLng = Outpost.helpers.genRdmLL(destLocation);
+      var csc = Outpost.helpers.genRdmLLCC(destLocation);
+      var destLng = csc.latLng;
       Outpost.values.destLocation = destLocation;
       Outpost.values.destLocationLat = destLng[0];
       Outpost.values.destLocationLng = destLng[1];
+
+      Outpost.values.destCountry = csc.country;
+      Outpost.values.destState = csc.state;
       _gaq.push(['_trackEvent',
         "mainsearch",
         "inputcity",
@@ -211,16 +274,23 @@
 
     defineOrigLoc: function() {
       var orignalLocation = $("#js-orig-location-input").val();
-      var origlatLng = Outpost.helpers.genRdmLL(orignalLocation);
+      var csc = Outpost.helpers.genRdmLLCC(orignalLocation);
+      var origlatLng = csc.latLng;
       Outpost.values.origLocation = orignalLocation;
       Outpost.values.origLocationLat = origlatLng[0];
       Outpost.values.origLocationLng = origlatLng[1];
+
+      Outpost.values.origCountry = csc.country;
+      Outpost.values.origState = csc.state;
     },
 
     defineLocFromIp: function(data) {
       Outpost.values.origLocation = data.location;
       Outpost.values.origLocationLat = data.latLng[0];
       Outpost.values.origLocationLng = data.latLng[1];
+      Outpost.values.origCountry = data.country;
+      Outpost.values.origState = data.state;
+
       Outpost.values.destLocation = data.location;
       Outpost.values.destLocationLat = data.latLng[0];
       Outpost.values.destLocationLng = data.latLng[1];

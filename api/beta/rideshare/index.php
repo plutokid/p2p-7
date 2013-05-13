@@ -23,6 +23,12 @@
   $country2 = $_GET["destCountry"];
 
   $country = $country1 ? $country1 : $country2;
+
+  $page = $_GET["page"];
+  if (!$page) {
+    $page = 1;
+  }
+
   if (!$country) {
     $country = "world";
   } elseif ($country == "CA" || $country == "US") {
@@ -75,7 +81,12 @@
       }
     }
 
-    $qry_str = $state1.$state2.$uri.$startDate2.$endDate2;
+    if (!$startDate2 && !$endDate2) {
+      $kangaPage = "?&p={$page}";
+    } else {
+      $kangaPage = "&p={$page}";
+    }
+    $qry_str = $state1.$state2.$uri.$startDate2.$endDate2.$kangaPage;
   // http://www.kangaride.com/itinerarySearch/QC/ON/rideshares_from_Montreal_to_Toronto.html
   // http://www.kangaride.com/itinerarySearch/QC/rideshares_from_Montreal.html
   // http://www.kangaride.com/itinerarySearch/QC/rideshares_to_Montreal.html
@@ -147,7 +158,7 @@
 
  if ($country == "NA") {
     $url = "http://www.zimride.com/search";
-    $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer";
+    $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer&pageID={$page}";
     $url = $url.$qry_str;
     $html = file_get_contents($url);
     
@@ -206,7 +217,7 @@
 
   }
 
-  if ($country == "NA") {
+  if ($country == "NA" && $page == 1) {
     $url = "http://ridejoy.com/rides/search";
     $qry_str = "?type=ride_request&origin={$startLocation}&origin_latitude={$origLat}&origin_longitude={$origLon}&destination={$endLocation}&destination_latitude={$destLat}&destination_longitude={$destLon}&date={$startDate}";
     $url = $url.$qry_str;
@@ -250,7 +261,7 @@
       $startDate2 = $startDate2[1]."/".$startDate2[0]."/".$startDate2[2];
       $startDate2 = urlencode($startDate2);
     }
-    $qry_str = "?db={$startDate2}&fn={$startLocation}&tn={$endLocation}&sort=trip_date&order=asc";
+    $qry_str = "?db={$startDate2}&fn={$startLocation}&tn={$endLocation}&sort=trip_date&order=asc&page={$page}";
     $url = $url.$qry_str;
     $html = file_get_contents($url);
     $poolList->load($html);

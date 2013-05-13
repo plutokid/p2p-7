@@ -1,5 +1,5 @@
 <?php
-  require_once('../simple_html_dom.php');
+  require_once('../../simple_html_dom.php');
   $endLocation = urlencode($_GET["eloc"]);
   $startDate = $_GET["sdate"];
   $endDate = $_GET["edate"];
@@ -8,23 +8,18 @@
   $min = $_GET["price_min"];
   $max = $_GET["price_max"];
 
-  $min2 = $min;
-  $max2 = $max;
-  $min = "&price_min=".$min;
+  $min = 0 + $min;
+  $max = 0 + $max;
 
   if ($max == 300) {
-    $max2 = 100000;
-    $max = '';
-  } else {
-    $max = "&price_max=".$max;
-
+    $max = 10000;
   }
 
   $output = array();
   $rooms = new simple_html_dom();
 
   $url = "https://www.airbnb.com/s";
-  $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}{$min}{$max}&page={$page}";
+  $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}&price_min={$min}&price_max={$max}&page={$page}";
   $url = $url.$qry_str;
   $html = file_get_contents($url);
   $rooms->load($html);
@@ -51,6 +46,7 @@
     $output[] = $room;
   }
 
+   // Starting 9flats
   if ($startDate) {
     $startDate = date('Y-m-d', strtotime($startDate));
   }
@@ -76,6 +72,7 @@
       $room['link'] = "http://www.9flats.com/places/".$aRoom->place->place_details->slug;
       $room['iconPath'] = "img/9flats.ico";
       $room['infoWindowIcon'] = "img/9flats.png";
+      $room['moreinfo'] = $aRoom->place->place_details->links[0]->href."?&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
       $room['latLng'] = array($aRoom->place->place_details->lat, $aRoom->place->place_details->lng);
       $room['type'] = $aRoom->place->place_details->place_type;
       $room['neigh'] = $aRoom->place->place_details->city;

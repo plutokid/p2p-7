@@ -233,7 +233,7 @@ a:focus {
   left: 35%;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1520px) {
   .main-head, .css-logo-bar, .hiw-header {
   }
   .mvwq {

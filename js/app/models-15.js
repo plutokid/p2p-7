@@ -15,7 +15,7 @@
     // =======================================================
     houserental: Backbone.Collection.extend({
       model: Outpost.models.houserental,
-      url: "http://outpost.travel/api/v1/houserental/",
+      url: "http://outpost.travel/api/beta/houserental/",
 
       parse: function(response) {
         return response;
@@ -46,7 +46,6 @@
           dataType: 'json',
           url: _this.url
         }, options);
-
         return $.ajax(params);
       }
     }),
@@ -56,13 +55,9 @@
     // =======================================================
     rideshare: Backbone.Collection.extend({
       model: Outpost.models.rideshare,
-      url: "http://outpost.travel/api/v1/rideshare/",
+      url: "http://outpost.travel/api/beta/rideshare/",
 
       parse: function(response) {
-        Outpost.state.isOriginOnly = false;
-        Outpost.values.origLocation = "";
-        Outpost.values.origLocationLat = "";
-        Outpost.values.origLocationLng = "";
         return response;
       },
 
@@ -75,7 +70,9 @@
           data = {
             eloc: Outpost.values.destLocation,
             destlat: Outpost.values.destLocationLat,
-            destlon: Outpost.values.destLocationLng
+            destlon: Outpost.values.destLocationLng,
+            destState: Outpost.values.destState,
+            destCountry: Outpost.values.destCountry
           };
         }
 
@@ -83,8 +80,13 @@
         data.origlat = Outpost.values.origLocationLat;
         data.origlon = Outpost.values.origLocationLng;
         data.sdate = filter.sdate;
+        data.edate = filter.edate;
         data.guests = filter.guests;
 
+        data.origState = Outpost.values.origState;
+        data.origCountry = Outpost.values.origCountry;
+
+        data.page = Outpost.state.page.rid;
         var params = _.extend({
           data: data,
           type: 'GET',
@@ -101,7 +103,7 @@
     // =======================================================
     tourism: Backbone.Collection.extend({
       model: Outpost.models.tourism,
-      url: "http://outpost.travel/api/v1/tourism/",
+      url: "http://outpost.travel/api/beta/tourism/",
 
       parse: function(response) {
         return response;

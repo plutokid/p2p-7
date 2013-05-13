@@ -76,7 +76,7 @@
               '</li>' +
               '<li>' +
                 '<span class="icon-money css-red"></span>' +
-                '<span>' + item.price + '</span>' +
+                '<span>$' + item.price2 + ' per seat</span>' +
               '</li>' +
             '</ul>' +
             '<a data-orig="' + item.origin + '" data-dest="' + item.destination + '" ' +

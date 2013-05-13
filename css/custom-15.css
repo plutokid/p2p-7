@@ -182,8 +182,9 @@ a:focus {
 }
 
 .shares {
-  padding-top: 9px;
-}
+  padding-top: 10px;
+  margin-right: 2px;
+}`
 
 .st_twitter_hcount {
   padding-top: 7px;
@@ -252,7 +253,7 @@ a:focus {
 }
 
 .twitters iframe {
-  width: 82px !important;
+  width: 60px !important;
 }
 
 .text-white {
@@ -798,12 +799,6 @@ background-color: #2284A1;
   width: 85px;
 }
 
-.price-filter {
-  width: 220px;
-  display: inline-block;
-  margin-right: 10px;
-}
-
 .minimax {
   list-style: none;
   width: 76px;
@@ -1054,4 +1049,148 @@ background-color: #2284A1;
 /*done*/
 .white-arrow {
   color: white;
+}
+
+.fb-like {
+  width: 60px;
+}
+
+.rid-button-group a:first-child {
+  margin-right: 3px;
+  margin-top: -3px;
+}
+
+/* list page view */
+.lp-sidebar {
+  width: 228px;
+  margin: 20px 0 0;
+  padding: 0;
+  background-color: #fff;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+  -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+  box-shadow: 0 1px 4px rgba(0,0,0,.065);
+  top: 93px;
+}
+
+.lp-aList {
+  margin-bottom: 30px;
+}
+
+.lp-list-head {
+  border-radius: 3px 3px 0 0;
+  padding: 0 8px;
+}
+
+.lp-list-title {
+  color: white;
+  display: inline-block;
+}
+
+.lp-list-pp {
+  z-index: 1;
+  position: relative;
+  top: 5px;
+  border-radius: 500px;
+}
+
+.lp-list-body {
+  transition: 0.1s background-color linear;
+  background-color: white;
+}
+
+.lp-list-body:hover {
+  background-color: #ecf0f1;
+}
+
+.lpl-airbnb {
+  background:url("../img/airbnb.png") no-repeat #24b0cf 627px 3px;
+}
+
+.tfpx {
+  font-size: 24px;
+}
+
+.lp-list-info {
+  display: inline-block;
+}
+
+.lp-list-info ul {
+  margin: 0;
+  list-style: none;
+}
+
+.lp-left-group {
+  height: 144px;
+  background-color: #2c3e50;
+  float: right;
+  width: 100px;
+  border-radius: 0 0 3px 0;
+  text-align: center;
+}
+
+.lp-left-group a {
+  margin-top: 10px;
+}
+
+.out-btn {
+  color: white;
+  font-size: 11.9px;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+
+.btn-hou {
+  background: #24b0cf;
+}
+
+.btn-hou:hover {
+  color: white;
+  background: #0b4f5e;
+}
+
+.lp-list-img {
+  cursor: pointer;
+  transition: 0.1s opacity linear;
+  border-radius: 0 0 0 3px;
+}
+
+.lp-list-img:hover {
+  opacity: 0.85;
+}
+
+.lp-price-filter {
+  width: 220px;
+  margin-left: -12px;
+}
+
+.lp-refineSearch {
+  margin-bottom: 10px;
+}
+
+.lp-refineSearchForm {
+  background-color: rgba(52, 73, 94, 0.85);
+  padding: 7px;
+  border-radius: 3px;
+  height: 30px;
+  margin: 0;
+}
+
+.lp-refineSearchbtn {
+  margin-top: -10px;
+}
+
+.lp-arrowwhite {
+  color: white;
+  vertical-align: text-bottom;
+}
+
+.lp-sortfilter {
+  width: 197px;
 }

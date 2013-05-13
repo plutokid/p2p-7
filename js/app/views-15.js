@@ -59,6 +59,7 @@
       isInterested: false,
 
       initialize: function() {
+        $('#map').css('height', Outpost.state.rMapHeight);
         this.render();
       },
 
@@ -172,7 +173,8 @@
               } else {
                 _this.$el.gmap3({
                   marker: {
-                    latLng:item.latLng || Outpost.helpers.genRdmLL(item.origin),
+                    latLng:item.latLng ||
+                              (Outpost.helpers.genRdmLLCC(item.origin)).latLng,
                     data: item,
                     id: item.markerid,
                     tag: item.prefix,
@@ -357,6 +359,26 @@
         this.render();
       },
 
+      events: {
+        "shown .mv-tab": "initLazyLoad"
+      },
+
+      initLazyLoad: function(e) {
+        var target = $(e.target).attr("id");
+        $.waypoints('destroy');
+        switch(target) {
+          case "js-houserentalmenu":
+            Outpost.mvc.views.houserental.infiniteScroll();
+            break;
+          case "js-ridesharemenu":
+            Outpost.mvc.views.rideshare.infiniteScroll();
+            break;
+          case "js-tourismmenu":
+            Outpost.mvc.views.tourism.infiniteScroll();
+            break;
+        }
+      },
+
       toggleFilterTo: function(e) {
         var $btn = $(e.target);
         if (!$btn.hasClass('active')) {
@@ -394,7 +416,7 @@
 
       render: function() {
         var _this = this;
-        _this.template('sidebar-1.html', {}).done(function(tmpl) {
+        _this.template('sidebar', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           _this.updateNavbarRes();
           _this.initServices();
@@ -455,6 +477,62 @@
 
       render: function() {
         this.$el.html(this.template());
+        var options = {
+          types: ['(cities)']
+        };
+        new google.maps.places.Autocomplete($('#js-orig-location-input')[0], options);
+        new google.maps.places.Autocomplete($('#js-search-again')[0], options);
+
+        if (Outpost.state.isOriginOnly) {
+          $('#js-orig-location-input').val(Outpost.values.origLocation);
+        } else {
+          $('#js-search-again').val(Outpost.values.destLocation);
+        }
+
+        $('#map').css('height', Outpost.state.rMapHeight);
+        $('#js-inner').css('min-height', Outpost.state.rMapHeight + 8);
+
+        var $sdate = $('#js-sdate-input');
+        var $edate = $("#js-edate-input");
+
+        var customRange = function customRange(input) {
+          var minDate;
+          var startDateVal = $sdate.val();
+          if (input.id === 'js-edate-input') {
+            if (startDateVal) {
+              minDate = new Date(startDateVal);
+              minDate.setDate(minDate.getDate() + 1);
+              return {
+                minDate: minDate
+              };
+            } else {
+              return {
+                minDate: 1
+              };
+            }
+          }
+        };
+
+        $sdate.datepicker({
+          minDate: 0,
+          inline: true,
+          onClose: function(selectedDate) {
+            $edate.focus();
+          }
+        });
+
+        $edate.datepicker({
+          inline: true,
+          beforeShow: customRange,
+          onClose: function() {
+            $('#js-guest-input').focus();
+          }
+        });
+
+        $(window).resize(function() {
+          Outpost.state.rMapHeight = $(window).height() - 41;
+          $('#map').css('height', Outpost.state.rMapHeight);
+        });
       }
     }),
 
@@ -466,6 +544,7 @@
       template: _.template($('#tmpl-houserentalRow').html()),
       min: 0,
       max: 300,
+      prevSize: 0,
       divCollection: [],
       itemStore: {
         prefix: "air",
@@ -539,6 +618,9 @@
           },
           change: function() {
             _this.priceMarkerFilter();
+            _this.prevSize = 0;
+            _this.infiniteScroll();
+            $.waypoints('destroy');
             Outpost.state.page.air = 1;
           }
         });
@@ -591,12 +673,14 @@
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("air");
         Outpost.state.page.air = 1;
+        Outpost.state.readyHOU = false;
         this.$el
          .find('#houserental-list')
          .empty();
       },
 
       loadMore: function() {
+        $.waypoints('destroy');
         this.itemStore.animation = google.maps.Animation.DROP;
         Outpost.state.page.air += 1;
         this.fetchData();
@@ -606,26 +690,44 @@
         var _this = this;
         var $loading = $('#houserental-loading');
         var $loadMore = $('#lm-air');
-        this.collection.fetch({
-          beforeSend: function() {
-            $loading.show();
-            $loadMore.button('loading');
-          },
-          success: function () {
+        var query = Outpost.helpers.genSearchQuery();
+        query += String(Outpost.state.page.air) +
+                String(this.min) + String(this.max) + "air";
+        if (!Outpost.listingsCache[query]) {
+          Outpost.listingsCache[query] = this.collection.fetch({
+            beforeSend: function() {
+              $loading.show();
+              $loadMore.button('loading');
+            },
+            error: function() {
+              Outpost.helpers.showAlertBox({
+                type: "alert-error",
+                text: "<strong>Sorry!</strong>" +
+                      " something went wrong! Trying again.."
+              });
+              $('#lm-air').button('reset');
+              Outpost.values.numOfTimeout++;
+              if (Outpost.values.numOfTimeout < 9) {
+                _this.clearAndFetch();
+              }
+            }
+          });
+        }
+
+        if (typeof Outpost.listingsCache[query].done === 'function') {
+          Outpost.listingsCache[query].done(function(data) {
+            _this.arrCollection = data;
             $loading.hide();
             $loadMore.button('reset');
             _this.render();
-          },
-          error: function() {
-            Outpost.helpers.showAlertBox({
-              type: "alert-error",
-              text: "<strong>Sorry!</strong>" +
-                    "something went wrong! Trying again.."
-            });
-            $('#lm-air').button('reset');
-            this.clearAndFetch();
-          }
-        });
+            sessionStorage[query] = JSON.stringify(Outpost.listingsCache[query]);
+          });
+        } else {
+          this.arrCollection = Outpost.listingsCache[query].responseJSON;
+          $loading.hide();
+          $loadMore.button('reset');
+          _this.render();
+        }
       },
 
       openInfoWindow: function(e) {
@@ -648,8 +750,35 @@
         Outpost.mvc.views.map.normalizeMarker(item, this.itemStore);
       },
 
+      infiniteScroll: function() {
+        var size, _this = this, tr;
+        tr = this.itemStore.nodeUnit;
+        size = $(tr).length;
+        _this.prevSize = size;
+        size =  _this.prevSize - 10;
+        if (size < 0) {
+          if (size - _this.prevSize < 8) {
+            _this.loadMore();
+          }
+          size = 0;
+        }
+
+        $(tr + ':eq(' + size + ')').waypoint(function(direction) {
+          if (direction === "down" && Outpost.state.readyHOU) {
+            _this.loadMore();
+          }
+        });
+
+        Outpost.state.readyHOU = true;
+      },
+
       render: function() {
-        var collection = this.collection.toJSON();
+        var collection, _this = this;
+        if (this.collection.length) {
+          collection = this.collection.toJSON();
+        } else {
+          collection = this.arrCollection;
+        }
         if (collection.length) {
           $('#houserental-list').append(this.template({
             items: collection
@@ -662,12 +791,14 @@
           $('#houserental').removeData('markers');
           this.sortDiv();
           this.priceFilter();
+          this.infiniteScroll();
         } else if (Outpost.state.page.air !== 1) {
           Outpost.helpers.showAlertBox({
             type: "alert-error",
             text: "<strong>Sorry!</strong> no more feeds found!"
           });
           $('#lm-air').button('reset');
+          $.waypoints('destroy');
         } else {
           this.$el
            .find('#houserental-list')
@@ -689,6 +820,7 @@
       min: 0,
       max: 300,
       divCollection: [],
+      prevSize: 0,
       itemStore: {
         prefix: "rid",
         sortType: "relevance",
@@ -726,6 +858,8 @@
       events: {
         "change #js-sortby-input-rid": "sortBy",
         "click .tr-rideshare": "openInfoWindow",
+        "click .routeit": "routeIt",
+        "click #lm-rid": "loadMore",
         "mouseenter .tr-rideshare": "highlightMarker",
         "mouseleave .tr-rideshare": "normalizeMarker"
       },
@@ -750,6 +884,9 @@
           },
           change: function() {
             _this.priceMarkerFilter();
+            _this.prevSize = 0;
+            _this.infiniteScroll();
+            $.waypoints('destroy');
           }
         });
       },
@@ -793,34 +930,62 @@
         this.divCollection = [];
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("rid");
+        Outpost.state.page.rid = 1;
+        Outpost.state.readyRID = false;
         this.$el
          .find('#rideshare-list')
          .empty();
       },
 
+      loadMore: function() {
+        $.waypoints('destroy');
+        this.itemStore.animation = google.maps.Animation.DROP;
+        Outpost.state.page.rid += 1;
+        this.fetchData();
+      },
+
       fetchData: function() {
         var _this = this;
         var $loading = $('#rideshare-loading');
-        this.collection.fetch({
-          beforeSend: function() {
-            $loading.show();
-          },
-          success: function () {
+        var query = Outpost.helpers.genSearchQuery() + "rid" +
+            Outpost.state.page.rid;
+        var $loadMore = $('#lm-rid');
+
+        if (!Outpost.listingsCache[query]) {
+          Outpost.listingsCache[query] = this.collection.fetch({
+            beforeSend: function() {
+              $loading.show();
+              $loadMore.button('loading');
+            },
+            error: function() {
+              Outpost.helpers.showAlertBox({
+                type: "alert-error",
+                text: "<strong>Sorry!</strong>" +
+                      " something went wrong! Trying again.."
+              });
+              $loadMore.button('reset');
+              Outpost.values.numOfTimeout++;
+              if (Outpost.values.numOfTimeout < 9) {
+                _this.clearAndFetch();
+              }
+            }
+          });
+        }
+
+        if (typeof Outpost.listingsCache[query].done === 'function') {
+          Outpost.listingsCache[query].done(function(data) {
+            _this.arrCollection = data;
             $loading.hide();
+            $loadMore.button('reset');
             _this.render();
-          },
-          error: function() {
-            Outpost.helpers.showAlertBox({
-              type: "alert-error",
-              text: "<strong>Sorry!</strong>" +
-                    "something went wrong! Trying again.."
-            });
-            this.clearAndFetch();
-          },
-          complete: function() {
-            $('#submit-filter-rid').button('reset');
-          }
-        });
+            sessionStorage[query] = JSON.stringify(Outpost.listingsCache[query]);
+          });
+        } else {
+          this.arrCollection = Outpost.listingsCache[query].responseJSON;
+          $loading.hide();
+          $loadMore.button('reset');
+          _this.render();
+        }
       },
 
       openInfoWindow: function(e) {
@@ -843,8 +1008,39 @@
         Outpost.mvc.views.map.normalizeMarker(item, this.itemStore);
       },
 
+      routeIt: function(e) {
+        Outpost.mvc.views.map.routeRide(e.currentTarget);
+      },
+
+      infiniteScroll: function() {
+        var size, _this = this, tr;
+        tr = this.itemStore.nodeUnit;
+        size = $(tr).length;
+        _this.prevSize = size;
+        size =  _this.prevSize - 10;
+        if (size < 0) {
+          if (size - _this.prevSize < 8) {
+            _this.loadMore();
+          }
+          size = 0;
+        }
+
+        $(tr + ':eq(' + size + ')').waypoint(function(direction) {
+          if (direction === "down" && Outpost.state.readyRID) {
+            _this.loadMore();
+          }
+        });
+
+        Outpost.state.readyRID = true;
+      },
+
       render: function() {
-        var collection = this.collection.toJSON();
+        var collection;
+        if (this.collection.length) {
+          collection = this.collection.toJSON();
+        } else {
+          collection = this.arrCollection;
+        }
         if (collection.length) {
           $('#rideshare-list').append(this.template({
             items: collection
@@ -857,6 +1053,15 @@
           $('#rideshare').removeData('markers');
           this.sortDiv();
           this.priceFilter();
+          Outpost.state.isOriginOnly = false;
+          this.infiniteScroll();
+        } else if (Outpost.state.page.rid !== 1) {
+          Outpost.helpers.showAlertBox({
+            type: "alert-error",
+            text: "<strong>Sorry!</strong> no more feeds found!"
+          });
+          $('#lm-rid').button('reset');
+          $.waypoints('destroy');
         } else {
           this.$el
            .find('#rideshare-list')
@@ -878,6 +1083,7 @@
       min: 0,
       max: 300,
       divCollection: [],
+      prevSize: 0,
       itemStore: {
         prefix: "vay",
         sortType: "relevance",
@@ -941,6 +1147,9 @@
           },
           change: function() {
             _this.priceMarkerFilter();
+            _this.prevSize = 0;
+            _this.infiniteScroll();
+            $.waypoints('destroy');
           }
         });
       },
@@ -992,12 +1201,14 @@
         this.itemStore.animation = "";
         Outpost.mvc.views.map.removeMarkers("vay");
         Outpost.state.page.vay = 1;
+        Outpost.state.readyTOU = false;
         this.$el
          .find('#tourism-list')
          .empty();
       },
 
       loadMore: function() {
+        $.waypoints('destroy');
         this.itemStore.animation = google.maps.Animation.DROP;
         Outpost.state.page.vay += 1;
         this.fetchData();
@@ -1007,26 +1218,43 @@
         var _this = this;
         var $loading = $('#tourism-loading');
         var $loadMore = $('#lm-vay');
-        this.collection.fetch({
-          beforeSend: function() {
-            $loading.show();
-            $loadMore.button('loading');
-          },
-          success: function () {
+        var query = Outpost.helpers.genSearchQuery() + "vay";
+        query += String(Outpost.state.page.vay);
+        if (!Outpost.listingsCache[query]) {
+           Outpost.listingsCache[query] = this.collection.fetch({
+            beforeSend: function() {
+              $loading.show();
+              $loadMore.button('loading');
+            },
+            error: function() {
+              Outpost.helpers.showAlertBox({
+                type: "alert-error",
+                text: "<strong>Sorry!</strong>" +
+                      " something went wrong! Trying again.."
+              });
+              $('#lm-vay').button('reset');
+              Outpost.values.numOfTimeout++;
+              if (Outpost.values.numOfTimeout < 9) {
+                _this.clearData();
+              }
+            }
+          });
+        }
+
+        if (typeof Outpost.listingsCache[query].done === 'function') {
+          Outpost.listingsCache[query].done(function(data) {
+            _this.arrCollection = data;
             $loading.hide();
             $loadMore.button('reset');
             _this.render();
-          },
-          error: function() {
-            Outpost.helpers.showAlertBox({
-              type: "alert-error",
-              text: "<strong>Sorry!</strong>" +
-                    "something went wrong! Trying again.."
-            });
-            $('#lm-vay').button('reset');
-            this.clearAndFetch();
-          }
-        });
+            sessionStorage[query] = JSON.stringify(Outpost.listingsCache[query]);
+          });
+        } else {
+          this.arrCollection = Outpost.listingsCache[query].responseJSON;
+          $loading.hide();
+          $loadMore.button('reset');
+          _this.render();
+        }
       },
 
       openInfoWindow: function(e) {
@@ -1049,8 +1277,35 @@
         Outpost.mvc.views.map.normalizeMarker(item, this.itemStore);
       },
 
+      infiniteScroll: function() {
+        var size, _this = this, tr;
+        tr = this.itemStore.nodeUnit;
+        size = $(tr).length;
+        _this.prevSize = size;
+        size =  _this.prevSize - 2;
+        if (size < 0) {
+          if (size - _this.prevSize < 8) {
+            _this.loadMore();
+          }
+          size = 0;
+        }
+
+        $(tr + ':eq(' + size + ')').waypoint(function(direction) {
+          if (direction === "down" && Outpost.state.readyTOU) {
+            _this.loadMore();
+          }
+        });
+
+        Outpost.state.readyTOU = true;
+      },
+
       render: function() {
-        var collection = this.collection.toJSON();
+        var collection;
+        if (this.collection.length) {
+          collection = this.collection.toJSON();
+        } else {
+          collection = this.arrCollection;
+        }
         if (collection.length) {
           $('#tourism-list').append(this.template({
             items: collection
@@ -1063,12 +1318,14 @@
           $('#tourism').removeData('markers');
           this.sortDiv();
           this.priceFilter();
+          this.infiniteScroll();
         } else if (Outpost.state.page.vay !== 1) {
           Outpost.helpers.showAlertBox({
             type: "alert-error",
             text: "<strong>Sorry!</strong> no more feeds found!"
           });
           $('#lm-vay').button('reset');
+          $.waypoints('destroy');
         } else {
           $('#tourism-list').html(
             "<div class='text-center'>" +
@@ -1115,7 +1372,11 @@
 
       submitForm: function(e) {
         e.preventDefault();
-        this.navigateTo($("#js-dest-location-input").val(), true);
+        var city = $("#js-dest-location-input").val();
+        if (city.length <= 9) {
+          city = $('.pac-item:first').text();
+        }
+        this.navigateTo(city, true);
       },
 
       navigateTo: function(value, isFromSearch) {
@@ -1127,7 +1388,7 @@
       render: function() {
         var _this = this;
         $('.pg-page').empty();
-        _this.template('home-1.html', {}).done(function(tmpl) {
+        _this.template('home', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
         });
       }
@@ -1138,14 +1399,9 @@
     // =======================================================
     mapPage: Parse.View.extend({
       el: "#pg-mapview",
-      template: Outpost.helpers.renderTemplate,
 
       initialize: function() {
         this.render();
-      },
-
-      resizeMap: function() {
-        console.log("this");
       },
 
       render: function() {
@@ -1161,6 +1417,29 @@
           views.refineSearch = new Outpost.views.refineSearch();
           new Outpost.views.houModal();
         }
+      }
+    }),
+
+    // =======================================================
+    // Listview - Page
+    // =======================================================
+    listPage: Parse.View.extend({
+      el: "#pg-listview",
+      template: Outpost.helpers.renderTemplate,
+
+      initialize: function() {
+        this.render();
+      },
+
+      events: {
+      },
+
+      render: function() {
+        var _this = this;
+        $('.pg-page').empty();
+        _this.template('listview', {}).done(function(tmpl) {
+          _this.$el.html(tmpl);
+        });
       }
     }),
 
