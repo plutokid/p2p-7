@@ -75,6 +75,14 @@ a:focus {
   padding: 15px 0 0;
 }
 
+.landing-video {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
 .main-head {
   width: 100%;
   margin-top: -51px;
@@ -82,7 +90,7 @@ a:focus {
   padding-bottom: 83px;
   height: 400px;
   background-size: cover;
-  background: #000000 url("../img/blurry.jpg") no-repeat center center;  
+  background: #000000 url("../img/traffic.jpg") no-repeat center center;
 }
 
 .search {
@@ -157,7 +165,6 @@ a:focus {
   background-color: rgba(0, 0, 0, 0.22);
 }
 
-
 .bs-load {
   position: fixed;
   top: 3px;
@@ -166,7 +173,6 @@ a:focus {
   padding: 5px;
   z-index: 9999;
 }
-
 
 .inner:hover {
   overflow: auto;
@@ -177,6 +183,19 @@ a:focus {
   margin-right: 15px;
 }
 
+.logos img {
+  width: 128px;
+}
+
+.room-type-btn {
+  margin-left: 9px;
+  margin-top: 2px;
+}
+
+.room-type-btn .btn {
+  font-size: 13px;
+}
+
 .logos:hover{
   opacity: 0.6;
 }
@@ -184,7 +203,7 @@ a:focus {
 .shares {
   padding-top: 10px;
   margin-right: 2px;
-}`
+}
 
 .st_twitter_hcount {
   padding-top: 7px;
@@ -193,6 +212,7 @@ a:focus {
 
 .refineSearchbtn {
   margin-top: 4px;
+  width: 149px
 }
 
 .loading {
@@ -215,7 +235,7 @@ a:focus {
   padding-left:10px;
   padding-right:14px;
   margin-left:-8px;
-  line-height: 0px !important;
+  line-height: 0 !important;
   padding-top: 4px;
 
 }
@@ -623,8 +643,11 @@ padding-top: 5px;
  /*END HOW IT WORKS*/
  
 .top {
-  margin-top: 90px;
   color: #d8d8d8;
+  background: rgba(12, 13, 14, 0.66);
+  width: 825px;
+  border-radius: 3px;
+  margin: 90px auto 0 auto;
 }
 
 .around-me:hover {
@@ -853,6 +876,7 @@ background-color: #2284A1;
   background-color: rgba(52, 73, 94, 0.85);
   padding: 7px;
   border-radius: 3px;
+  width: 478px;
 }
 
 /* sidebar div listing */

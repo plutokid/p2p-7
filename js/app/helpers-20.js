@@ -2,28 +2,11 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-  var debug = false;
-  Outpost.rev = "-15";
+  Outpost.rev = "-20";
   // Used for ajax caching
   Outpost.cache = {};
   Outpost.HTMLcache = {};
   Outpost.listingsCache = {};
-  for (var i in localStorage) {
-    var sub = i.substr(0, 5);
-    if (sub === "Parse") {
-      continue;
-    } else if (sub === "Pages" && !debug) {
-      Outpost.HTMLcache[i] = JSON.parse(localStorage[i]);
-      continue;
-    }
-    Outpost.cache[i] = JSON.parse(localStorage[i]);
-  }
-
-  if (!debug) {
-    for (var j in sessionStorage) {
-      Outpost.listingsCache[j] = JSON.parse(sessionStorage[j]);
-    }
-  }
 
   // To hold the app state
   Outpost.state = {
@@ -184,7 +167,7 @@
       }
       if (typeof Outpost.HTMLcache[page].done === 'function') {
         Outpost.HTMLcache[page].done(function(data){
-          localStorage[page] = JSON.stringify(Outpost.HTMLcache[page]);
+          sessionStorage[page] = JSON.stringify(Outpost.HTMLcache[page]);
           dff.resolve(_.template(data)(tmpl_data));
         });
       } else {
@@ -236,8 +219,8 @@
     ipToGeo: function() {
       var dff = $.Deferred();
       var ipajax = $.ajax({
-        url: "http://freegeoip.net/json/",
-        dataType: "json",
+        url: "http://freegeoip.net/json/?&callback=?",
+        dataType: "jsonp",
         type: "GET"
       });
 
@@ -452,7 +435,9 @@
         if (price >= data.min && price <= max) {
           Outpost.mvc.views.map.addMarker(item, data.itemStore);
         } else {
-          Outpost.mvc.views.map.removeMarker(item.markerid);
+          if (item.markerid) {
+            Outpost.mvc.views.map.removeMarker(item.markerid);
+          }
         }
       });
     },
@@ -494,6 +479,32 @@
         $('.modal').modal('hide');
         Outpost.mvc.views.navBar.render(data);
       });
+    },
+
+    initCache: function() {
+      var debug = false;
+      var  sub;
+      for (var i in localStorage) {
+        sub = i.substr(0, 5);
+        if (sub === "Parse") {
+          continue;
+        } else if (sub === "Pages" && !debug) {
+          delete localStorage[i];
+          continue;
+        }
+        Outpost.cache[i] = JSON.parse(localStorage[i]);
+      }
+
+      if (!debug) {
+        for (var j in sessionStorage) {
+          sub = j.substr(0, 5);
+          if (sub === "Pages") {
+            Outpost.HTMLcache[j] = JSON.parse(sessionStorage[j]);
+            continue;
+          }
+          Outpost.listingsCache[j] = JSON.parse(sessionStorage[j]);
+        }
+      }
     }
   };
 })(window, jQuery, _, Parse, undefined);

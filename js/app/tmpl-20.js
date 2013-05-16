@@ -27,7 +27,7 @@
             '<img src="' + item.infoWindowIcon + '">' +
           '</div>' +
         '</div>' +
-        '<div class="info-img img-polaroid pull-left info-imghover"><img class="info-imgrentals" src="' + item.roomImg + '" data-id="air' + item.id + '" onclick="javascript:Outpost.mvc.views.houserental.loadSLB(this)"></div>' +
+        '<div class="info-img img-polaroid pull-left info-imghover"><img class="info-imgrentals" src="' + item.roomImg + '" data-id="hou' + item.id + '" onclick="javascript:Outpost.mvc.views.houserental.loadSLB(this)"></div>' +
         '<div class="info-content pull-left">' +
           '<ul>' +
             '<li>' +

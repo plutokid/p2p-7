@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: application/javascript');
+header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
 
   $startLocation = urlencode($_GET["sloc"]);
@@ -117,7 +119,7 @@
     if ($vroom[4]) {
       $lastDate = $vroom[4]->find('tr', 0)->plaintext;
       foreach($vroom[4]->find('tr') as $aRide) {
-        $price_full = trim($aRide->find('.itineraryPrice', 0)->plaintext);
+        $price_full = $aRide->find('.itineraryPrice', 0)->plaintext;
         $price = 0 + $price_full;
           $seat = 0;
           foreach ($aRide->find('.blueMan') as $guy) {
@@ -145,7 +147,7 @@
           $ride['username'] = "n/a";
           $ride['origin'] = $aRide->find('strong', 0)->plaintext;
           $ride['destination'] = $aRide->find('strong', 1)->plaintext;
-          $ride['desc'] = $aRide->find('.pickupDetails', 0)->plaintext . " → " .$aRide->find('.pickupDetails', 1)->plaintext;
+          $ride['desc'] = str_replace("'", "", $aRide->find('.pickupDetails', 0)->plaintext . " → " .$aRide->find('.pickupDetails', 1)->plaintext);
           $ride['price'] = $price_full;
           $ride['price2'] = $price;
           $ride['img'] = "img/noprofile.jpg";
@@ -156,21 +158,21 @@
     }
   }
 
- if ($country == "NA") {
+ if ($country == "NA" && $page == 1) {
     $url = "http://www.zimride.com/search";
     $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer&pageID={$page}";
     $url = $url.$qry_str;
     $html = file_get_contents($url);
     
     $poolList->load($html);
-    $lastDate = trim($poolList->find('h3.headline span', 0)->plaintext);
+    $lastDate = $poolList->find('h3.headline span', 0)->plaintext;
     $lastDate = explode("&mdash;", $lastDate);
     if ($lastDate[1])
       $lastDate = $lastDate[1];
     else
       $lastDate = substr($lastDate[0], 10);
     foreach($poolList->find('.ride_list a') as $aRide) {
-      $price_full = trim($aRide->find('.price_box p', 0)->plaintext);
+      $price_full = $aRide->find('.price_box p', 0)->plaintext;
       $price = 0 + substr($price_full, 1);
       if ($ride['img'] = $aRide->find('img', 0)->src) {
         $seat = $aRide->find('.count', 0)->plaintext;
@@ -195,8 +197,8 @@
         $ride['id'] = filter_var($ride['link'], FILTER_SANITIZE_NUMBER_INT);
         $ride['idtype'] = "zimride";
         $ride['dates'] =  $lastDate; //poollist find
-        $ride['username'] = trim($aRide->find('.username', 0)->plaintext);
-        $originfull = trim($aRide->find('.inner', 0)->innertext);
+        $ride['username'] = $aRide->find('.username', 0)->plaintext;
+        $originfull = $aRide->find('.inner', 0)->innertext;
         $origin = explode('<span class="trip_type one_way"></span>', $originfull);
 
         if (!$origin[1]) {
@@ -207,7 +209,7 @@
         $ride['infoWindowIcon'] = "img/zimride.png";
         $ride['origin'] = $origin[0];
         $ride['destination'] = $origin[1];
-        $ride['desc'] = trim($aRide->find('h4', 0)->plaintext);
+        $ride['desc'] = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
         $ride['price'] = $price_full;
         $ride['price2'] = $price;
 
@@ -226,7 +228,7 @@
     $poolList->load($html);
 
     foreach($poolList->find('.date') as $aBlock) {
-      $date = trim($aBlock->find('.date_header', 0)->plaintext);
+      $date = $aBlock->find('.date_header', 0)->plaintext;
       foreach($aBlock->find('.result') as $aRide) {
         $ride['id'] = $aRide->getAttribute("data-ride-id");
         if (in_array($ride['id'], $idarr)) {
@@ -239,14 +241,14 @@
         $ride['idtype'] = "ridejoy";
         $ride['dates'] = $date;
         $ride['img'] = $aRide->find('img', 0)->src;
-        $ride['origin'] = trim($aRide->find('.origin', 0)->plaintext);
-        $ride['destination'] = trim($aRide->find('.destination', 0)->plaintext);
-        $ride['desc'] = trim($aRide->find('.extra_info', 0)->plaintext);
+        $ride['origin'] = $aRide->find('.origin', 0)->plaintext;
+        $ride['destination'] = $aRide->find('.destination', 0)->plaintext;
+        $ride['desc'] = str_replace(array("'", "&#x27;", "&quot;"), "", $aRide->find('.extra_info', 0)->plaintext);
         $ride['price'] = $price_full;
         $ride['price2'] = $price;
         $ride['iconPath'] = "img/ridejoy.ico";
         $ride['infoWindowIcon'] = "img/ridejoy.png";
-        $ride['link'] = trim($aRide->find('.view_details', 0)->href);
+        $ride['link'] = $aRide->find('.view_details', 0)->href;
 
         $output[] = $ride;
       }
@@ -266,7 +268,7 @@
     $html = file_get_contents($url);
     $poolList->load($html);
     foreach($poolList->find('.trip') as $aRide) {
-      $price_full = trim($aRide->find('.price', 0)->plaintext);
+      $price_full = $aRide->find('.price', 0)->plaintext;
       $price = 0 + filter_var($price_full, FILTER_SANITIZE_NUMBER_INT);
 
       $seat = $aRide->find('.availability strong', 0)->plaintext;
@@ -283,18 +285,18 @@
       $ride['link'] = "http://www.blablacar.com".$aRide->find('a', 0)->href;
       $ride['id'] = substr($ride['link'], -6);
       $ride['idtype'] = "blablacar";
-      $ride['dates'] =  trim($aRide->find('.time', 0)->plaintext);
-      $ride['username'] = trim($aRide->find('.username', 0)->plaintext);
+      $ride['dates'] =  $aRide->find('.time', 0)->plaintext;
+      $ride['username'] = $aRide->find('.username', 0)->plaintext;
       $ride['iconPath'] = "img/blablacar.ico";
       $ride['infoWindowIcon'] = "img/blablacar.png";
-      $origin = trim($aRide->find('.geo-from .tip', 0)->plaintext);
+      $origin = str_replace("'", "", $aRide->find('.geo-from .tip', 0)->plaintext);
       $origin = explode(",", $origin);
       $ride['origin'] = $origin[0];
 
-      $destination = trim($aRide->find('.geo-to .tip', 0)->plaintext);
+      $destination = $aRide->find('.geo-to .tip', 0)->plaintext;
       $destination = explode(",", $destination);
       $ride['destination'] = $destination[0];
-      $ride['desc'] = trim($aRide->find('.fromto', 0)->plaintext);
+      $ride['desc'] = $aRide->find('.fromto', 0)->plaintext;
       $ride['price'] = $price_full;
       $ride['price2'] = $price;
 
@@ -302,4 +304,4 @@
     }
   }
 
-  echo json_encode($output);
+  echo $_GET['callback'] . '('.json_encode($output).')';

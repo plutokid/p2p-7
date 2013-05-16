@@ -32,25 +32,25 @@
   <div class="css-logo-bar">
     <div class="css-container">
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="Reliable Rideshares &amp; Carpooling for Canada and the U.S. - Kangaride">
-        <img width="128px" src="../img/kangaride_logo_edited.png" alt="kangaride logo">
+        <img src="../img/kangaride_logo_edited.png" alt="kangaride logo">
       </span>
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridesharing, carpooling and buses - Zimride">
-        <img width="128px" src="../img/zimride-final.png" alt="zimride logo">
+        <img src="../img/zimride-final.png" alt="zimride logo">
       </span>
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="BlaBlaCar connects drivers with empty seats and people travelling the same way - Over 3 Million trusted members saving up to 70% on inter-city travel!">
-        <img width="128px" src="../img/blablacar-final.png" alt="blablacar logo">
+        <img src="../img/blablacar-final.png" alt="blablacar logo">
       </span>
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vacation rentals, private rooms, sublets by the night - Accommodations on houserental">
-        <img width="128px" src="../img/airbnb_logo_edited.png" alt="houserental logo">
+        <img src="../img/airbnb_logo_edited.png" alt="houserental logo">
       </span>
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="rideshare | Rideshare and carpool with friendly people.">
-        <img width="128px" src="../img/ridejoy_logo_edited.png" alt="rideshare logo">
+        <img src="../img/ridejoy_logo_edited.png" alt="rideshare logo">
       </span>
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="tourism - Tours, trips and other things to do on vacation">
-        <img width="128px" src="../img/vayable_logo_edited.png" alt="tourism logo">
+        <img src="../img/vayable_logo_edited.png" alt="tourism logo">
       </span>
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="private rooms, holiday house, accommodations">
-        <img width="128px" src="../img/9flats-final.png" alt="9flats logo">
+        <img src="../img/9flats-final.png" alt="9flats logo">
       </span>
     </div>
   </div>
@@ -98,11 +98,19 @@
       types: ['(cities)']
     };
     var autocomplete = new google.maps.places.Autocomplete(input, options);
-    // Load logo tooltips
-    $('.tooly').tooltip();
 
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
       $('#js-searchForm').trigger("submit");
     });
+
+    var $video = $('.landing-video');
+    $video.bind("loadedmetadata", function () {
+      $video.css("top", 550 - $video.height() + "px");
+    });
+
+    $(window).resize(function() {
+      $video.css("top", 550 - $video.height() + "px");
+    });
+
   })();
 </script>

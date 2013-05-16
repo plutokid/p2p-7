@@ -15,7 +15,7 @@
     // =======================================================
     houserental: Backbone.Collection.extend({
       model: Outpost.models.houserental,
-      url: "http://outpost.travel/api/beta/houserental/",
+      url: "http://outpost.travel/api/v1/houserental/",
 
       parse: function(response) {
         return response;
@@ -24,7 +24,7 @@
       sync: function(method, model, options) {
         var _this = this;
         var filter = Outpost.state.searchFilter;
-        var min, max;
+        var min, max, roomType = [], isAllTypes = true;
         if (Outpost.mvc.views.houserental) {
           min = Outpost.mvc.views.houserental.getMin();
           max = Outpost.mvc.views.houserental.getMax();
@@ -32,6 +32,26 @@
           min = 0;
           max = 300;
         }
+
+        $('.roomtypebtn').each(function(i) {
+          var $node = $(this);
+          var type = '';
+          if ($node.hasClass('filterme')) {
+            type = $node.data('value');
+            isAllTypes = false;
+          }
+
+          roomType.push(type);
+        });
+
+        if (isAllTypes) {
+          roomType = [
+            "entire_home",
+            "private_room",
+            "shared_room"
+          ];
+        }
+
         var params = _.extend({
           data: {
             eloc: Outpost.values.destLocation,
@@ -40,10 +60,11 @@
             guests: filter.guests,
             page: Outpost.state.page.air,
             price_min: min,
-            price_max: max
+            price_max: max,
+            room_type: roomType
           },
           type: 'GET',
-          dataType: 'json',
+          dataType: "jsonp",
           url: _this.url
         }, options);
         return $.ajax(params);
@@ -55,7 +76,7 @@
     // =======================================================
     rideshare: Backbone.Collection.extend({
       model: Outpost.models.rideshare,
-      url: "http://outpost.travel/api/beta/rideshare/",
+      url: "http://outpost.travel/api/v1/rideshare/",
 
       parse: function(response) {
         return response;
@@ -90,7 +111,7 @@
         var params = _.extend({
           data: data,
           type: 'GET',
-          dataType: 'json',
+          dataType: 'jsonp',
           url: _this.url
         }, options);
 
@@ -103,7 +124,7 @@
     // =======================================================
     tourism: Backbone.Collection.extend({
       model: Outpost.models.tourism,
-      url: "http://outpost.travel/api/beta/tourism/",
+      url: "http://outpost.travel/api/v1/tourism/",
 
       parse: function(response) {
         return response;
@@ -119,7 +140,7 @@
             page: Outpost.state.page.vay
           },
           type: 'GET',
-          dataType: 'json',
+          dataType: 'jsonp',
           url: _this.url
         }, options);
 

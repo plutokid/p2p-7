@@ -7,9 +7,10 @@
   $.ajaxSetup({
     timeout: 10000
   });
+
   $(document).ready(function() {
-    // IE9 ajax fix
-    $.support.cors = true;
+    // Initializes cache objects
+    Outpost.helpers.initCache();
 
     // Initializes the MVC
     new Outpost.views.main();

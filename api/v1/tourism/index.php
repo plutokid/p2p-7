@@ -1,4 +1,6 @@
 <?php
+  header('Content-Type: application/javascript');
+  header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
   $location = urlencode($_GET["eloc"]);
   $page = $_GET["page"];
@@ -34,8 +36,8 @@
     }
   }
 
-  $str = json_encode($output);
-  echo $str;
+  echo $_GET['callback'] . '('.json_encode($output).')';
+
 
 
 function extract_unit($string, $start, $end) {

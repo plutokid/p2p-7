@@ -120,7 +120,6 @@
             values: markers,
             options: {
               icon: opts.icon,
-              shadow: opts.shadow,
               shape: opts.shape,
               animation: opts.animation
             },
@@ -180,7 +179,6 @@
                     tag: item.prefix,
                     options: {
                       icon: opts.icon,
-                      shadow: opts.shadow,
                       shape: opts.shape
                     },
                     events: {
@@ -333,6 +331,7 @@
 
       render: function() {
         this.$el.gmap3('destroy');
+        google.maps.visualRefresh = true;
         this.$el.gmap3({
           map: {
             latLng: [Outpost.values.destLocationLat,
@@ -360,7 +359,7 @@
       },
 
       events: {
-        "shown .mv-tab": "initLazyLoad"
+        "shown .mv-tab": "initLazyLoad",
       },
 
       initLazyLoad: function(e) {
@@ -441,19 +440,40 @@
 
       refineSearch: function(e) {
         e.preventDefault();
-        var value = $('#js-search-again').val();
-        var path = "!/mapview/" + encodeURI(value);
-        this.setFilterVar();
-        Outpost.state.numOfRes = 0;
-        Outpost.helpers.defineDestLoc(value);
-        Outpost.helpers.defineOrigLoc();
-        Outpost.helpers.resetPages();
-        Outpost.mvc.views.map.removeAllMarkers();
-        Outpost.mvc.views.map.redefineMap();
-        Outpost.mvc.views.sideBar.updateNavbarRes();
-        Outpost.mvc.views.sideBar.clearAllListings();
-        Outpost.mvc.views.sideBar.fetchAll();
-        Outpost.mvc.router.navigate(path);
+        var destValue = $('#js-search-again').val();
+        var destPath = "!/mapview/" + encodeURI(destValue);
+        var origValue = $('#js-orig-location-input').val();
+        var origPath = "!/mapview/" + encodeURI(origValue);
+        if (destValue === '') {
+          if (origValue === '') {
+            return;
+          } else {
+            Outpost.state.numOfRes = 0;
+            Outpost.state.isOriginOnly = true;
+            Outpost.helpers.defineDestLoc(origValue);
+            Outpost.helpers.defineOrigLoc();
+            Outpost.mvc.router.navigate(origPath);
+            Outpost.helpers.resetPages();
+            Outpost.mvc.views.map.removeAllMarkers();
+            Outpost.mvc.views.map.redefineMap();
+            Outpost.mvc.views.sideBar.updateNavbarRes();
+            Outpost.mvc.views.sideBar.clearAllListings();
+            Outpost.mvc.views.sideBar.fetchAll();
+          }
+        } else {
+          this.setFilterVar();
+          Outpost.state.isOriginOnly = false;
+          Outpost.state.numOfRes = 0;
+          Outpost.helpers.defineDestLoc(destValue);
+          Outpost.helpers.defineOrigLoc();
+          Outpost.helpers.resetPages();
+          Outpost.mvc.views.map.removeAllMarkers();
+          Outpost.mvc.views.map.redefineMap();
+          Outpost.mvc.views.sideBar.updateNavbarRes();
+          Outpost.mvc.views.sideBar.clearAllListings();
+          Outpost.mvc.views.sideBar.fetchAll();
+          Outpost.mvc.router.navigate(destPath);
+        }
       },
 
       setFilterVar: function() {
@@ -547,18 +567,12 @@
       prevSize: 0,
       divCollection: [],
       itemStore: {
-        prefix: "air",
+        prefix: "hou",
         sortType: "relevance",
         infoWindowTmpl: Outpost.tmpl.houserentalInfo,
         icon: new google.maps.MarkerImage(
           'img/houserental/image.png',
           new google.maps.Size(39,50),
-          new google.maps.Point(0,0),
-          new google.maps.Point(20,50)
-        ),
-        shadow: new google.maps.MarkerImage(
-          'img/houserental/shadow.png',
-          new google.maps.Size(67,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
@@ -585,6 +599,7 @@
         "click .tr-houserental": "openInfoWindow",
         "click #lm-air": "loadMore",
         "click .hou-listimg": "loadSLB",
+        "click .roomtypebtn": "filterRoomType",
         "click .info-details": "loadSLB",
         "mouseenter .tr-houserental": "highlightMarker",
         "mouseleave .tr-houserental": "normalizeMarker"
@@ -671,7 +686,7 @@
       clearData: function() {
         this.divCollection = [];
         this.itemStore.animation = "";
-        Outpost.mvc.views.map.removeMarkers("air");
+        Outpost.mvc.views.map.removeMarkers("hou");
         Outpost.state.page.air = 1;
         Outpost.state.readyHOU = false;
         this.$el
@@ -692,7 +707,8 @@
         var $loadMore = $('#lm-air');
         var query = Outpost.helpers.genSearchQuery();
         query += String(Outpost.state.page.air) +
-                String(this.min) + String(this.max) + "air";
+                String(this.min) + String(this.max) + "hou";
+        query += $('.roomtypebtn.filterme').text();
         if (!Outpost.listingsCache[query]) {
           Outpost.listingsCache[query] = this.collection.fetch({
             beforeSend: function() {
@@ -728,6 +744,16 @@
           $loadMore.button('reset');
           _this.render();
         }
+      },
+
+      filterRoomType: function(e) {
+        var $curr = $(e.currentTarget);
+        if ($curr.hasClass("filterme")) {
+          $curr.removeClass("filterme");
+        } else {
+          $curr.addClass("filterme");
+        }
+        this.clearAndFetch();
       },
 
       openInfoWindow: function(e) {
@@ -828,12 +854,6 @@
         icon: new google.maps.MarkerImage(
           'img/rideshare/image.png',
           new google.maps.Size(39,50),
-          new google.maps.Point(0,0),
-          new google.maps.Point(20,50)
-        ),
-        shadow: new google.maps.MarkerImage(
-          'img/rideshare/shadow.png',
-          new google.maps.Size(67,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
@@ -1053,7 +1073,6 @@
           $('#rideshare').removeData('markers');
           this.sortDiv();
           this.priceFilter();
-          Outpost.state.isOriginOnly = false;
           this.infiniteScroll();
         } else if (Outpost.state.page.rid !== 1) {
           Outpost.helpers.showAlertBox({
@@ -1085,18 +1104,12 @@
       divCollection: [],
       prevSize: 0,
       itemStore: {
-        prefix: "vay",
+        prefix: "tou",
         sortType: "relevance",
         infoWindowTmpl: Outpost.tmpl.tourismInfo,
         icon: new google.maps.MarkerImage(
           'img/tourism/image.png',
           new google.maps.Size(39,50),
-          new google.maps.Point(0,0),
-          new google.maps.Point(20,50)
-        ),
-        shadow: new google.maps.MarkerImage(
-          'img/tourism/shadow.png',
-          new google.maps.Size(67,50),
           new google.maps.Point(0,0),
           new google.maps.Point(20,50)
         ),
@@ -1199,7 +1212,7 @@
       clearData: function() {
         this.divCollection = [];
         this.itemStore.animation = "";
-        Outpost.mvc.views.map.removeMarkers("vay");
+        Outpost.mvc.views.map.removeMarkers("tou");
         Outpost.state.page.vay = 1;
         Outpost.state.readyTOU = false;
         this.$el
@@ -1218,7 +1231,7 @@
         var _this = this;
         var $loading = $('#tourism-loading');
         var $loadMore = $('#lm-vay');
-        var query = Outpost.helpers.genSearchQuery() + "vay";
+        var query = Outpost.helpers.genSearchQuery() + "tou";
         query += String(Outpost.state.page.vay);
         if (!Outpost.listingsCache[query]) {
            Outpost.listingsCache[query] = this.collection.fetch({
