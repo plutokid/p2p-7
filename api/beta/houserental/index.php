@@ -61,6 +61,7 @@
     $mixed = explode("&mdash;", $var);
     $room['type'] = trim($mixed[0]);
     $room['neigh'] = trim(str_replace('>', '', $mixed[1]));
+    $room['neigh'] = $room['neigh'] == "Quebec" ? "Quebec city" : $room['neigh'];
     $room['origin'] = $room['neigh'];
 
     $output[] = $room;

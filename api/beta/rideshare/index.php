@@ -50,7 +50,8 @@ header("Access-Control-Allow-Origin: *");
   if ($country == "NA" && ($country1 == "CA" || $country2 == "CA")) {
     $state1 = $state1 ? $state1."/" : '';
     $state2 = $state2 ? $state2."/" : '';
-
+    $city1 = $city1 == "Quebec City" ? "Quebec" : $city1;
+    $city2 = $city2 == "Quebec City" ? "Quebec" : $city2;
     if ($city1 && $city2) {
       $city1 = str_replace(' ', '_', $city1);
       $city2 = str_replace(' ', '_', $city2);
@@ -113,21 +114,19 @@ header("Access-Control-Allow-Origin: *");
     $crap[] = "window.location.href=";
     $crap[] = "'";
 
-    $vroomList = new simple_html_dom();
     $vroom = $poolList->find('table');
-    // $vroom = $vroomList->load($vroom);
     if ($vroom[4]) {
       $lastDate = $vroom[4]->find('tr', 0)->plaintext;
       foreach($vroom[4]->find('tr') as $aRide) {
         $price_full = $aRide->find('.itineraryPrice', 0)->plaintext;
         $price = 0 + $price_full;
           $seat = 0;
-          foreach ($aRide->find('.blueMan') as $guy) {
+          foreach ($aRide->find('img[alt="White Man"]') as $guy) {
             $seat++;
           }
 
           if ($seat) {
-            if ($guests  > $seat) {
+            if ($guests > $seat) {
               continue;
             }
             $ride['seat'] = $seat;
@@ -144,9 +143,12 @@ header("Access-Control-Allow-Origin: *");
           $ride['id'] = filter_var($ride['link'], FILTER_SANITIZE_NUMBER_INT) + rand(0, 200);
           $ride['idtype'] = "kangaride";
           $ride['dates'] =  $lastDate; //poollist find
+          $ride['time'] = trim($aRide->find('.datetime', 0)->plaintext);
           $ride['username'] = "n/a";
           $ride['origin'] = $aRide->find('strong', 0)->plaintext;
+          $ride['origin'] = $ride['origin'] == "Québec" ? "Quebec city" : $ride['origin'];
           $ride['destination'] = $aRide->find('strong', 1)->plaintext;
+          $ride['destination'] = $ride['destination'] == "Québec" ? "Quebec city" : $ride['destination'];
           $ride['desc'] = str_replace("'", "", $aRide->find('.pickupDetails', 0)->plaintext . " → " .$aRide->find('.pickupDetails', 1)->plaintext);
           $ride['price'] = $price_full;
           $ride['price2'] = $price;
@@ -209,7 +211,15 @@ header("Access-Control-Allow-Origin: *");
         $ride['infoWindowIcon'] = "img/zimride.png";
         $ride['origin'] = $origin[0];
         $ride['destination'] = $origin[1];
-        $ride['desc'] = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
+        $desc = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
+        $desc = explode('/', $desc);
+        if ($desc[2]) {
+          $ride['time'] = str_replace("Departs", "", $desc[2]);
+          $ride['desc'] = $desc[0].$desc[1];
+        } else {
+          $ride['time'] = str_replace("Departs", "", $desc[1]);
+          $ride['desc'] = $desc[0];
+        }
         $ride['price'] = $price_full;
         $ride['price2'] = $price;
 
@@ -249,6 +259,9 @@ header("Access-Control-Allow-Origin: *");
         $ride['iconPath'] = "img/ridejoy.ico";
         $ride['infoWindowIcon'] = "img/ridejoy.png";
         $ride['link'] = $aRide->find('.view_details', 0)->href;
+        $ride['seat'] = "1-4";
+        // im actually lieing here since  ridejoy isnt giving it on the go
+        $ride['time'] = "Anytime";
 
         $output[] = $ride;
       }
@@ -285,7 +298,9 @@ header("Access-Control-Allow-Origin: *");
       $ride['link'] = "http://www.blablacar.com".$aRide->find('a', 0)->href;
       $ride['id'] = substr($ride['link'], -6);
       $ride['idtype'] = "blablacar";
-      $ride['dates'] =  $aRide->find('.time', 0)->plaintext;
+      $datetime = explode("-", $aRide->find('.time', 0)->plaintext);
+      $ride['dates'] = trim($datetime[0]);
+      $ride['time'] =  trim($datetime[1]);
       $ride['username'] = $aRide->find('.username', 0)->plaintext;
       $ride['iconPath'] = "img/blablacar.ico";
       $ride['infoWindowIcon'] = "img/blablacar.png";

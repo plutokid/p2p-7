@@ -4,6 +4,23 @@ body {
   background: #f1f1f1;
 }
 
+ /*palce hodle r text */
+ ::-webkit-input-placeholder {
+   font-weight: bold;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   font-weight: bold;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   font-weight: bold;  
+}
+
+:-ms-input-placeholder {  
+   font-weight: bold;  
+}
+
 a {
   text-decoration: none;
 }
@@ -281,7 +298,7 @@ a:focus {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/*INFO WINDOW */
+
 .js-infowindow {
   cursor: default;
   background: #fff;
@@ -418,7 +435,7 @@ a:focus {
 }
 
 .p2p-main{
-   /* Positioning */
+   /* Positioning 
   margin-bottom:37px;
   margin-top:13px;
 }
@@ -722,13 +739,43 @@ background-color: #2284A1;
 }
 
 .search-bar-wrapper {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.38);
   border-radius: 5px;
   box-shadow: 0px 0px 5px #333333;
   border: 1px solid #222222;
   margin: 25px;
   padding: 10px 15px;
   color: #fff;
+}
+
+.ho-arrow {
+  font-size: 24px;
+}
+
+.calendar-prepend {
+  position: relative;
+  left: 26px;
+  color: black;
+}
+
+.ho-from-date {
+  padding-left: 26px !important;
+  width: 191px;
+  margin-right: 11px;
+}
+
+.ho-to-date {
+  padding-left: 26px !important;
+  width: 191px;
+}
+
+.ho-guest-input {
+  width: 87px;
+}
+
+.ho-more-options {
+  margin-top: 5px;
+  margin-left: -16px;
 }
 
 .search-bar-wrapper form {
@@ -758,11 +805,10 @@ background-color: #2284A1;
 }
 
 .css-whataround {
-  padding: 8px;
-  height: 22px;
+  padding: 9px;
   background: #EC5F41 !important;
   transition: background 300ms ease-out;
-  width: 168px;
+  width: 166px;
 }
 
 .css-whataround:hover {
@@ -771,13 +817,21 @@ background-color: #2284A1;
 }
 
 .css-ortext {
-  height: 40px;
+  display: inline-block;
   font-size: 20px;
-  padding-top: 8px;
-  padding-left: 40px;
+  margin:0 3px;
+}
+
+.css-input-sea {
+  padding: 9px !important;
+}
+
+.mobile-whats {
+  display: inline-block;
 }
 
 .css-searchit {
+  padding: 9px !important;
   transition: background 300ms ease-out;
   background: #2ba6cb !important;
 }
@@ -905,6 +959,35 @@ background-color: #2284A1;
   float: right;
   margin-right: 5px;
   margin-top: -12px;
+}
+
+.list-location-desc {
+ width: 225px;
+  display: inline-block;
+}
+
+.more-options {
+  display: inline-block;
+  float: right;
+}
+
+.list-rid-pricewrap {
+float: right;
+margin-right: 5px;
+margin-top: -12px;
+background: rgb(52, 73, 94);
+border-radius: 3px;
+text-align: center;
+height: 60px;
+width: 75px;
+color: white;
+}
+
+.list-rid-price {
+  font-size: 27px;
+  margin-top: 13px;
+  font-weight: bold;
+  display: block;
 }
 
 .list-img {
@@ -1121,12 +1204,7 @@ background-color: #2284A1;
 }
 
 .lp-list-body {
-  transition: 0.1s background-color linear;
   background-color: white;
-}
-
-.lp-list-body:hover {
-  background-color: #ecf0f1;
 }
 
 .lpl-airbnb {

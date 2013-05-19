@@ -2,7 +2,7 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-  Outpost.rev = "-20";
+  Outpost.rev = "-22";
   // Used for ajax caching
   Outpost.cache = {};
   Outpost.HTMLcache = {};
@@ -192,12 +192,12 @@
       var ajaxPromise, dff = $.Deferred();
       if (!Outpost.HTMLcache[url]) {
         Outpost.HTMLcache[url] = $.ajax({
-          type: "POST",
+          type: "GET",
           url: "http://outpost.travel/api/v1/houserental/single.php",
           data: {
-            uri: url
+            uri: encodeURIComponent(url)
           },
-          dataType: "json",
+          dataType: "jsonp",
           beforeSend: function() {
             if (Outpost.state.$loader.is(":hidden")) {
               Outpost.state.$loader.show();
@@ -218,20 +218,23 @@
 
     ipToGeo: function() {
       var dff = $.Deferred();
-      var ipajax = $.ajax({
-        url: "http://freegeoip.net/json/?&callback=?",
-        dataType: "jsonp",
-        type: "GET"
-      });
 
-      ipajax.done(function(data) {
+      if (!Outpost.cache["ipaddress"]) {
+        Outpost.cache["ipaddress"] = $.ajax({
+          url: "http://ip-api.com/json/",
+          dataType: "jsonp",
+          type: "GET"
+        });
+      }
+
+      Outpost.cache["ipaddress"].done(function(data) {
         dff.resolve({
           location: data.city + ", " +
-                    data.region_code + ", " +
-                    data.country_code,
-          latLng: [data.latitude, data.longitude],
-          country: data.country_code,
-          state: data.region_code,
+                    data.region + ", " +
+                    data.country,
+          latLng: [Number(data.lat), Number(data.lon)],
+          country: data.countryCode,
+          state: data.region,
           city: data.city
         });
       });
@@ -255,8 +258,7 @@
       ]);
     },
 
-    defineOrigLoc: function() {
-      var orignalLocation = $("#js-orig-location-input").val();
+    defineOrigLoc: function(orignalLocation) {
       var csc = Outpost.helpers.genRdmLLCC(orignalLocation);
       var origlatLng = csc.latLng;
       Outpost.values.origLocation = orignalLocation;
@@ -335,11 +337,13 @@
               ["Extra person:", "$"+airbnb.price_for_extra_person_native]
             ];
             latLng = [airbnb.lat, airbnb.lng];
-            review = {
-              img: airbnb.recent_review.review.reviewer.user.thumbnail_url,
-              name: airbnb.recent_review.review.reviewer.user.first_name,
-              comment: airbnb.recent_review.review.comments
-            };
+            if (airbnb.reviews_count) {
+              review = {
+                img: airbnb.recent_review.review.reviewer.user.thumbnail_url,
+                name: airbnb.recent_review.review.reviewer.user.first_name,
+                comment: airbnb.recent_review.review.comments
+              };
+            }
             profile = {
               img: airbnb.user.user.picture_url,
               name: airbnb.user.user.first_name,
@@ -484,25 +488,25 @@
     initCache: function() {
       var debug = false;
       var  sub;
-      for (var i in localStorage) {
-        sub = i.substr(0, 5);
-        if (sub === "Parse") {
-          continue;
-        } else if (sub === "Pages" && !debug) {
-          delete localStorage[i];
-          continue;
-        }
-        Outpost.cache[i] = JSON.parse(localStorage[i]);
-      }
-
       if (!debug) {
-        for (var j in sessionStorage) {
-          sub = j.substr(0, 5);
-          if (sub === "Pages") {
-            Outpost.HTMLcache[j] = JSON.parse(sessionStorage[j]);
-            continue;
+        for (var i in localStorage) {
+          if (localStorage.getItem(i)) {
+            sub = i.substr(0, 5);
+            if (sub !== "Parse") {
+              Outpost.cache[i] = JSON.parse(localStorage[i]);
+            }
           }
-          Outpost.listingsCache[j] = JSON.parse(sessionStorage[j]);
+        }
+
+        for (var j in sessionStorage) {
+          if (sessionStorage.getItem(j)) {
+            sub = j.substr(0, 5);
+            if (sub === "Pages") {
+              Outpost.HTMLcache[j] = JSON.parse(sessionStorage[j]);
+            } else {
+              Outpost.listingsCache[j] = JSON.parse(sessionStorage[j]);
+            }
+          }
         }
       }
     }

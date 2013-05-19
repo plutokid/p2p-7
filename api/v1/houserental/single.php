@@ -1,6 +1,8 @@
 <?php
-  header('Content-Type: application/json');
+  header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
-  $url = $_POST["uri"];
+  $url = $_GET["uri"];
+  $url = urldecode($url);
   $html = file_get_contents($url);
-  echo $html;
+  echo $_GET['callback'] . '('.$html.')';
+?>

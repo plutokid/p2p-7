@@ -27,6 +27,7 @@
       $trip['profileImg'] = "img/noprofile.jpg";
       $trip['img'] = extract_unit($aTrip->find('.card', 0)->getAttribute("style"), "'", "'");
       $trip['origin'] = trim($aTrip->find('.tagline', 0)->plaintext);
+      $trip['origin'] = $trip['origin'] == "Quebec, Canada" ? "Quebec city" : $trip['origin'];
       $trip['desc'] = str_replace("'", "", trim($aTrip->find('.title', 0)->plaintext));
       $trip['price'] = $price_full;
       $trip['price2'] = $price;

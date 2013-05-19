@@ -7,11 +7,11 @@
     <meta name="description" content="Outpost is the center point of the sharing economy. If you're going on a trip, you can save time and money by booking peer to peer services with Outpost">
     <meta name="viewport" content="width=device-width">
 
-    <link rel="image_src" href="http://outpostp2p.com/img/fb.png">
+    <link rel="image_src" href="http://outpost.travel/img/fb.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
-    <link rel="stylesheet" href="css/custom-20.css">
+    <link rel="stylesheet" href="css/custom-22.css">
 </head>
 <body>
   <div class="bs-load" id="js-bsload" style="display:none">
@@ -143,7 +143,7 @@
         service can offer. Human hosts, drivers and guides that are eager to show you the secrets of their
         city make Outpost the new way to travel.
       </p>
-      <a href="https://twitter.com/Outpostp2p" class="twitter-follow-button" data-show-count="false">Follow @Outpostp2p</a>
+      <a href="https://twitter.com/Outposttravel" class="twitter-follow-button" data-show-count="false">Follow @Outposttravel</a>
       <p class="pull-right">
         Please contact us, we're begging for feedback: <a href="mailto:info@outpost.travel">info@outpost.travel</a> <br>
       </p>
@@ -162,7 +162,7 @@
       </p>
       <p>However, if you are a user, you can still suggest us which P2P networks we've missed so we can bring them in Outpost.</p>
       <p>Thank you for your interest.</p>
-      <a href="https://twitter.com/Outpostp2p" class="twitter-follow-button" data-show-count="false">Follow @Outpostp2p</a>
+      <a href="https://twitter.com/Outposttravel" class="twitter-follow-button" data-show-count="false">Follow @Outposttravel</a>
     </div>
   </div>
 
@@ -192,8 +192,8 @@
               <li><a class="btn-nav"><%= name %></a></li>
               <li><a class="btn-nav js-logout" href="javascript:void(0)">Logout</a></li>
               <% } %>
-              <li class='shares twitters'><a class="twitter-share-button" data-via="outpostp2p" data-text="Lookup @zimride, @9flats, @tourism, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
-              <li class='shares twitters'><a href="https://twitter.com/Outpostp2p" class="twitter-follow-button" data-show-count="true"></a></li>
+              <li class='shares twitters'><a class="twitter-share-button" data-via="outposttravel" data-text="Lookup @zimride, @9flats, @tourism, listings all in one place!" data-lang="en" href="https://twitter.com/share"></a></li>
+              <li class='shares twitters'><a href="https://twitter.com/Outposttravel" class="twitter-follow-button" data-show-count="true"></a></li>
               <li class='shares'><div class="fb-like" data-href="https://www.facebook.com/outpost.travel" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div></li>
             </ul>
           </div>
@@ -204,21 +204,22 @@
 
   <!-- REFINE SEARCH TMPL -->
   <script id="tmpl-refine-search" type="text/template">
+    <% var guests = Outpost.state.searchFilter.guests; %>
     <form class="navbar-form" id="js-refineSearch">
-      <input class="filter-origin-location" id="js-orig-location-input" type="search" placeholder="From location">
+      <input class="filter-origin-location" id="js-orig-location-input" value="<%= Outpost.values.origLocation %>" type="search" placeholder="From location">
       <strong class="white-arrow">&nbsp;→&nbsp;</strong>
       <input id="js-search-again" type="search" placeholder="Destination Location">
       <div class="input-prepend">
         <span class="add-on"><i class="icon-calendar"></i></span>
-        <input class="input-small" placeholder="Leaving on" id="js-sdate-input" type="search">
-        <input class="input-small" placeholder="Check out" id="js-edate-input" type="search">
+        <input class="input-small" placeholder="Leaving on" value="<%= Outpost.state.searchFilter.sdate %>" id="js-sdate-input" type="search">
+        <input class="input-small" placeholder="Check out" id="js-edate-input" value="<%= Outpost.state.searchFilter.edate %>" type="search">
       </div>
       <select class="guestfilter" id="js-guest-input">
-        <option selected disabled value="1">People</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
+        <option disabled value="1">People</option>
+        <option <%= guests ==="1" ? "selected" : '' %> value="1">1</option>
+        <option <%= guests ==="2" ? "selected" : '' %> value="2">2</option>
+        <option <%= guests ==="3" ? "selected" : '' %> value="3">3</option>
+        <option <%= guests ==="4" ? "selected" : '' %> value="4">4</option>
       </select>
       <button class="btn btn-info refineSearchbtn" id="refineSearchbtn" type="submit">Refine Search</button>
     </form>
@@ -385,20 +386,24 @@
           <img class="img-circle" width="36px" height="36px" src="<%= item.img %>">
           <span><%= item.desc %></span>
         </span>
+        <span class="list-rid-pricewrap">
+          <span class="list-rid-price">$<%= item.price2 %></span>
+          <span class="list-rid-pricedesc">per seat</span>
+        </span>
         <div class="list-desc">
           <span class="list-info">
             <ul>
               <li>
                 <span class="icon-time css-blue"></span>
-                <span><%= item.dates %></span>
+                <span><%= item.dates + " - " + item.time %></span>
               </li>
               <li>
                 <span class="icon-map-marker css-green"></span>
-                <span class=""><%= item.origin %> → <%= item.destination %></span>
+                <span class="list-location-desc"><%= item.origin %> → <%= item.destination %></span>
               </li>
               <li>
-                <span class="icon-money css-red"></span>
-                <span><b>$<%= item.price2 %></b> per seat</span>
+                <span class="icon-user css-red"></span>
+                <span><%= item.seat > 1 ? item.seat + " seats" : item.seat + " seat" %> left</span>
               </li>
             </ul>
           </span>
@@ -545,13 +550,13 @@
   <script src="js/vendor/parsley.js"></script>
   <script src="js/vendor/waypoints.min.js"></script>
   <!-- MVC -->
-  <script src="js/app/tmpl-20.js"></script>
-  <script src="js/app/models-20.js"></script>
-  <script src="js/app/helpers-20.js"></script>
-  <script src="js/app/views-20.js"></script>
-  <script src="js/app/router-20.js"></script>
+  <script src="js/app/tmpl-22.js"></script>
+  <script src="js/app/models-22.js"></script>
+  <script src="js/app/helpers-22.js"></script>
+  <script src="js/app/views-22.js"></script>
+  <script src="js/app/router-22.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-20.js"></script>
+  <script src="js/main-22.js"></script>
   <!-- FACEBOOK SDK -->
   <div id="fb-root"></div>
   <script>

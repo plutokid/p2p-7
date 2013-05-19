@@ -451,7 +451,7 @@
             Outpost.state.numOfRes = 0;
             Outpost.state.isOriginOnly = true;
             Outpost.helpers.defineDestLoc(origValue);
-            Outpost.helpers.defineOrigLoc();
+            Outpost.helpers.defineOrigLoc(origValue);
             Outpost.mvc.router.navigate(origPath);
             Outpost.helpers.resetPages();
             Outpost.mvc.views.map.removeAllMarkers();
@@ -465,7 +465,7 @@
           Outpost.state.isOriginOnly = false;
           Outpost.state.numOfRes = 0;
           Outpost.helpers.defineDestLoc(destValue);
-          Outpost.helpers.defineOrigLoc();
+          Outpost.helpers.defineOrigLoc(origValue);
           Outpost.helpers.resetPages();
           Outpost.mvc.views.map.removeAllMarkers();
           Outpost.mvc.views.map.redefineMap();
@@ -1362,7 +1362,13 @@
 
       events: {
         "submit #js-searchForm": "submitForm",
-        "click #js-whataround": "whatIsAround"
+        "click #js-whataround": "whatIsAround",
+        "click #more-options": "dropFiltersDown"
+      },
+
+      dropFiltersDown: function(e) {
+        $(e.currentTarget).hide();
+        $('#ho-option-form').slideDown();
       },
 
       whatIsAround: function(e) {
@@ -1385,11 +1391,38 @@
 
       submitForm: function(e) {
         e.preventDefault();
-        var city = $("#js-dest-location-input").val();
-        if (city.length <= 9) {
-          city = $('.pac-item:first').text();
+        var destCity = $("#js-dest-location-input").val();
+        var origCity = $("#ho-orig-location-input").val();
+        var sdate = $('#ho-sdate-input').val();
+        var edate = $('#ho-edate-input').val();
+        var guests = $('#ho-guest-input').val();
+        Outpost.state.searchFilter.sdate = sdate;
+        Outpost.state.searchFilter.edate = edate;
+        Outpost.state.searchFilter.guests = guests ? guests : "1";
+        if (!destCity && !origCity) {
+          $('#js-whataround').trigger("click");
+        } else if (!origCity && destCity) {
+          if (destCity.length <= 9) {
+            destCity = $('.pac-item:first').text();
+          }
+          this.navigateTo(destCity, true);
+        } else if (origCity && !destCity) {
+          if (origCity.length <= 9) {
+            origCity = $('.pac-item:first').text();
+          }
+          Outpost.state.isOriginOnly = true;
+          Outpost.helpers.defineDestLoc(origCity);
+          Outpost.helpers.defineOrigLoc(origCity);
+          this.navigateTo(origCity, true);
+        } else {
+          // if both are filled up
+          if (destCity.length <= 9) {
+            destCity = $('.pac-item:first').text();
+          }
+          Outpost.helpers.defineDestLoc(destCity);
+          Outpost.helpers.defineOrigLoc(origCity);
+          this.navigateTo(destCity, true);
         }
-        this.navigateTo(city, true);
       },
 
       navigateTo: function(value, isFromSearch) {

@@ -8,19 +8,34 @@
         <div class="search-bar-wrapper">
           <form class="form-inline" id="js-searchForm">
             <div class="inner-form row-fluid">
-              <div class="input-append text-center span8 mobile-inputsearch">
-                <input class="css-input-sea wearedual span11" id="js-dest-location-input" type="search" autocomplete="off" placeholder="Enter which city you want to go - e.g:San Francisco" autofocus required>
-                <button class="btn wearedual btn-info css-searchit" id="searchIt" type="submit">
-                  <span class="icon-search css-searchicon"></span>
-                  Search
-                </button>
-              </div>
-              <div class="span1 css-ortext">or</div>
-              <div class="span3 mobile-whats">
+              <input class="css-input-sea" id="ho-orig-location-input" type="search" placeholder="Departure city">
+              <span class="ho-arrow">→</span>
+              <input class="css-input-sea" id="js-dest-location-input" type="search" autocomplete="off" placeholder="Destination city">
+              <button class="btn btn-info css-searchit" id="searchIt" type="submit">
+                <span class="icon-search css-searchicon"></span>&nbsp;Search
+              </button>
+              <div class="css-ortext">or</div>
+              <div class="mobile-whats">
                 <a class="btn css-whataround btn-danger" id="js-whataround" href="javascript:void(0)">
                   <img class="geolocate-icon" src="../img/icon-target.png" alt="geolocate">
                   <span class="">What's around me ?</span>
                 </a>
+              </div>
+              <div class="ho-more-options"  id="ho-more-options">
+                <a class="more-options" id="more-options" href="javascript:void(0)">More options >></a>
+                <div class="ho-option-form" id="ho-option-form" style="display: none;">
+                  <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                  <input class="input-small ho-from-date" id="ho-sdate-input" placeholder="From" type="search">
+                  <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                  <input class="input-small ho-to-date" placeholder="To" id="ho-edate-input" type="search">
+                  <select class="ho-guest-input" id="ho-guest-input">
+                    <option selected disabled value="1">People</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </div>
               </div>
             </div>
           </form>
@@ -93,23 +108,78 @@
 </div>
 <script>
   (function() {
-    var input = document.getElementById('js-dest-location-input');
+    function submitTheForm() {
+      if ($('#js-dest-location-input').val() && $('#ho-orig-location-input').val()) {
+        if (!$('#ho-option-form').is(':visible')) {
+          $('#js-searchForm').trigger("submit");
+        }
+      }
+    }
+    var geoPromise = Outpost.helpers.ipToGeo();
+    var input1 = document.getElementById('ho-orig-location-input');
+    var input2 = document.getElementById('js-dest-location-input');
     var options = {
       types: ['(cities)']
     };
-    var autocomplete = new google.maps.places.Autocomplete(input, options);
 
-    google.maps.event.addListener(autocomplete, 'place_changed', function() {
-      $('#js-searchForm').trigger("submit");
+    var autocomplete1 = new google.maps.places.Autocomplete(input1, options);
+    var autocomplete2 = new google.maps.places.Autocomplete(input2, options);
+
+    geoPromise.done(function(data) {
+      var origLocation = data.location;
+      if (origLocation.length > 7) {
+        $('#ho-orig-location-input').val(origLocation);
+        $('#js-dest-location-input').focus();
+      } else {
+        $('#ho-orig-location-input').focus();
+      }
     });
 
-    var $video = $('.landing-video');
-    $video.bind("loadedmetadata", function () {
-      $video.css("top", 550 - $video.height() + "px");
+    google.maps.event.addListener(autocomplete1, 'place_changed', function() {
+      submitTheForm();
     });
 
-    $(window).resize(function() {
-      $video.css("top", 550 - $video.height() + "px");
+    google.maps.event.addListener(autocomplete2, 'place_changed', function() {
+      submitTheForm();
+    });
+
+    var $sdate = $('#ho-sdate-input');
+    var $edate = $("#ho-edate-input");
+
+    var customRange = function customRange(input) {
+      var minDate;
+      var startDateVal = $sdate.val();
+      if (input.id === 'ho-edate-input') {
+        if (startDateVal) {
+          minDate = new Date(startDateVal);
+          minDate.setDate(minDate.getDate() + 1);
+          return {
+            minDate: minDate
+          };
+        } else {
+          return {
+            minDate: 1
+          };
+        }
+      }
+    };
+
+    $sdate.datepicker({
+      minDate: 0,
+      inline: true,
+      numberOfMonths: 2,
+      onClose: function(selectedDate) {
+        $edate.focus();
+      }
+    });
+
+    $edate.datepicker({
+      inline: true,
+      numberOfMonths: 2,
+      beforeShow: customRange,
+      onClose: function() {
+        $('#ho-guest-input').focus();
+      }
     });
 
   })();
