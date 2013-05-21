@@ -335,7 +335,7 @@ RewriteBase /
 # Check if this is the noredirect query string
 RewriteCond %{QUERY_STRING} (^|&)m=0(&|$)
 # Set a cookie, and skip the next rule
-RewriteRule ^ - [CO=mredir:0:http://m.outpostp2p.com/]
+RewriteRule ^ - [CO=mredir:0:http://m.outpost.travel/]
 
 # Check if this looks like a mobile device
 # (You could add another [OR] to the second one and add in what you
@@ -363,7 +363,7 @@ RewriteCond %{QUERY_STRING} !(^|&)m=0(&|$)
 RewriteCond %{HTTP_COOKIE}        !^.*mredir=0.*$ [NC]
 
 # Now redirect to the mobile site
-RewriteRule ^ http://m.outpostp2p.com/ [R,L]
+RewriteRule ^ http://m.outpost.travel/ [R,L]
 </IfModule>
 
 

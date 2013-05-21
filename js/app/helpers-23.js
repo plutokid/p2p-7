@@ -2,7 +2,7 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-  Outpost.rev = "-22";
+  Outpost.rev = "-23";
   // Used for ajax caching
   Outpost.cache = {};
   Outpost.HTMLcache = {};
@@ -17,7 +17,8 @@
     page: {
       vay: 1,
       air: 1,
-      rid: 1
+      rid: 1,
+      ridReturn: 1
     },
     searchFilter: {
       sdate: "",
@@ -470,6 +471,33 @@
       }
     },
 
+    cutCities: function() {
+      var origcity = Outpost.values.origLocation;
+      var destcity = Outpost.values.destLocation;
+      var index;
+      if (destcity) {
+        index = destcity.indexOf(",");
+        if (destcity.indexOf(",") !== -1) {
+          destcity = destcity.substring(0, index);
+        }
+      } else {
+        destcity = "Any city";
+      }
+      if (origcity) {
+        index = origcity.indexOf(",");
+        if (origcity.indexOf(",") !== -1) {
+          origcity = origcity.substring(0, index);
+        }
+      } else {
+        origcity = "Any city";
+      }
+
+      return {
+        origcity: origcity,
+        destcity: destcity
+      };
+    },
+
     connectFB: function(user) {
       FB.api('/me', function(response) {
         var data = {
@@ -487,9 +515,10 @@
 
     initCache: function() {
       var debug = false;
-      var  sub;
+      var sub, counter = 0;
       if (!debug) {
         for (var i in localStorage) {
+          counter++;
           if (localStorage.getItem(i)) {
             sub = i.substr(0, 5);
             if (sub !== "Parse") {
@@ -498,7 +527,13 @@
           }
         }
 
+        if (counter > 175) {
+          localStorage.clear();
+          sessionStorage.clear();
+        }
+
         for (var j in sessionStorage) {
+          counter++;
           if (sessionStorage.getItem(j)) {
             sub = j.substr(0, 5);
             if (sub === "Pages") {
@@ -507,6 +542,11 @@
               Outpost.listingsCache[j] = JSON.parse(sessionStorage[j]);
             }
           }
+        }
+
+        if (counter > 200) {
+          localStorage.clear();
+          sessionStorage.clear();
         }
       }
     }

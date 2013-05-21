@@ -34,6 +34,7 @@
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>
+                    <option value="5">5</option>
                   </select>
                 </div>
               </div>
@@ -110,7 +111,9 @@
   (function() {
     function submitTheForm() {
       if ($('#js-dest-location-input').val() && $('#ho-orig-location-input').val()) {
-        if (!$('#ho-option-form').is(':visible')) {
+        if ($('#ho-option-form').is(':visible')) {
+          $('#ho-sdate-input').focus();
+        } else {
           $('#js-searchForm').trigger("submit");
         }
       }

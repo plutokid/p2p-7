@@ -7,10 +7,15 @@
       <ul class="nav nav-tabs">
         <li class="active"><a class="mv-tab css-red" id="js-ridesharemenu" href="#rideshare" data-toggle="tab" title="rideshare"><img src="../img/hipster-car.png"> Rideshares</a></li>
         <li><a class="mv-tab" id="js-houserentalmenu" href="#houserental" data-toggle="tab" title="houserental"><img src="../img/hipster-house.png"> Houserentals</a></li>
-        <li><a class="mv-tab" id="js-tourismmenu" href="#tourism" data-toggle="tab" title="tourism"><img src="../img/hipster-guy.png"></a></li>
+        <li><a class="mv-tab" id="js-tourismmenu css-green" href="#tourism" data-toggle="tab" title="tourism"><img src="../img/hipster-guy.png">Localguides</a></li>
       </ul>
       <div class="tab-content">
         <!-- Rideshare -->
+        <%
+          var cities = Outpost.helpers.cutCities();
+          var origcity = cities.origcity;
+          var destcity = cities.destcity;
+        %>
         <div class="tab-pane active" id="rideshare">
           <div class="filters" id="filter-rideshare">
             <div class="price-filter">
@@ -26,11 +31,26 @@
               <option value="high2low">Price: High to low</option>
             </select>
           </div>
-          <div class="loading" id="rideshare-loading"></div>
-          <div class="lists js-lists" id="rideshare-list">
-            <!-- items are here -->
+          <ul class="nav nav-pills rid-submenu">
+            <li class="active"><a class="rid-menu-first" id="rid-menu-first" href="#rid-tab-first" data-toggle="tab"><%= origcity + ' → ' + destcity %></a></li>
+            <li><a class="rid-menu-second" id="rid-menu-second" href="#rid-tab-return" data-toggle="tab"><%= destcity + ' → ' + origcity %></a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="rid-tab-first">
+              <div class="loading" id="rideshare-loading"></div>
+              <div class="lists js-lists" id="rideshare-list">
+                <!-- items are here -->
+              </div>
+              <button class="btn load-more" id="lm-rid" type="button" data-loading-text="Loading...">Load more..</button>
+            </div>
+            <div class="tab-pane" id="rid-tab-return">
+              <div class="loading" id="rideshare-loading-return"></div>
+              <div class="lists js-lists" id="rideshare-list-return">
+                <!-- items are here -->
+              </div>
+              <button class="btn load-more" id="lm-rid-return" type="button" data-loading-text="Loading...">Load more..</button>
+            </div>
           </div>
-          <button class="btn load-more" id="lm-rid" type="button" data-loading-text="Loading...">Load more..</button>
         </div>
 
         <!-- House rental -->

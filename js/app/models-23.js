@@ -120,6 +120,53 @@
     }),
 
     // =======================================================
+    // rideshareReturn Collection
+    // =======================================================
+    rideshareReturn: Backbone.Collection.extend({
+      model: Outpost.models.rideshare,
+      url: "http://outpost.travel/api/v1/rideshare/",
+
+      parse: function(response) {
+        return response;
+      },
+
+      sync: function(method, model, options) {
+        var _this = this;
+        var filter = Outpost.state.searchFilter;
+        var data = {};
+
+        if (!Outpost.state.isOriginOnly) {
+          data = {
+            eloc: Outpost.values.origLocation,
+            destlat: Outpost.values.origLocationLat,
+            destlon: Outpost.values.origLocationLng,
+            destState: Outpost.values.origState,
+            destCountry: Outpost.values.origCountry
+          };
+        }
+
+        data.sloc = Outpost.values.destLocation;
+        data.origlat = Outpost.values.destLocationLat;
+        data.origlon = Outpost.values.destLocationLng;
+        data.sdate = filter.edate;
+        data.guests = filter.guests;
+
+        data.origState = Outpost.values.destState;
+        data.origCountry = Outpost.values.destCountry;
+
+        data.page = Outpost.state.page.ridReturn;
+        var params = _.extend({
+          data: data,
+          type: 'GET',
+          dataType: 'jsonp',
+          url: _this.url
+        }, options);
+
+        return $.ajax(params);
+      }
+    }),
+
+    // =======================================================
     // tourism Collection
     // =======================================================
     tourism: Backbone.Collection.extend({

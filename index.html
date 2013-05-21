@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
-    <link rel="stylesheet" href="css/custom-22.css">
+    <link rel="stylesheet" href="css/custom-23.css">
 </head>
 <body>
   <div class="bs-load" id="js-bsload" style="display:none">
@@ -220,6 +220,7 @@
         <option <%= guests ==="2" ? "selected" : '' %> value="2">2</option>
         <option <%= guests ==="3" ? "selected" : '' %> value="3">3</option>
         <option <%= guests ==="4" ? "selected" : '' %> value="4">4</option>
+        <option <%= guests ==="5" ? "selected" : '' %> value="5">5</option>
       </select>
       <button class="btn btn-info refineSearchbtn" id="refineSearchbtn" type="submit">Refine Search</button>
     </form>
@@ -382,7 +383,7 @@
       });
     %>
       <div class="tr-rideshare tr css-alist <%= id %>" data-item='<%= json_item %>'>
-        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #ec5f41 245px 5px;">
+        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #ec5f41 310px 5px;">
           <img class="img-circle" width="36px" height="36px" src="<%= item.img %>">
           <span><%= item.desc %></span>
         </span>
@@ -426,6 +427,65 @@
     <% $('#rideshare').attr('data-markers', JSON.stringify(markers)); %>
   </script>
 
+  <script id="tmpl-rideshareRowReturn" type="text/template">
+    <% var markers = []; %>
+    <% _.each(items, function(item) {
+      Outpost.state.numOfRes++
+      var id = "rid" + item.id;
+      item.markerid = id;
+      var json_item = JSON.stringify(item);
+      markers.push({
+        latLng: Outpost.helpers.genRdmLLCC(item.origin).latLng,
+        data: item,
+        id: id,
+        tag: "rid"
+      });
+    %>
+      <div class="tr-rideshareReturn tr css-alist <%= id %>" data-item='<%= json_item %>'>
+        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #ec5f41 310px 5px;">
+          <img class="img-circle" width="36px" height="36px" src="<%= item.img %>">
+          <span><%= item.desc %></span>
+        </span>
+        <span class="list-rid-pricewrap">
+          <span class="list-rid-price">$<%= item.price2 %></span>
+          <span class="list-rid-pricedesc">per seat</span>
+        </span>
+        <div class="list-desc">
+          <span class="list-info">
+            <ul>
+              <li>
+                <span class="icon-time css-blue"></span>
+                <span><%= item.dates + " - " + item.time %></span>
+              </li>
+              <li>
+                <span class="icon-map-marker css-green"></span>
+                <span class="list-location-desc"><%= item.origin %> → <%= item.destination %></span>
+              </li>
+              <li>
+                <span class="icon-user css-red"></span>
+                <span><%= item.seat > 1 ? item.seat + " seats" : item.seat + " seat" %> left</span>
+              </li>
+            </ul>
+          </span>
+        </div>
+        <div class="list-foot">
+          <span>
+            <i class='icon-road'></i>&nbsp;Rideshare
+          </span>
+          <div class="rid-button-group pull-right">
+            <a data-orig="<%= item.origin %>" data-dest="<%= item.destination %>" class="btn btn-small routeit">
+              See route&nbsp;<i class="icon-random"></i>
+            </a>
+            <a class="btn btn-small info-book-rid ga-gotovendor" href="<%= item.link %>" target="_blank">
+              Grab a seat&nbsp;<i class="icon-share"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+    <% $('#rid-tab-return').attr('data-markers', JSON.stringify(markers)); %>
+  </script>
+
   <script id="tmpl-houserentalRow" type="text/template">
     <% 
       var markers = [];
@@ -443,7 +503,7 @@
         });
     %>
       <div class="tr-houserental tr css-alist <%= id %>" data-item='<%= json_item %>'>
-        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #24b0cf 250px 5px;">
+        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #24b0cf 314px 5px;">
           <img class="img-circle" width="36px" height="36px" src="<%= item.profileImg %>">
           <span><%= item.desc %></span>
         </span>
@@ -475,6 +535,9 @@
           <a class="btn btn-small info-book-air ga-gotovendor info-details" data-id="<%= id %>" href="javascript:void(0)">
             Details&nbsp;<i class="icon-play"></i>
           </a>
+          <a class="btn btn-small info-book-air ga-gotovendor pull-right mgr5" href="<%= item.link %>" target="_blank">
+            Book It&nbsp;<i class="icon-share"></i>
+          </a>
         </div>
       </div>
     <%
@@ -499,7 +562,7 @@
         });
       %>
       <div class="tr-tourism tr css-alist <%= id %>" data-item='<%= json_item %>'>
-        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #95d17b 250px 5px;">
+        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #95d17b 306px 5px;">
           <img class="img-circle" width="36px" height="36px" src="<%= item.profileImg %>">
           <span><%= item.desc %></span>
         </span>
@@ -550,13 +613,13 @@
   <script src="js/vendor/parsley.js"></script>
   <script src="js/vendor/waypoints.min.js"></script>
   <!-- MVC -->
-  <script src="js/app/tmpl-22.js"></script>
-  <script src="js/app/models-22.js"></script>
-  <script src="js/app/helpers-22.js"></script>
-  <script src="js/app/views-22.js"></script>
-  <script src="js/app/router-22.js"></script>
+  <script src="js/app/tmpl-23.js"></script>
+  <script src="js/app/models-23.js"></script>
+  <script src="js/app/helpers-23.js"></script>
+  <script src="js/app/views-23.js"></script>
+  <script src="js/app/router-23.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-22.js"></script>
+  <script src="js/main-23.js"></script>
   <!-- FACEBOOK SDK -->
   <div id="fb-root"></div>
   <script>

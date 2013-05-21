@@ -46,7 +46,7 @@
   foreach($rooms->find('.search_result') as $aRoom) {
     $room['id'] = $aRoom->getAttribute("data-hosting-id");
     $room['idtype'] = "airbnb";
-    $room['roomImg'] = $aRoom->find('img', 0)->getAttribute("data-original");
+    $room['roomImg'] = str_replace('x_small', 'small', $aRoom->find('img', 0)->getAttribute("data-original"));
     $room['profileImg'] = $aRoom->find('img', 1)->getAttribute("data-original");
     $room['profileName'] = $aRoom->find('img', 1)->alt;
     $room['desc'] = str_replace("'", "", $aRoom->find('.name', 0)->plaintext);

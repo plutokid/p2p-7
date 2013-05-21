@@ -359,7 +359,7 @@
       },
 
       events: {
-        "shown .mv-tab": "initLazyLoad",
+        "shown .mv-tab": "initLazyLoad"
       },
 
       initLazyLoad: function(e) {
@@ -390,6 +390,7 @@
       clearAllListings: function() {
         Outpost.mvc.views.houserental.clearData();
         Outpost.mvc.views.rideshare.clearData();
+        Outpost.mvc.views.rideshare.clearDataReturn();
         Outpost.mvc.views.tourism.clearData();
         $('.js-lists').empty();
       },
@@ -397,6 +398,7 @@
       fetchAll: function() {
         Outpost.mvc.views.houserental.fetchData();
         Outpost.mvc.views.rideshare.fetchData();
+        Outpost.mvc.views.rideshare.fetchDataReturn();
         Outpost.mvc.views.tourism.fetchData();
       },
 
@@ -474,6 +476,12 @@
           Outpost.mvc.views.sideBar.fetchAll();
           Outpost.mvc.router.navigate(destPath);
         }
+
+        var cities = Outpost.helpers.cutCities();
+        var origcity = cities.origcity;
+        var destcity = cities.destcity;
+        $('.rid-menu-first').text(origcity + ' → ' + destcity);
+        $('.rid-menu-second').text(destcity + ' → ' + origcity);
       },
 
       setFilterVar: function() {
@@ -744,6 +752,7 @@
           $loadMore.button('reset');
           _this.render();
         }
+
       },
 
       filterRoomType: function(e) {
@@ -825,7 +834,7 @@
           });
           $('#lm-air').button('reset');
           $.waypoints('destroy');
-        } else {
+        } else if (!$('.tr-houserental').length) {
           this.$el
            .find('#houserental-list')
            .html(
@@ -843,10 +852,13 @@
     rideshare: Parse.View.extend({
       el: '#sidebar',
       template: _.template($('#tmpl-rideshareRow').html()),
+      templateReturn: _.template($('#tmpl-rideshareRowReturn').html()),
       min: 0,
       max: 300,
       divCollection: [],
+      divCollectionReturn: [],
       prevSize: 0,
+      prevSizeReturn: 0,
       itemStore: {
         prefix: "rid",
         sortType: "relevance",
@@ -863,8 +875,33 @@
         },
         iconHover: "img/rideshare/hover.png",
         nodeList: "#rideshare-list",
+        nodeListReturn: "#rideshare-list-return",
         nodeTab: "#js-ridesharemenu",
         nodeUnit: ".tr-rideshare",
+        nodeUnitReturn: ".tr-rideshareReturn",
+        animation: ""
+      },
+
+      itemStoreReturn: {
+        prefix: "rid",
+        sortType: "relevance",
+        infoWindowTmpl: Outpost.tmpl.rideshareInfo,
+        icon: new google.maps.MarkerImage(
+          'img/rideshare/image.png',
+          new google.maps.Size(39,50),
+          new google.maps.Point(0,0),
+          new google.maps.Point(20,50)
+        ),
+        shape: {
+          coord: Outpost.values.coord,
+          type: 'poly'
+        },
+        iconHover: "img/rideshare/hover.png",
+        nodeList: "#rideshare-list-return",
+        nodeListReturn: "#rideshare-list-return",
+        nodeTab: "#js-ridesharemenu",
+        nodeUnit: ".tr-rideshareReturn",
+        nodeUnitReturn: ".tr-rideshareReturn",
         animation: ""
       },
 
@@ -872,16 +909,22 @@
         _.bindAll(this, 'render');
         this.initSliderGUI();
         this.collection = new Outpost.collections.rideshare();
+        this.collectionReturn = new Outpost.collections.rideshareReturn();
         this.fetchData();
+        this.fetchDataReturn();
       },
 
       events: {
         "change #js-sortby-input-rid": "sortBy",
         "click .tr-rideshare": "openInfoWindow",
+        "click .tr-rideshareReturn": "openInfoWindowReturn",
         "click .routeit": "routeIt",
         "click #lm-rid": "loadMore",
+        "click #lm-ridReturn": "loadMoreReturn",
         "mouseenter .tr-rideshare": "highlightMarker",
-        "mouseleave .tr-rideshare": "normalizeMarker"
+        "mouseleave .tr-rideshare": "normalizeMarker",
+        "mouseenter .tr-rideshareReturn": "highlightMarkerReturn",
+        "mouseleave .tr-rideshareReturn": "normalizeMarkerReturn"
       },
 
       initSliderGUI: function() {
@@ -901,11 +944,15 @@
             _this.min = ui.values[0];
             _this.max = ui.values[1];
             _this.priceFilter();
+            _this.priceFilterReturn();
           },
           change: function() {
             _this.priceMarkerFilter();
+            _this.priceMarkerFilterReturn();
             _this.prevSize = 0;
+            _this.prevSizeReturn = 0;
             _this.infiniteScroll();
+            _this.infiniteScrollReturn();
             $.waypoints('destroy');
           }
         });
@@ -920,6 +967,15 @@
         });
       },
 
+      priceFilterReturn: function() {
+        Outpost.helpers.priceFilter({
+          itemStore: this.itemStoreReturn,
+          collection: this.divCollectionReturn,
+          min: this.min,
+          max: this.max
+        });
+      },
+
       priceMarkerFilter: function() {
         Outpost.helpers.priceMarkerFilter({
           itemStore: this.itemStore,
@@ -929,9 +985,20 @@
         });
       },
 
+      priceMarkerFilterReturn: function() {
+        Outpost.helpers.priceMarkerFilter({
+          itemStore: this.itemStoreReturn,
+          collection: this.divCollectionReturn,
+          min: this.min,
+          max: this.max
+        });
+      },
+
       sortBy: function(e) {
         this.itemStore.sortType = $(e.currentTarget).val();
+        this.itemStoreReturn.sortType = $(e.currentTarget).val();
         this.sortDiv();
+        this.sortDivReturn();
       },
 
       sortDiv: function() {
@@ -941,9 +1008,21 @@
         this.divCollection = $('.tr-rideshare');
       },
 
+      sortDivReturn: function() {
+        Outpost.helpers.sortDiv({
+          itemStore: this.itemStoreReturn
+        });
+        this.divCollectionReturn = $('.tr-rideshareReturn');
+      },
+
       clearAndFetch: function() {
         this.clearData();
         this.fetchData();
+      },
+
+      clearAndFetchReturn: function() {
+        this.clearDataReturn();
+        this.fetchDataReturn();
       },
 
       clearData: function() {
@@ -957,11 +1036,29 @@
          .empty();
       },
 
+      clearDataReturn: function() {
+        this.divCollectionReturn = [];
+        this.itemStoreReturn.animation = "";
+        Outpost.mvc.views.map.removeMarkers("rid");
+        Outpost.state.page.ridReturn = 1;
+        Outpost.state.readyRID = false;
+        this.$el
+         .find('#rideshare-list-return')
+         .empty();
+      },
+
       loadMore: function() {
         $.waypoints('destroy');
         this.itemStore.animation = google.maps.Animation.DROP;
         Outpost.state.page.rid += 1;
         this.fetchData();
+      },
+
+      loadMoreReturn: function() {
+        $.waypoints('destroy');
+        this.itemStoreReturn.animation = google.maps.Animation.DROP;
+        Outpost.state.page.ridReturn += 1;
+        this.fetchDataReturn();
       },
 
       fetchData: function() {
@@ -1008,6 +1105,51 @@
         }
       },
 
+      fetchDataReturn: function() {
+        var _this = this;
+        var $loadingReturn = $('#rideshare-loading-return');
+        var query = Outpost.helpers.genSearchQuery() + "rid" +
+            Outpost.state.page.rid;
+        var $loadMoreReturn = $('#m-rid-return');
+        var queryReturn = query + "return";
+
+        if (!Outpost.listingsCache[queryReturn]) {
+          Outpost.listingsCache[queryReturn] = this.collectionReturn.fetch({
+            beforeSend: function() {
+              $loadingReturn.show();
+              $loadMoreReturn.button('loading');
+            },
+            error: function() {
+              Outpost.helpers.showAlertBox({
+                type: "alert-error",
+                text: "<strong>Sorry!</strong>" +
+                      " something went wrong! Trying again.."
+              });
+              $loadMoreReturn.button('reset');
+              Outpost.values.numOfTimeout++;
+              if (Outpost.values.numOfTimeout < 9) {
+                _this.clearAndFetchReturn();
+              }
+            }
+          });
+        }
+
+        if (typeof Outpost.listingsCache[queryReturn].done === 'function') {
+          Outpost.listingsCache[queryReturn].done(function(data) {
+            _this.arrCollectionReturn = data;
+            $loadingReturn.hide();
+            $loadMoreReturn.button('reset');
+            _this.renderReturn();
+            sessionStorage[queryReturn] = JSON.stringify(Outpost.listingsCache[queryReturn]);
+          });
+        } else {
+          this.arrCollectionReturn = Outpost.listingsCache[queryReturn].responseJSON;
+          $loadingReturn.hide();
+          $loadMoreReturn.button('reset');
+          _this.renderReturn();
+        }
+      },
+
       openInfoWindow: function(e) {
         var $tr = $(e.currentTarget);
         var item = $tr.data('item');
@@ -1026,6 +1168,26 @@
         var $tr = $(e.currentTarget);
         var item = $tr.data('item');
         Outpost.mvc.views.map.normalizeMarker(item, this.itemStore);
+      },
+
+      openInfoWindowReturn: function(e) {
+        var $tr = $(e.currentTarget);
+        var item = $tr.data('item');
+        $('.row-selected').removeClass('row-selected');
+        $tr.addClass("row-selected");
+        Outpost.mvc.views.map.relateMarker(item, this.itemStoreReturn);
+      },
+
+      highlightMarkerReturn: function(e) {
+        var $tr = $(e.currentTarget);
+        var item = $tr.data('item');
+        Outpost.mvc.views.map.highlightMarker(item, this.itemStoreReturn);
+      },
+
+      normalizeMarkerReturn: function(e) {
+        var $tr = $(e.currentTarget);
+        var item = $tr.data('item');
+        Outpost.mvc.views.map.normalizeMarker(item, this.itemStoreReturn);
       },
 
       routeIt: function(e) {
@@ -1052,6 +1214,65 @@
         });
 
         Outpost.state.readyRID = true;
+      },
+
+      infiniteScrollReturn: function() {
+        var size, _this = this, tr;
+        tr = this.itemStoreReturn.nodeUnitReturn;
+        size = $(tr).length;
+        _this.prevSizeReturn = size;
+        size =  _this.prevSizeReturn - 10;
+        if (size < 0) {
+          if (size - _this.prevSizeReturn < 8) {
+            _this.loadMoreReturn();
+          }
+          size = 0;
+        }
+
+        $(tr + ':eq(' + size + ')').waypoint(function(direction) {
+          if (direction === "down" && Outpost.state.readyRID) {
+            _this.loadMoreReturn();
+          }
+        });
+
+        Outpost.state.readyRID = true;
+      },
+
+      renderReturn: function() {
+        var collectionReturn;
+        if (this.collectionReturn.length) {
+          collectionReturn = this.collectionReturn.toJSON();
+        } else {
+          collectionReturn = this.arrCollectionReturn;
+        }
+        if (collectionReturn.length) {
+          $('#rideshare-list-return').append(this.templateReturn({
+            items: collectionReturn
+          }));
+          $('#js-counter').text(Outpost.state.numOfRes);
+          Outpost.mvc.views.map.setMarkers(
+            $('#rid-tab-return').data('markers'),
+            this.itemStore
+          );
+          $('#rid-tab-return').removeData('markers');
+          this.sortDivReturn();
+          this.priceFilterReturn();
+        } else if (Outpost.state.page.ridReturn !== 1) {
+          Outpost.helpers.showAlertBox({
+            type: "alert-error",
+            text: "<strong>Sorry!</strong> no more feeds found!"
+          });
+          $('#lm-rid-return').button('reset');
+          $.waypoints('destroy');
+        } else {
+          this.$el
+           .find('#rideshare-list-return')
+           .html(
+            "<div class='text-center'>" +
+            "No rides found towards " + Outpost.values.destLocation + "." +
+            "</div>"
+           );
+        }
       },
 
       render: function() {
