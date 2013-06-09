@@ -1,0 +1,61 @@
+<div class="container" id="singleViewPage">
+  <div class="row">
+    <div class="span12">
+      <div class="item-wrapper">
+        <div class="panel-header css-bgred">
+          <h2 class="panel-title"><%= date %></h2>
+        </div>
+        <div class="item-content row">
+          <h3 class="panel-subtitle"><%= origin %> → <%= destination %></h3>
+          <div class="span8">
+            <div class="left-col-content">
+              <div class="single-map" id="single-map"></div>
+            </div>
+          </div>
+          <div class="span270">
+            <div class="item-info">
+              <div class="item-price-box">
+                <h2 class="item-price"><%= price %></h2>
+                <span class="item-per item-per-seat">per seat</span>
+              </div>
+              <div class="item-seatleft-box">
+                <h4 class="item-seat"><%= numOfSeats %></h4>
+                <span class="item-seat-left"><%= numOfSeats <= 1 ? "seat" : "seats" %> left</span>
+              </div>
+              <div class="item-desc-box">
+                <p class="item-desc">
+                  <%= description %>
+                </p>
+              </div>
+              <div class="item-contact-box">
+                <a class="out-btn btn-block btn-con-dri" type="button" href="<%= link %>" target="_blank">Contact Driver</a>
+              </div>
+            </div>
+            <div class="item-profile">
+              <div class="item-profile-pic">
+                <img src="<%= profile_pic %>" class="img-polaroid img-profile-pic">
+                <h4 class="item-profile-name"><%= name %></h4>
+                <h6 class="item-profile-age"><%= age %></h6>
+              </div>
+              <table class="table table-striped table-hover">
+                <tbody>
+                  <% _.each(labels, function(label) { %>  
+                    <tr>
+                      <td><%= label %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <div class="provider-profile">
+              <div class="item-provider-logo css-bgred">
+                <img src="<%= logopath %>" class="provider-<%= idtype %>"></img>
+              </div>
+              <div class="provider-desc"><%= logodesc %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

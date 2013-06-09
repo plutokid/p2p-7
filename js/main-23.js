@@ -12,34 +12,14 @@
     // Initializes cache objects
     Outpost.helpers.initCache();
 
+    // New google map
+    google.maps.visualRefresh = true;
+
     // Initializes the MVC
     new Outpost.views.main();
 
-    // Navbar tracking
-    $('.btn-nav, .header-logo-link').on("click", function() {
-      _gaq.push(['_trackEvent',
-        "navbar",
-        $(this).text(),
-        Outpost.values.destLocation
-      ]);
-    });
-
-    // filter button
-    $('.submit-filter').on("click", function() {
-      _gaq.push(['_trackEvent',
-        "sidebar",
-        "submit-filter",
-        $(this).prev().text()
-      ]);
-    });
-
-    // sidebar goto icon
-    $('#sidebar').on("click", ".ga-gotovendor", function() {
-      _gaq.push(['_trackEvent',
-        "sidebar",
-        "gotolink",
-        $(this).attr("href")
-      ]);
+    $.getJSON("https://api.twitter.com/1/statuses/user_timeline/outposttravel.json?count=1&include_rts=1&callback=?", function(data) {
+      $("#latest-tweet").html(data[0].text);
     });
   });
 })(window, jQuery, undefined);

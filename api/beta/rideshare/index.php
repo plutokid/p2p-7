@@ -140,18 +140,26 @@ header("Access-Control-Allow-Origin: *");
 
           $link = $aRide->getAttribute('onclick');
           $ride['link'] = str_replace($crap, '', $link);
-          $ride['id'] = filter_var($ride['link'], FILTER_SANITIZE_NUMBER_INT) + rand(0, 200);
+          $cleanLink = str_replace("http://www.kangaride.com/", '', $ride['link']);
+          $ride['id'] = explode("/", $cleanLink);
+          $ride['id'] = $ride['id'][1];
+          $ride['uri'] = $ride['id'];
           $ride['idtype'] = "kangaride";
-          $ride['dates'] =  $lastDate; //poollist find
-          $ride['time'] = trim($aRide->find('.datetime', 0)->plaintext);
+          $ride['date'] =  $lastDate; //poollist find
+          $ride['time'] = str_replace("Noon", "12", trim($aRide->find('.datetime', 0)->plaintext));
+          $ride['timestamp'] =  strtotime($lastDate . " " . $ride['time']);
+          if (!$ride['timestamp']) {
+            $ride['timestamp'] =  strtotime($lastDate);
+          }
           $ride['username'] = "n/a";
           $ride['origin'] = $aRide->find('strong', 0)->plaintext;
           $ride['origin'] = $ride['origin'] == "Québec" ? "Quebec city" : $ride['origin'];
           $ride['destination'] = $aRide->find('strong', 1)->plaintext;
           $ride['destination'] = $ride['destination'] == "Québec" ? "Quebec city" : $ride['destination'];
-          $ride['desc'] = str_replace("'", "", $aRide->find('.pickupDetails', 0)->plaintext . " → " .$aRide->find('.pickupDetails', 1)->plaintext);
-          $ride['price'] = $price_full;
-          $ride['price2'] = $price;
+          $ride['desc'] = "";
+          $ride['location1'] = str_replace("'", "", $aRide->find('.pickupDetails', 0)->plaintext);
+          $ride['location2'] = str_replace("'", "", $aRide->find('.pickupDetails', 1)->plaintext);
+          $ride['price'] = $price;
           $ride['img'] = "img/noprofile.jpg";
           $ride['iconPath'] = "img/kangaride.ico";
           $ride['infoWindowIcon'] = "img/kangaride.png";
@@ -196,9 +204,11 @@ header("Access-Control-Allow-Origin: *");
             $lastDate = substr($lastDate[0], 10);
         }
         $ride['link'] = $aRide->href;
+        $ride['link'] = str_replace('&searchPageID=1', '', $ride['link']);
         $ride['id'] = filter_var($ride['link'], FILTER_SANITIZE_NUMBER_INT);
+        $ride['uri'] = $ride['id'];
         $ride['idtype'] = "zimride";
-        $ride['dates'] =  $lastDate; //poollist find
+        $ride['date'] =  $lastDate; //poollist find
         $ride['username'] = $aRide->find('.username', 0)->plaintext;
         $originfull = $aRide->find('.inner', 0)->innertext;
         $origin = explode('<span class="trip_type one_way"></span>', $originfull);
@@ -220,8 +230,32 @@ header("Access-Control-Allow-Origin: *");
           $ride['time'] = str_replace("Departs", "", $desc[1]);
           $ride['desc'] = $desc[0];
         }
-        $ride['price'] = $price_full;
-        $ride['price2'] = $price;
+        $ride['timestamp'] = false;
+        $ride['time'] = preg_replace("/\s|&nbsp;/",'',$ride['time']);
+        switch ($ride['time']) {
+          case 'Morning':
+            $ride['timestamp'] = strtotime($lastDate . "9:00");
+            break;
+          case 'Anytime':
+            $ride['timestamp'] = strtotime($lastDate. "12:00");
+            break;
+          case 'Afternoon':
+            $ride['timestamp'] = strtotime($lastDate. "15:00");
+            break;
+          case 'Evening':
+            $ride['timestamp'] = strtotime($lastDate . "18:00");
+            break;
+          case 'Night':
+            $ride['timestamp'] = strtotime($lastDate . "21:00");
+            break;
+          default:
+            $ride['timestamp'] =  strtotime($lastDate . $ride['time']);
+            break;
+        }
+        if (!$ride['timestamp']) {
+          $ride['timestamp'] = strtotime($lastDate);
+        }
+        $ride['price'] = $price;
 
         $output[] = $ride;
       }
@@ -249,20 +283,20 @@ header("Access-Control-Allow-Origin: *");
         $price_full = trim($aRide->find('.seats_container', 0)->plaintext);
         $price = 0 + substr($price_full, 1);
         $ride['idtype'] = "ridejoy";
-        $ride['dates'] = $date;
+        $ride['date'] = $date;
         $ride['img'] = $aRide->find('img', 0)->src;
         $ride['origin'] = $aRide->find('.origin', 0)->plaintext;
         $ride['destination'] = $aRide->find('.destination', 0)->plaintext;
         $ride['desc'] = str_replace(array("'", "&#x27;", "&quot;"), "", $aRide->find('.extra_info', 0)->plaintext);
-        $ride['price'] = $price_full;
-        $ride['price2'] = $price;
+        $ride['price'] = $price;
         $ride['iconPath'] = "img/ridejoy.ico";
         $ride['infoWindowIcon'] = "img/ridejoy.png";
         $ride['link'] = $aRide->find('.view_details', 0)->href;
+        $ride['uri'] = $ride['id'];
         $ride['seat'] = "1-4";
         // im actually lieing here since  ridejoy isnt giving it on the go
         $ride['time'] = "Anytime";
-
+        $ride['timestamp'] = strtotime($date. "12:00");
         $output[] = $ride;
       }
     }
@@ -296,11 +330,17 @@ header("Access-Control-Allow-Origin: *");
       }
       $ride['img'] = $aRide->find('img', 0)->src;
       $ride['link'] = "http://www.blablacar.com".$aRide->find('a', 0)->href;
-      $ride['id'] = substr($ride['link'], -6);
+      $ride['uri'] = str_replace('http://www.blablacar.com/', '', $ride['link']);
+      $ride['id'] = filter_var($ride["uri"], FILTER_SANITIZE_NUMBER_INT);
       $ride['idtype'] = "blablacar";
       $datetime = explode("-", $aRide->find('.time', 0)->plaintext);
-      $ride['dates'] = trim($datetime[0]);
+      $ride['date'] = trim($datetime[0]);
       $ride['time'] =  trim($datetime[1]);
+      $ride['timestamp'] = strtotime($ride['date']. " ".  $ride['time']);
+      if (!$ride['timestamp'])
+        $ride['timestamp'] = strtotime($ride['date']. " 2013 ".  $ride['time']);
+      if (!$ride['timestamp'])
+        $ride['timestamp'] = strtotime($ride['date']);
       $ride['username'] = $aRide->find('.username', 0)->plaintext;
       $ride['iconPath'] = "img/blablacar.ico";
       $ride['infoWindowIcon'] = "img/blablacar.png";
@@ -312,9 +352,7 @@ header("Access-Control-Allow-Origin: *");
       $destination = explode(",", $destination);
       $ride['destination'] = $destination[0];
       $ride['desc'] = $aRide->find('.fromto', 0)->plaintext;
-      $ride['price'] = $price_full;
-      $ride['price2'] = $price;
-
+      $ride['price'] = $price;
       $output[] = $ride;
     }
   }

@@ -33,6 +33,10 @@
     readyTOU: false
   };
 
+  Outpost.help = {};
+  Outpost.single = {};
+  Outpost.stash = {};
+
   // To hold saved input values
   Outpost.values = {
     origLocation: "",
@@ -58,6 +62,20 @@
   Outpost.mvc = {
     views: {},
     models: {}
+  };
+
+  Outpost.searchQuery = {
+    origLocation: "",
+    origLocationLat: "",
+    origLocationLng: "",
+    destLocation: "",
+    destLocationLat: "",
+    destLocationLng: "",
+    sdate: "",
+    edate: "",
+    sdateObj: "",
+    edateObj: "",
+    guests: ""
   };
 
   // Extra helper functions
@@ -181,7 +199,7 @@
 
     genSearchQuery: function() {
       var str = "";
-      var x = Outpost.values;
+      var x = Outpost.searchQuery;
       var y = Outpost.state.searchFilter;
       str += x.origLocation + x.destLocation + y.sdate + y.edate + y.guests;
       str += String(Outpost.state.isOriginOnly) + String(x.isFromSearch);
@@ -189,14 +207,15 @@
       return str;
     },
 
-    loadAPI: function(url) {
+    loadAPI: function(data) {
       var ajaxPromise, dff = $.Deferred();
-      if (!Outpost.HTMLcache[url]) {
-        Outpost.HTMLcache[url] = $.ajax({
+      if (!Outpost.HTMLcache[data.uri]) {
+        Outpost.HTMLcache[data.uri] = $.ajax({
           type: "GET",
-          url: "http://outpost.travel/api/v1/houserental/single.php",
+          url: "http://outpost.travel/api/beta/" + data.apicat + "/single.php",
           data: {
-            uri: encodeURIComponent(url)
+            uri: encodeURIComponent(data.uri),
+            idtype: data.idtype
           },
           dataType: "jsonp",
           beforeSend: function() {
@@ -210,11 +229,30 @@
         });
       }
 
-      Outpost.HTMLcache[url].done(function(data) {
+      Outpost.HTMLcache[data.uri].done(function(data) {
         dff.resolve(data);
       });
 
       return dff.promise();
+    },
+
+    formURI: function(data) {
+      var uri;
+      switch (data.idtype) {
+        case "kangaride":
+          uri = "r/" + data.id;
+          break;
+        case "zimride":
+          uri = "ride/share?ride=" + data.id;
+          break;
+        case "ridejoy":
+          uri = "rides/" + data.id;
+          break;
+        case "blablacar":
+          uri = data.id;
+          break;
+      }
+      return uri;
     },
 
     ipToGeo: function() {
@@ -243,15 +281,38 @@
       return dff.promise();
     },
 
+    getDuration: function(origin, dest) {
+      var dff = $.Deferred();
+
+      if (!Outpost.cache[origin + dest]) {
+        Outpost.cache[origin + dest] = $.ajax({
+          url: "http://maps.googleapis.com/maps/api/directions/json",
+          data: {
+            origin: origin,
+            destination: dest,
+            sensor: false
+          },
+          dataType: "json",
+          type: "GET"
+        });
+      }
+
+      Outpost.cache[origin + dest].done(function(data) {
+        dff.resolve(data);
+      });
+
+      return dff.promise();
+    },
+
     defineDestLoc: function(destLocation) {
       var csc = Outpost.helpers.genRdmLLCC(destLocation);
       var destLng = csc.latLng;
-      Outpost.values.destLocation = destLocation;
-      Outpost.values.destLocationLat = destLng[0];
-      Outpost.values.destLocationLng = destLng[1];
+      Outpost.searchQuery.destLocation = destLocation;
+      Outpost.searchQuery.destLocationLat = destLng[0];
+      Outpost.searchQuery.destLocationLng = destLng[1];
 
-      Outpost.values.destCountry = csc.country;
-      Outpost.values.destState = csc.state;
+      Outpost.searchQuery.destCountry = csc.country;
+      Outpost.searchQuery.destState = csc.state;
       _gaq.push(['_trackEvent',
         "mainsearch",
         "inputcity",
@@ -262,24 +323,24 @@
     defineOrigLoc: function(orignalLocation) {
       var csc = Outpost.helpers.genRdmLLCC(orignalLocation);
       var origlatLng = csc.latLng;
-      Outpost.values.origLocation = orignalLocation;
-      Outpost.values.origLocationLat = origlatLng[0];
-      Outpost.values.origLocationLng = origlatLng[1];
+      Outpost.searchQuery.origLocation = orignalLocation;
+      Outpost.searchQuery.origLocationLat = origlatLng[0];
+      Outpost.searchQuery.origLocationLng = origlatLng[1];
 
-      Outpost.values.origCountry = csc.country;
-      Outpost.values.origState = csc.state;
+      Outpost.searchQuery.origCountry = csc.country;
+      Outpost.searchQuery.origState = csc.state;
     },
 
     defineLocFromIp: function(data) {
-      Outpost.values.origLocation = data.location;
-      Outpost.values.origLocationLat = data.latLng[0];
-      Outpost.values.origLocationLng = data.latLng[1];
-      Outpost.values.origCountry = data.country;
-      Outpost.values.origState = data.state;
+      Outpost.searchQuery.origLocation = data.location;
+      Outpost.searchQuery.origLocationLat = data.latLng[0];
+      Outpost.searchQuery.origLocationLng = data.latLng[1];
+      Outpost.searchQuery.origCountry = data.country;
+      Outpost.searchQuery.origState = data.state;
 
-      Outpost.values.destLocation = data.location;
-      Outpost.values.destLocationLat = data.latLng[0];
-      Outpost.values.destLocationLng = data.latLng[1];
+      Outpost.searchQuery.destLocation = data.location;
+      Outpost.searchQuery.destLocationLat = data.latLng[0];
+      Outpost.searchQuery.destLocationLng = data.latLng[1];
     },
 
     showAlertBox: function(data) {
@@ -471,9 +532,36 @@
       }
     },
 
+    sortDate: function(collection) {
+      var sorted = collection.sort(function (a, b) {
+        var p1 = a.timestamp;
+        var p2 = b.timestamp;
+        return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
+      });
+      return sorted;
+    },
+
+    sortLowToHigh: function(collection) {
+      var sorted = collection.sort(function (a, b) {
+        var p1 = a.price;
+        var p2 = b.price;
+        return (p1 < p2) ? -1 : (p1 > p2) ? 1 : 0;
+      });
+      return sorted;
+    },
+
+    sortHighToLow: function(collection) {
+      var sorted = collection.sort(function (a, b) {
+        var p1 = a.price;
+        var p2 = b.price;
+        return (p1 > p2) ? -1 : (p1 < p2) ? 1 : 0;
+      });
+      return sorted;
+    },
+
     cutCities: function() {
-      var origcity = Outpost.values.origLocation;
-      var destcity = Outpost.values.destLocation;
+      var origcity = Outpost.searchQuery.origLocation;
+      var destcity = Outpost.searchQuery.destLocation;
       var index;
       if (destcity) {
         index = destcity.indexOf(",");
@@ -513,8 +601,82 @@
       });
     },
 
+    fetchRideShares: function(state) {
+      var dff = $.Deferred();
+      var options = Outpost.searchQuery;
+      var data = {
+        eloc: options.destLocation,
+        destlat: options.destLocationLat,
+        destlon: options.destLocationLng,
+        destState: options.destState,
+        destCountry: options.destCountry,
+
+        sloc: options.origLocation,
+        origlat: options.origLocationLat,
+        origlon: options.origLocationLng,
+        origState: options.origState,
+        origCountry: options.origCountry,
+
+        sdate: options.sdate,
+        edate: options.edate,
+
+        guests: options.guests,
+
+        page: state.page
+      };
+
+      var request = $.ajax({
+        url: 'http://outpost.travel/api/beta/rideshare/',
+        type: 'GET',
+        dataType: 'jsonp',
+        data: data
+      });
+      request.done(function(data) {
+        dff.resolve(data);
+      });
+      return dff.promise();
+    },
+
+    fetchRentals: function(state) {
+      var dff = $.Deferred();
+      var options = Outpost.searchQuery;
+      var data = {
+        eloc: options.destLocation,
+        destlat: options.destLocationLat,
+        destlon: options.destLocationLng,
+        destState: options.destState,
+        destCountry: options.destCountry,
+
+        sloc: options.origLocation,
+        origlat: options.origLocationLat,
+        origlon: options.origLocationLng,
+        origState: options.origState,
+        origCountry: options.origCountry,
+
+        sdate: options.sdate,
+        edate: options.edate,
+
+        guests: options.guests,
+        price_min: state.min,
+        price_max: state.max,
+        room_type: state.roomType,
+        page: state.page
+      };
+
+      var request = $.ajax({
+        url: 'http://outpost.travel/api/beta/houserental/',
+        type: 'GET',
+        dataType: 'jsonp',
+        data: data
+      });
+      request.done(function(data) {
+        dff.resolve(data);
+      });
+      return dff.promise();
+    },
+
     initCache: function() {
-      var debug = false;
+      var debug = true;
       var sub, counter = 0;
       if (!debug) {
         for (var i in localStorage) {

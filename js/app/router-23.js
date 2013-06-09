@@ -1,46 +1,31 @@
-(function(window, $, _, Parse) {
+(function(window, $, _, Backbone) {
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
 
   Outpost.routes = {
-    AppRouter: Parse.Router.extend({
+    AppRouter: Backbone.Router.extend({
       $title: $('title'),
       routes: {
-        "!/mapview/:location": "mapview",
+        "!/item/:type/:provider/:id": "singleview",
+        "!/search/": "listview",
+        "!/help/*hook": "helppage",
+        "!/help/*hook/": "helppage",
         "*actions": "home"
       },
 
-      home: function(actions) {
+      home: function(actions, params) {
         var geoPromise;
         switch (actions) {
-          case "!/mapview/":
-            geoPromise = Outpost.helpers.ipToGeo();
-            geoPromise.done(function(data) {
-              Outpost.helpers.defineLocFromIp(data);
-              Outpost.state.isOriginOnly = true;
-              if (Outpost.mvc.views.mapPage) {
-                Outpost.mvc.views.mapPage.render();
-              } else {
-                Outpost.mvc.views.mapPage = new Outpost.views.mapPage();
-              }
-            });
+          case "!/search":
+            this.listview();
             break;
-          case "!/listview/":
-            geoPromise = Outpost.helpers.ipToGeo();
-            geoPromise.done(function(data) {
-              Outpost.helpers.defineLocFromIp(data);
-              Outpost.state.isOriginOnly = true;
-              if (Outpost.mvc.views.listPage) {
-                Outpost.mvc.views.listPage.render();
-              } else {
-                Outpost.mvc.views.listPage = new Outpost.views.listPage();
-              }
-            });
+          case "!/help":
+            this.helppage();
             break;
           default:
             this.$title.text(
-              "Outpost - Lookup peer to peer listings all in one place."
+              "Outpost - Lookup peer to peer listings all in one place"
             );
             if (Outpost.mvc.views.indexPage) {
               Outpost.mvc.views.indexPage.render();
@@ -50,19 +35,80 @@
         }
       },
 
-      mapview: function(location) {
-        location = decodeURI(location);
-        this.$title.text(location + " - Outpost");
-        if (Outpost.values.isFromSearch) {
-          Outpost.helpers.defineDestLoc(location);
+      helppage: function(hook) {
+        this.$title.text(
+          "Outpost - Help and Information"
+        );
+        Outpost.help.hook = hook;
+        if (Outpost.mvc.views.helpPage) {
+          Outpost.mvc.views.helpPage.render();
+        } else {
+          Outpost.mvc.views.helpPage = new Outpost.views.helpPage();
+        }
+      },
+
+      listview: function(params) {
+        var geoPromise;
+        var _this = this;
+        var options = Outpost.searchQuery;
+        var dff = $.Deferred();
+        if (!params) {
+          geoPromise = Outpost.helpers.ipToGeo();
+          geoPromise.done(function(data) {
+            dff.resolve({
+              origCity: encodeURI(data.location),
+              destCity: "",
+              sdate: "",
+              edate: "",
+              guests: ""
+            });
+          });
+        } else {
+          dff.resolve(params);
         }
 
-        if (Outpost.mvc.views.mapPage) {
-          Outpost.mvc.views.mapPage.render();
+        dff.done(function(params) {
+          var origCity = decodeURI(params.origCity);
+          var destCity = decodeURI(params.destCity);
+
+          if (destCity) {
+            _this.$title.text(destCity + " - Outpost");
+          } else {
+            _this.$title.text(origCity + " - Outpost");
+          }
+
+          Outpost.helpers.defineOrigLoc(origCity);
+          Outpost.helpers.defineDestLoc(destCity);
+          options.sdate = params.sdate;
+          options.edate = params.edate;
+          options.guests = params.guests ? params.guests : "1";
+
+          if (options.sdate) {
+            options.sdateObj = moment(options.sdate, "MM/DD/YYYY");
+          }
+
+          if (options.edate) {
+            options.edateObj = moment(options.edate, "MM/DD/YYYY");
+          }
+
+          if (Outpost.mvc.views.listPage) {
+            Outpost.mvc.views.listPage.render();
+          } else {
+            Outpost.mvc.views.listPage = new Outpost.views.listPage();
+          }
+        });
+      },
+
+      singleview: function(type, provider, id) {
+        Outpost.single.type = type;
+        Outpost.single.provider = provider;
+        Outpost.single.id = id;
+        if (Outpost.mvc.views.singlePage) {
+          Outpost.mvc.views.singlePage.render();
         } else {
-          Outpost.mvc.views.mapPage = new Outpost.views.mapPage();
+          Outpost.mvc.views.singlePage = new Outpost.views.singlePage();
         }
       }
     })
   };
-})(window, jQuery, _, Parse, undefined);
+})(window, jQuery, _, Backbone, undefined);

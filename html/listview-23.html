@@ -1,137 +1,220 @@
-<!-- Landing hero header -->
 <div class="container" id="listViewPage">
   <div class="row">
     <div class="span12">
       <div class="lp-refineSearch">
         <form class="lp-refineSearchForm" id="lp-refineSearch">
-          <input class="filter-origin-location" id="lp-orig-location-input" type="search" placeholder="From location">
-          <strong class="lp-arrowwhite">&nbsp;→&nbsp;</strong>
-          <input id="lp-search-again" type="search" placeholder="Destination Location">
-          <div class="input-prepend">
-            <span class="add-on"><i class="icon-calendar"></i></span>
-            <input class="input-small" placeholder="Leaving on" id="lp-sdate-input" type="text">
-            <input class="input-small" placeholder="Check out" id="lp-edate-input" type="text">
+          <% var guests = Outpost.searchQuery.guests; %>
+          <div class="input-wrapper">
+            <input class="filter-origin-location" id="refine-orig-location" type="text" value="<%= Outpost.searchQuery.origLocation %>" placeholder="Departure City">
           </div>
-          <select class="guestfilter" id="lp-guest-input">
-            <option selected disabled value="1">People</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-          <button class="btn btn-info lp-refineSearchbtn" id="refineSearchbtn" type="submit">Search</button>
+          <div class="input-wrapper">
+            <strong class="lp-arrowwhite">&nbsp;→&nbsp;</strong>
+          </div>
+          <div class="input-wrapper">
+            <input id="refine-dest-location" type="text" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Destination City">
+          </div>
+          <div class="input-wrapper">
+            <input class="input-small" id="refine-sdate" placeholder="Leaving on" value="<%= Outpost.searchQuery.sdate %>" type="text">
+          </div>
+          <div class="input-wrapper">
+            <input class="input-small" id="refine-edate" placeholder="Check out" value="<%= Outpost.searchQuery.edate %>" type="text">
+          </div>
+          <div class="input-wrapper">
+            <select class="guestfilter" id="refine-guest">
+              <option <%= guests ==="1" ? "selected" : '' %> value="1">1 guest</option>
+              <option <%= guests ==="2" ? "selected" : '' %> value="2">2 guests</option>
+              <option <%= guests ==="3" ? "selected" : '' %> value="3">3 guests</option>
+              <option <%= guests ==="4" ? "selected" : '' %> value="4">4 guests</option>
+              <option <%= guests ==="5" ? "selected" : '' %> value="5">5 guests</option>
+            </select>
+          </div>
+          <button class="out-btn lp-refineSearchbtn" id="refineSearchbtn" type="submit"><i class="icon-search"></i>&nbsp;Search</button>
         </form>
       </div>
     </div>
-    <div class="span3">
-      <div class="accordion affix lp-sidebar" id="lp-sidebar">
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#lp-sidebar" href="#lp-roomType">
-              Room type
-            </a>
-          </div>
-          <div id="lp-roomType" class="accordion-body in collapse">
-            <div class="accordion-inner">
-              <label class="checkbox">
-                <input type="checkbox" name="room_types" value="Entire home/apt">Entire home/apt
-              </label>
-              <label class="checkbox">
-                <input type="checkbox" name="room_types" value="Private room">Private room
-              </label>
-              <label class="checkbox">
-                <input type="checkbox" name="room_types" value="Shared room">Shared room
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#lp-sidebar" href="#lp-priceFilter">
-              Price
-            </a>
-          </div>
-          <div id="lp-priceFilter" class="accordion-body in collapse">
-            <div class="accordion-inner">
-              <div class="lp-price-filter">
-                <ul class="slider_values">
-                  <li class="price-value-min minimax">$<span id="lp-price-value-min-hou">10</span> USD</li>
-                  <li class="price-value-max minimax">$<span id="lp-price-value-max-hou">300+</span> USD</li>
-                </ul>
-                <div class="input-large" id="lp-price-input-hou"></div>
+    <div class="span12">
+      <div class="lp-tab-section">
+        <ul class="nav nav-pills">
+          <li class="active"><a href="#lp-ridesharing" data-toggle="tab">Ride shares</a></li>
+          <li><a href="#lp-spacerentals" data-toggle="tab">Place rentals</a></li>
+          <li><a href="#lp-localguides" data-toggle="tab">Local guides</a></li>
+        </ul>
+      </div>
+      <div class="tab-content">
+        <div class="tab-pane active" id="lp-ridesharing">
+          <div class="span3">
+            <div class="accordion lp-sidebar">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Sort by
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <select class="lp-sortfilter" id="lp-rid-sortby">
+                      <option value="relevance">Relevance</option>
+                      <option value="date">Date</option>
+                      <option value="low2high">Price: Low to high</option>
+                      <option value="high2low">Price: High to low</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Providers
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <label class="checkbox">
+                      <input class="lp-rid-providers" type="checkbox" value="blablacar">BlaBlaCar <span class="fil-num" id="fil-num-bbc"></span>
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-rid-providers" type="checkbox" value="kangaride">Kangaride <span class="fil-num" id="fil-num-kan"></span>
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-rid-providers" type="checkbox" value="ridejoy">Ridejoy <span class="fil-num" id="fil-num-rid"></span>
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-rid-providers" type="checkbox" value="zimride">Zimride <span class="fil-num" id="fil-num-zim"></span>
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#lp-sidebar" href="#lp-sortbyaccord">
-              Sort by
-            </a>
-          </div>
-          <div id="lp-sortbyaccord" class="accordion-body in collapse">
-            <div class="accordion-inner">
-              <select class="lp-sortfilter" id="lp-sortby-input">
-                <option selected>Relevance</option>
-                <option value="low2high">Price: Low to high</option>
-                <option value="high2low">Price: High to low</option>
-              </select>
+          <div class="span9 pull-right margin0">
+            <div class="well" id="lp-rid-well">
+              Searching for rideshares near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
+            </div>
+            <div class="lp-lists" id="lp-rid-list"></div>
+            <div class="lp-spinner css-red" id="lp-rid-ls" style="display: none;">
+              <div class="icon-spinner icon-spin icon-4x"></div>
             </div>
           </div>
         </div>
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#lp-sidebar" href="#lp-provideraccord">
-              Providers
-            </a>
+        <div class="tab-pane" id="lp-spacerentals">
+          <div class="span3">
+            <div class="accordion lp-sidebar">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Room type
+                  </a>
+                </div>
+                <div id="lp-hou-roomType" class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <label class="checkbox">
+                      <input type="checkbox" name="room_types" value="Entire home/apt">Entire home/apt
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="room_types" value="Private room">Private room
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="room_types" value="Shared room">Shared room
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Price
+                  </a>
+                </div>
+                <div id="lp-hou-priceFilter" class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <div class="lp-price-filter">
+                      <ul class="slider_values">
+                        <li class="price-value-min minimax">$<span id="lp-price-value-min-hou">10</span> USD</li>
+                        <li class="price-value-max minimax">$<span id="lp-price-value-max-hou">300+</span> USD</li>
+                      </ul>
+                      <div class="input-large" id="lp-price-input-hou"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Sort by
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <select class="lp-sortfilter" id="lp-hou-sortby">
+                      <option value="relevance">Relevance</option>
+                      <option value="low2high">Price: Low to high</option>
+                      <option value="high2low">Price: High to low</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Providers
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <label class="checkbox">
+                      <input class="lp-hou-providers" type="checkbox" value="airbnb">Airbnb <span class="fil-num" id="fil-num-air"></span>
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-hou-providers" type="checkbox" value="nflats">9flats <span class="fil-num" id="fil-num-nfl"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div id="lp-provideraccord" class="accordion-body in collapse">
-            <div class="accordion-inner">
-              <label class="checkbox">
-                <input type="checkbox" name="providers" value="airbnb">Airbnb
-              </label>
-              <label class="checkbox">
-                <input type="checkbox" name="providers" value="nflats">9flats
-              </label>
-              <label class="checkbox">
-                <input type="checkbox" name="providers" value="roomarama">Roomorama
-              </label>
+          <div class="span9 pull-right margin0">
+            <div class="well" id="lp-hou-well">
+              Searching for vacation rentals near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
+            </div>
+            <div class="lp-lists" id="lp-hou-list"></div>
+            <div class="lp-spinner css-blue" id="lp-hou-ls" style="display: none;">
+              <div class="icon-spinner icon-spin icon-4x"></div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="span9">
-      <div class="well">Showing 1 ride request leaving near Montréal, QC, Canada going towards New York, NY leaving on Friday, May 17.</div>
-      <div class="lp-lists">
-        <div class="lp-aList">
-          <div class="lp-list-head lpl-airbnb">
-            <img class="lp-list-pp" src="https://a2.muscache.com/users/602927/profile_pic/1363356486/small.jpg">
-            <h4 class="lp-list-title">Cute Furnished Studio Apartment</h4>
-          </div>
-          <div class="lp-list-body">
-            <img class="lp-list-img" src="https://a0.muscache.com/pictures/11320899/small.jpg">
-            <span class="lp-list-info">
-              <ul>
-                <li>
-                  <span class="icon-home css-blue tfpx"></span>
-                  <span class="lp-list-type">Entire home/apt</span>
-                </li>
-                <li>
-                  <span class="icon-map-marker css-green tfpx"></span>
-                  <span class="lp-list-location">Montreal The Plateau</span>
-                </li>
-                <li>
-                  <span class="icon-money css-red tfpx"></span>
-                  <span class="lp-list-price"><b>$92</b> per night</span>
-                </li>
-              </ul>
-            </span>
-            <span class="lp-left-group">
-              <a class="out-btn btn-hou" data-id="someid" href="javascript:void(0)">Details&nbsp;<i class="icon-play"></i></a>
-              <a class="out-btn btn-hou" data-id="someid" href="javascript:void(0)">Book it&nbsp;<i class="icon-share"></i></a>
-            </span>
+        <div class="tab-pane" id="lp-localguides">
+          <div class="well">Showing <b>23 guides</b> near <b>Montréal, QC, Canada</b>.</div>
+          <div class="lp-lists">
+            <div class="lp-aList">
+              <div class="lp-list-head lpl-vayable">
+                <img class="lp-list-pp" src="https://a2.muscache.com/users/602927/profile_pic/1363356486/small.jpg">
+                <h4 class="lp-list-title">Cute Furnished Studio Apartment</h4>
+              </div>
+              <div class="lp-list-body">
+                <img class="lp-list-img" src="http://dv8ioedqdle5b.cloudfront.net/assets/8189/main/image1360677657.jpg">
+                <span class="lp-list-info">
+                  <ul>
+                    <li>
+                      <span class="icon-user css-blue tfpx"></span>
+                      <span class="lp-list-type">City guide</span>
+                    </li>
+                    <li>
+                      <span class="icon-map-marker css-green tfpx"></span>
+                      <span class="lp-list-location">Montreal The Plateau</span>
+                    </li>
+                    <li>
+                      <span class="icon-money css-red tfpx"></span>
+                      <span class="lp-list-price"><b>$92</b> per person</span>
+                    </li>
+                  </ul>
+                </span>
+                <span class="lp-left-group">
+                  <a class="out-btn btn-vay btn-vay-details" data-id="someid" href="javascript:void(0)">Details &nbsp;<i class="icon-play"></i></a>
+                  <a class="out-btn btn-vay btn-vay-bookit" href="javascript:void(0)">Book it &nbsp;<i class="icon-share"></i></a>
+                  <a class="out-btn btn-vay btn-add" href="javascript:void(0)">Add &nbsp;<i class="icon-plus"></i></a>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -140,6 +223,9 @@
 </div>
 <script>
   (function() {
+    $('.lp-sidebar').affix({
+      offset: 150
+    });
     $("#lp-price-input-hou").slider({
       range: true,
       values: [10, 300],
@@ -154,5 +240,50 @@
         }
       }
     });
+
+    // REFINE SEARCH INIT
+        var options = {
+          types: ['(cities)']
+        };
+        new google.maps.places.Autocomplete($('#refine-orig-location')[0], options);
+        new google.maps.places.Autocomplete($('#refine-dest-location')[0], options);
+
+        var $sdate = $('#refine-sdate');
+        var $edate = $("#refine-edate");
+
+        var customRange = function customRange(input) {
+          var minDate;
+          var startDateVal = $sdate.val();
+          if (input.id === 'refine-edate') {
+            if (startDateVal) {
+              minDate = new Date(startDateVal);
+              minDate.setDate(minDate.getDate() + 1);
+              return {
+                minDate: minDate
+              };
+            } else {
+              return {
+                minDate: 1
+              };
+            }
+          }
+        };
+
+        $sdate.datepicker({
+          minDate: 0,
+          inline: true,
+          onClose: function(selectedDate) {
+            $edate.focus();
+          }
+        });
+
+        $edate.datepicker({
+          inline: true,
+          beforeShow: customRange,
+          onClose: function() {
+            $('#refine-guest').focus();
+          }
+        });
+
   })();
 </script>

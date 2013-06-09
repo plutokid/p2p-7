@@ -1,44 +1,41 @@
 <!-- Landing hero header -->
 <div id="landingpage">
-  <div class="main-head">
-    <h3 class="text-center top">Find Rideshares, Place Rentals, and Local Guides <br> from people all around the world.</h3>
+  <div class="main-head" id="main-head">
+    <div class="marketing-titles" id="marketing-titles">
+      <h1 class="marketing-header">A more human way of travelling.</h1>
+      <h2 class="marketing-sub">Ride, drive, rent, share and experience from people all around the world.</h2>
+    </div>
     <!-- Main form -->
     <div class="css-main-search" id="js-firstSearch">
       <div class="inner-search">
         <div class="search-bar-wrapper">
           <form class="form-inline" id="js-searchForm">
             <div class="inner-form row-fluid">
-              <input class="css-input-sea" id="ho-orig-location-input" type="search" placeholder="Departure city">
-              <span class="ho-arrow">→</span>
-              <input class="css-input-sea" id="js-dest-location-input" type="search" autocomplete="off" placeholder="Destination city">
-              <button class="btn btn-info css-searchit" id="searchIt" type="submit">
+              <div class="input-wrapper">
+                <input class="css-input-sea" id="js-dest-location-input" type="text" autocomplete="off" placeholder="Enter your destination city" autofocus required>
+              </div>
+              <div class="input-wrapper">
+                <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                <input class="input-small ho-from-date" id="ho-sdate-input" placeholder="From" type="text">
+              </div>
+              <div class="input-wrapper">
+                <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                <input class="input-small ho-to-date" placeholder="To" id="ho-edate-input" type="text">
+              </div>
+              <div class="input-wrapper">
+                <select class="ho-guest-input" id="ho-guest-input">
+                  <option value="1">1 guest</option>
+                  <option value="2">2 guests</option>
+                  <option value="3">3 guests</option>
+                  <option value="4">4 guests</option>
+                  <option value="5">5 guests</option>
+                </select>
+              </div>
+              <button class="css-searchit" id="searchIt" type="submit">
                 <span class="icon-search css-searchicon"></span>&nbsp;Search
               </button>
-              <div class="css-ortext">or</div>
-              <div class="mobile-whats">
-                <a class="btn css-whataround btn-danger" id="js-whataround" href="javascript:void(0)">
-                  <img class="geolocate-icon" src="../img/icon-target.png" alt="geolocate">
-                  <span class="">What's around me ?</span>
-                </a>
-              </div>
-              <div class="ho-more-options"  id="ho-more-options">
-                <a class="more-options" id="more-options" href="javascript:void(0)">More options >></a>
-                <div class="ho-option-form" id="ho-option-form" style="display: none;">
-                  <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
-                  <input class="input-small ho-from-date" id="ho-sdate-input" placeholder="From" type="search">
-                  <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
-                  <input class="input-small ho-to-date" placeholder="To" id="ho-edate-input" type="search">
-                  <select class="ho-guest-input" id="ho-guest-input">
-                    <option selected disabled value="1">People</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-              </div>
             </div>
+            <input type="hidden" id="ho-orig-location-input">
           </form>
         </div>
       </div>
@@ -109,41 +106,32 @@
 </div>
 <script>
   (function() {
-    function submitTheForm() {
-      if ($('#js-dest-location-input').val() && $('#ho-orig-location-input').val()) {
-        if ($('#ho-option-form').is(':visible')) {
-          $('#ho-sdate-input').focus();
-        } else {
-          $('#js-searchForm').trigger("submit");
-        }
-      }
-    }
+    var resizeLanding = function() {
+      var bgheight = $(window).height() - 52;
+      var centerLanding = Math.round(bgheight / 3) - 50;
+      $('#main-head').css("height", bgheight);
+      $('#marketing-titles').css("padding-top", centerLanding);
+    };
+    resizeLanding();
+
     var geoPromise = Outpost.helpers.ipToGeo();
-    var input1 = document.getElementById('ho-orig-location-input');
-    var input2 = document.getElementById('js-dest-location-input');
+    var destInput = document.getElementById('js-dest-location-input');
     var options = {
       types: ['(cities)']
     };
 
-    var autocomplete1 = new google.maps.places.Autocomplete(input1, options);
-    var autocomplete2 = new google.maps.places.Autocomplete(input2, options);
+    var destTypeahead = new google.maps.places.Autocomplete(destInput, options);
+
 
     geoPromise.done(function(data) {
       var origLocation = data.location;
       if (origLocation.length > 7) {
         $('#ho-orig-location-input').val(origLocation);
-        $('#js-dest-location-input').focus();
-      } else {
-        $('#ho-orig-location-input').focus();
       }
     });
 
-    google.maps.event.addListener(autocomplete1, 'place_changed', function() {
-      submitTheForm();
-    });
-
-    google.maps.event.addListener(autocomplete2, 'place_changed', function() {
-      submitTheForm();
+    google.maps.event.addListener(destTypeahead, 'place_changed', function() {
+      $('#ho-sdate-input').focus();
     });
 
     var $sdate = $('#ho-sdate-input');
@@ -185,5 +173,8 @@
       }
     });
 
+    $(window).resize(function() {
+      resizeLanding();
+    });
   })();
 </script>

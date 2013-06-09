@@ -2,6 +2,7 @@
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
+  $startLocation = urlencode($_GET["sloc"]);
   $endLocation = urlencode($_GET["eloc"]);
   $startDate = $_GET["sdate"];
   $endDate = $_GET["edate"];
@@ -16,6 +17,9 @@
   if ($max == 300) {
     $max = 10000;
   }
+
+  if (!$endLocation)
+    $endLocation = $startLocation;
 
   $output = array();
   $rooms = new simple_html_dom();
@@ -45,14 +49,14 @@
   $rooms->load($html);
   foreach($rooms->find('.search_result') as $aRoom) {
     $room['id'] = $aRoom->getAttribute("data-hosting-id");
+    $room['uri'] = $aRoom->getAttribute("data-hosting-id");
     $room['idtype'] = "airbnb";
     $room['roomImg'] = str_replace('x_small', 'small', $aRoom->find('img', 0)->getAttribute("data-original"));
-    $room['profileImg'] = $aRoom->find('img', 1)->getAttribute("data-original");
+    $room['profileImg'] = str_replace('tiny', 'small', $aRoom->find('img', 1)->getAttribute("data-original"));
     $room['profileName'] = $aRoom->find('img', 1)->alt;
     $room['desc'] = str_replace("'", "", $aRoom->find('.name', 0)->plaintext);
     $room['profileLink'] = "https://airbnb.com".$aRoom->find('a', 1)->href;
-    $room['price'] = trim($aRoom->find('.price', 0)->plaintext);
-    $room['price2'] = 0 + filter_var($room['price'], FILTER_SANITIZE_NUMBER_INT);
+    $room['price'] = 0 + filter_var(trim($aRoom->find('.price', 0)->plaintext), FILTER_SANITIZE_NUMBER_INT);
     $room['link'] = "https://airbnb.com".$aRoom->find('.name', 0)->href;
     $room['moreinfo'] = "https://api.airbnb.com/v1/listings/{$room['id']}?key=d306zoyjsyarp7ifhu67rjxn52tv0t20";
     $room['iconPath'] = "img/airbnb.ico";
@@ -84,12 +88,12 @@
   if ($nflatsjson->places) {
     foreach($nflatsjson->places as $aRoom) {
       $room['id'] = str_replace("-", "", filter_var($aRoom->place->place_details->slug, FILTER_SANITIZE_NUMBER_INT));
-      $room['idtype'] = "9flats";
-      $room['roomImg'] =  $aRoom->place->place_details->featured_photo->small;
+      $room['uri'] = $room['id'];
+      $room['idtype'] = "nflats";
+      $room['roomImg'] =  $aRoom->place->place_details->featured_photo->medium;
       $room['profileImg'] = "img/noprofile.jpg";
       $room['profileName'] = $aRoom->place->place_details->host->name;
-      $room['price'] = $aRoom->place->pricing->price;
-      $room['price2'] = $aRoom->place->pricing->price;
+      $room['price'] = round($aRoom->place->pricing->price);
       $room['desc'] = str_replace("'", "", $aRoom->place->place_details->name);
       $room['link'] = "http://www.9flats.com/places/".$aRoom->place->place_details->slug;
       $room['iconPath'] = "img/9flats.ico";
