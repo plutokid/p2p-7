@@ -52,301 +52,6 @@
     }),
 
     // =======================================================
-    // Map view
-    // =======================================================
-    map: Parse.View.extend({
-      el: "#map",
-      isInterested: false,
-
-      initialize: function() {
-        $('#map').css('height', Outpost.state.rMapHeight);
-        this.render();
-      },
-
-      closeInfo: function() {
-        this.$el.gmap3({clear:"overlay"});
-      },
-
-      showInfo: function(marker, content, templateit) {
-        this.$el.gmap3({
-          overlay: {
-            latLng: marker.getPosition(),
-            options: {
-              content: templateit(content),
-              offset: {
-                x: -150,
-                y: -215
-              }
-            }
-          }
-        });
-      },
-
-      routeRide: function(e) {
-        var $node = $(e);
-        var origin = $node.data("orig");
-        var dest = $node.data("dest");
-        var _this = this;
-        _this.$el.gmap3({
-          clear: {
-            tag: "directions"
-          },
-          getroute: {
-            options: {
-              origin: origin,
-              destination: dest,
-              travelMode: google.maps.DirectionsTravelMode.DRIVING
-            },
-            callback: function(results) {
-              if (!results) return;
-              _this.$el.gmap3({
-                directionsrenderer:{
-                  options:{
-                    directions: results
-                  },
-                  tag: "directions"
-                }
-              });
-            }
-          }
-        });
-        return false;
-      },
-
-      setMarkers: function(markers, opts) {
-        var _this = this;
-        _this.$el.gmap3({
-          marker: {
-            values: markers,
-            options: {
-              icon: opts.icon,
-              shape: opts.shape,
-              animation: opts.animation
-            },
-            events: {
-              click: function(marker, event, context) {
-                $('.row-selected').removeClass('row-selected');
-
-                $(opts.nodeList)
-                  .find('.' + context.id)
-                    .addClass('row-selected');
-
-                $(opts.nodeTab).tab('show');
-                $('body, html').animate({
-                  scrollTop: $('.' + context.id).offset().top
-                }, 300);
-              },
-              mouseover: function(marker, event, context) {
-                _this.closeInfo();
-                _this.showInfo(marker, context.data, opts.infoWindowTmpl);
-                $('.row-selected').removeClass('row-selected');
-                $(opts.nodeList)
-                  .find('.' + context.id)
-                    .addClass('row-selected');
-
-                marker.setIcon(opts.iconHover);
-                $(opts.nodeList)
-                  .find('.' + context.id)
-                    .addClass('row-hovered');
-              },
-              mouseout: function(marker, event, context) {
-                marker.setIcon(opts.icon);
-                $(opts.nodeList)
-                  .find('.' + context.id)
-                    .removeClass('row-hovered');
-              }
-            }
-          }
-        });
-      },
-
-      addMarker: function(item, opts) {
-        var _this = this;
-        _this.$el.gmap3({
-          get: {
-            id: item.markerid,
-            callback: function(marker) {
-              if (typeof marker.getPosition === 'function' &&
-                                                        marker.getPosition()) {
-                // do nothing
-              } else {
-                _this.$el.gmap3({
-                  marker: {
-                    latLng:item.latLng ||
-                              (Outpost.helpers.genRdmLLCC(item.origin)).latLng,
-                    data: item,
-                    id: item.markerid,
-                    tag: item.prefix,
-                    options: {
-                      icon: opts.icon,
-                      shape: opts.shape
-                    },
-                    events: {
-                      click: function(marker, event, context) {
-                        $('.row-selected').removeClass('row-selected');
-
-                        $(opts.nodeList)
-                          .find('.' + context.id)
-                            .addClass('row-selected');
-
-                        $(opts.nodeTab).tab('show');
-                        $('body, html').animate({
-                          scrollTop: $('.' + context.id).offset().top
-                        }, 300);
-                      },
-                      mouseover: function(marker, event, context) {
-                        _this.closeInfo();
-                        _this.showInfo(marker,context.data,opts.infoWindowTmpl);
-                        $('.row-selected').removeClass('row-selected');
-                        $(opts.nodeList)
-                          .find('.' + context.id)
-                            .addClass('row-selected');
-
-                        marker.setIcon(opts.iconHover);
-                        $(opts.nodeList)
-                          .find('.' + context.id)
-                            .addClass('row-hovered');
-                      },
-                      mouseout: function(marker, event, context) {
-                        marker.setIcon(opts.icon);
-                        $(opts.nodeList)
-                          .find('.' + context.id)
-                            .removeClass('row-hovered');
-                      }
-                    }
-                  }
-                });
-              }
-            }
-          }
-        });
-      },
-
-      relateMarker: function(item, opts) {
-        var _this = this;
-        var map = this.$el.gmap3("get");
-        _this.$el.gmap3({
-          get: {
-            name: "marker",
-            id: opts.prefix + item.id,
-            callback: function(marker) {
-              if (typeof marker.getPosition === 'function' &&
-                                                        marker.getPosition()) {
-                map.panTo(marker.getPosition());
-                _this.closeInfo();
-                _this.showInfo(marker, item, opts.infoWindowTmpl);
-              } else {
-                // do nothing for now
-              }
-            }
-          }
-        });
-      },
-
-      highlightMarker: function(item, opts) {
-        this.$el.gmap3({
-          get: {
-            name: "marker",
-            id: opts.prefix + item.id,
-            callback: function(marker) {
-              if (typeof marker.setIcon === 'function') {
-                marker.setIcon(opts.iconHover);
-              } else {
-                // do nothing for now
-              }
-            }
-          }
-        });
-      },
-
-      normalizeMarker: function(item, opts) {
-        this.$el.gmap3({
-          get: {
-            name: "marker",
-            id: opts.prefix + item.id,
-            callback: function(marker) {
-              if (typeof marker.setIcon === 'function') {
-                marker.setIcon(opts.icon);
-              } else {
-                // do nothing for now
-              }
-            }
-          }
-        });
-      },
-
-      removeAllMarkers: function(tag) {
-        this.$el.gmap3({
-          clear: {
-            name: "marker"
-          }
-        });
-        this.closeInfo();
-      },
-
-      removeMarkers: function(tag) {
-        this.$el.gmap3({
-          clear: {
-            tag: tag
-          }
-        });
-        this.closeInfo();
-      },
-
-      removeMarker: function(markerid) {
-        this.$el.gmap3({
-          clear: {
-            id: markerid
-          }
-        });
-        this.closeInfo();
-      },
-
-      redefineMap: function() {
-        var _this = this;
-        _this.$el.gmap3({
-          getlatlng: {
-            address: Outpost.values.destLocation,
-            callback: function(results) {
-              if (results) {
-                _this.$el.gmap3({
-                  map:{
-                    options:{
-                      zoom: 13,
-                      center: results[0].geometry.location
-                    }
-                  }
-                });
-              } else {
-                Outpost.helpers.showAlertBox({
-                  type: "alert-error",
-                  text: "<strong>Hmm..</strong> " +
-                        "I coudln't recognize this location!"
-                });
-              }
-            }
-          }
-        });
-      },
-
-      render: function() {
-        this.$el.gmap3('destroy');
-        google.maps.visualRefresh = true;
-        this.$el.gmap3({
-          map: {
-            latLng: [Outpost.values.destLocationLat,
-                    Outpost.values.destLocationLng],
-            options: {
-              zoom: 13,
-              mapTypeControl: false,
-              styles: Outpost.mapstyle
-            }
-          }
-        });
-      }
-    }),
-
-    // =======================================================
     // Sidebar view
     // =======================================================
     sideBar: Parse.View.extend({
@@ -1613,32 +1318,6 @@
     }),
 
     // =======================================================
-    // Mapview - Page
-    // =======================================================
-    mapPage: Parse.View.extend({
-      el: "#pg-mapview",
-
-      initialize: function() {
-        this.render();
-      },
-
-      render: function() {
-        var views = Outpost.mvc.views;
-        $('.pg-page').empty();
-        if (views.map) {
-          views.map.render();
-          views.sideBar.render();
-          views.refineSearch.render();
-        } else {
-          views.map = new Outpost.views.map();
-          views.sideBar = new Outpost.views.sideBar();
-          views.refineSearch = new Outpost.views.refineSearch();
-          new Outpost.views.houModal();
-        }
-      }
-    }),
-
-    // =======================================================
     // Listview - Page
     // =======================================================
     listPage: Parse.View.extend({
@@ -1650,7 +1329,24 @@
       },
 
       events: {
-        "submit #lp-refineSearch": "refineSearch"
+        "submit #lp-refineSearch": "refineSearch",
+        "shown .lp-aTab": "initLazyLoad"
+      },
+
+      initLazyLoad: function(e) {
+        var target = $(e.target).attr("href");
+        $.waypoints('destroy');
+        switch(target) {
+          case "#lp-ridesharing":
+            Outpost.mvc.views.aListRid.infiniteScroll();
+            break;
+          case "#lp-spacerentals":
+            Outpost.mvc.views.aListHou.infiniteScroll();
+            break;
+          case "#lp-localguides":
+            Outpost.mvc.views.aListTou.infiniteScroll();
+            break;
+        }
       },
 
       refineSearch: function(e) {
@@ -1676,8 +1372,9 @@
         $('.pg-page').empty();
         _this.template('listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
-          new Outpost.views.aListRid();
-          new Outpost.views.aListHou();
+          Outpost.mvc.views.aListRid = new Outpost.views.aListRid();
+          Outpost.mvc.views.aListHou = new Outpost.views.aListHou();
+          Outpost.mvc.views.aListTou = new Outpost.views.aListTou();
         });
       }
     }),
@@ -1721,6 +1418,10 @@
         this.render();
       },
 
+      events: {
+        "click .btn-con-dri": "checkUserState"
+      },
+
       paintMap: function(data) {
         var origin = data.f_meeting_loc || data.origin;
         var dest = data.f_drop_loc || data.destination;
@@ -1751,6 +1452,14 @@
         });
       },
 
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
+        }
+      },
+
       render: function() {
         var _this = this;
         var jhr = Outpost.helpers.loadAPI({
@@ -1778,16 +1487,94 @@
     singleHou: Parse.View.extend({
       el: "#pg-singleview",
       template: Outpost.helpers.renderTemplate,
+      data: {},
+      panorama: {},
 
       initialize: function() {
         this.render();
       },
 
+      events: {
+        "shown .tab-street-view": "showPanorama",
+        "shown .tab-map-view": "showMap",
+        "click .btn-sv-hou": "checkUserState"
+      },
+
+      showPanorama: function() {
+        this.panorama.setVisible(true);
+      },
+
+      showMap: function() {
+        var $map = $("#single-map");
+        $map.gmap3({trigger:"resize"});
+        $map.gmap3("autofit");
+        $map.gmap3({
+          map: {
+            options: {
+              zoom: 14
+            }
+          }
+        });
+      },
+
+      loadStreetView: function() {
+        var data = this.data;
+        var street = new google.maps.LatLng(data.lat,data.lng);
+        var panoramaOptions = {
+          position: street,
+          pov: {
+            heading: 34,
+            pitch: 10
+          }
+        };
+
+        this.panorama = new google.maps.StreetViewPanorama(
+          $('#single-street')[0],
+          panoramaOptions
+        );
+      },
+
+      loadMapView: function() {
+        var latLng = [this.data.lat, this.data.lng];
+        $("#single-map").gmap3({
+          marker: {
+            latLng: latLng
+          },
+          map: {
+            options: {
+              zoom: 12
+            }
+          }
+        });
+      },
+
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
+        }
+      },
+
       render: function() {
         var _this = this;
-        $('.pg-page').empty();
-        _this.template('sv-houserental', {}).done(function(tmpl) {
-          _this.$el.html(tmpl);
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            id: Outpost.single.id,
+            idtype: Outpost.single.provider
+          }),
+          idtype: Outpost.single.provider,
+          apicat: "houserental"
+        });
+
+        jhr.done(function(data) {
+          $('.pg-page').empty();
+          _this.template('sv-houserental', data).done(function(tmpl) {
+            _this.$el.html(tmpl);
+            _this.data = data;
+            _this.loadStreetView();
+            _this.loadMapView();
+          });
         });
       }
     }),
@@ -1798,16 +1585,70 @@
     singleTou: Parse.View.extend({
       el: "#pg-singleview",
       template: Outpost.helpers.renderTemplate,
+      data: {},
 
       initialize: function() {
         this.render();
       },
 
+      events: {
+        "shown .tab-map-view": "showMap",
+        "click .btn-sv-tou": "checkUserState"
+      },
+
+      showMap: function() {
+        var $map = $("#single-map");
+        $map.gmap3({trigger:"resize"});
+        $map.gmap3("autofit");
+        $map.gmap3({
+          map: {
+            options: {
+              zoom: 14
+            }
+          }
+        });
+      },
+
+      loadMapView: function() {
+        var address = this.data.origin;
+        $("#single-map").gmap3({
+          marker: {
+            address: address
+          },
+          map: {
+            options: {
+              zoom: 12
+            }
+          }
+        });
+      },
+
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
+        }
+      },
+
       render: function() {
         var _this = this;
-        $('.pg-page').empty();
-        _this.template('sv-localguide', {}).done(function(tmpl) {
-          _this.$el.html(tmpl);
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            id: Outpost.single.id,
+            idtype: Outpost.single.provider
+          }),
+          idtype: Outpost.single.provider,
+          apicat: "tourism"
+        });
+
+        jhr.done(function(data) {
+          $('.pg-page').empty();
+          _this.template('sv-localguide', data).done(function(tmpl) {
+            _this.$el.html(tmpl);
+            _this.data = data;
+            _this.loadMapView();
+          });
         });
       }
     }),
@@ -1827,13 +1668,22 @@
       },
 
       initialize: function() {
+        this.resetState();
         this.fetchRides();
       },
 
       events: {
         "change .lp-rid-providers": "filterProviders",
         "change #lp-rid-sortby": "sortListings",
-        "click .btn-rid-map": "slideMap"
+        "click .btn-rid-map": "slideMap",
+        "click .btn-rid-bookit": "checkUserState"
+      },
+
+      resetState: function() {
+        this.state = {
+          prevSize: 0,
+          page: 1
+        };
       },
 
       fetchRides: function() {
@@ -1848,10 +1698,12 @@
 
       toggleLoading: function() {
         var $loader = $('#lp-rid-ls');
-        if ($loader.is(":visible")) {
-          $loader.hide();
-        } else {
+        if ($loader.hasClass("lp-hidden")) {
+          $loader.removeClass("lp-hidden");
           $loader.show();
+        } else {
+          $loader.addClass("lp-hidden");
+          $loader.hide();
         }
       },
 
@@ -1883,10 +1735,6 @@
         }
       },
 
-      clearListings: function() {
-        $('#lp-rid-list').empty();
-      },
-
       slideMap: function(e) {
         var $this = $(e.currentTarget);
         var item = $("." + $this.data("id")).data('item');
@@ -1903,8 +1751,6 @@
           var origin, dest, $extra, xhrDuration, $duration;
           $extra = $(".erid" + item.id);
           $duration = $(".direcrid" + item.id);
-          $(".rid-extra").gmap3('destroy').slideUp();
-          $extra.slideDown();
           origin = data.f_meeting_loc || item.origin;
           dest = data.f_drop_loc || item.destination;
 
@@ -1926,34 +1772,46 @@
             }
           });
 
-          $extra.gmap3({
-            getroute: {
-              options: {
-                origin: origin,
-                destination: dest,
-                travelMode: google.maps.DirectionsTravelMode.DRIVING
-              },
-              callback: function(results) {
-                if (results) {
-                  $(this).gmap3({
-                    map: {
-                      options: {
-                        zoom: 13
-                      }
-                    },
-                    directionsrenderer: {
-                      options: {
-                        directions: results
-                      }
+          $(".rid-extra").gmap3('destroy').empty().slideUp(function() {
+            $extra.slideDown(function() {
+              $extra.gmap3({
+                getroute: {
+                  options: {
+                    origin: origin,
+                    destination: dest,
+                    travelMode: google.maps.DirectionsTravelMode.DRIVING
+                  },
+                  callback: function(results) {
+                    if (results) {
+                      $(this).gmap3({
+                        map: {
+                          options: {
+                            zoom: 13
+                          }
+                        },
+                        directionsrenderer: {
+                          options: {
+                            directions: results
+                          }
+                        }
+                      });
+                    } else {
+                      $extra.html("Location not properly located");
                     }
-                  });
-                } else {
-                  $extra.html("Location not properly located");
+                  }
                 }
-              }
-            }
+              });
+            });
           });
         });
+      },
+
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
+        }
       },
 
       sortListings: function(e) {
@@ -2039,6 +1897,7 @@
       el: "#pg-listview",
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
+      templateCarousel: _.template($('#tmpl-carousel').html()),
       collection: [],
       sortedCollection: [],
       state: {
@@ -2054,12 +1913,66 @@
       },
 
       initialize: function() {
+        this.resetState();
         this.fetchRentals();
+        this.initSliderGUI();
       },
 
       events: {
         "change .lp-hou-providers": "filterProviders",
-        "change #lp-hou-sortby": "sortListings"
+        "change .lp-hou-roomtype": "filterRoomType",
+        "change #lp-hou-sortby": "sortListings",
+        "click .btn-hou-map": "slideMap",
+        "click .lp-list-img": "slideCarousel",
+        "click .btn-hou-bookit": "checkUserState"
+      },
+
+      initSliderGUI: function() {
+        var _this = this;
+        $("#lp-price-input-hou").slider({
+          range: true,
+          values: [10, 300],
+          min: 0,
+          max: 300,
+          step: 10,
+          slide: function (event, ui) {
+            $("#lp-price-value-min-hou").text(ui.values[0]);
+            if (ui.values[1] === 300) {
+              $("#lp-price-value-max-hou").text("300+");
+            } else {
+              $("#lp-price-value-max-hou").text(ui.values[1]);
+            }
+          },
+          change: function(event, ui) {
+            $.waypoints('destroy');
+            _this.state.min = ui.values[0];
+            _this.state.max = ui.values[1];
+            _this.resetListings();
+            _this.fetchRentals();
+          }
+        });
+      },
+
+      resetState: function() {
+        this.state = {
+          prevSize: 0,
+          page: 1,
+          min: 10,
+          max: 300,
+          roomType: [
+            "entire_home",
+            "private_room",
+            "shared_room"
+          ]
+        };
+      },
+
+      resetListings: function() {
+        this.collection = [];
+        this.sortedCollection = [];
+        this.state.page = 1;
+        this.prevSize = 0;
+        $('#lp-hou-list').empty();
       },
 
       fetchRentals: function() {
@@ -2074,10 +1987,12 @@
 
       toggleLoading: function() {
         var $loader = $('#lp-hou-ls');
-        if ($loader.is(":visible")) {
-          $loader.hide();
-        } else {
+        if ($loader.hasClass("lp-hidden")) {
+          $loader.removeClass("lp-hidden");
           $loader.show();
+        } else {
+          $loader.addClass("lp-hidden");
+          $loader.hide();
         }
       },
 
@@ -2106,6 +2021,73 @@
               }
             });
           }
+        }
+      },
+
+      slideCarousel: function(e) {
+        var _this = this;
+        var $this = $(e.currentTarget);
+        var item = $("." + $this.data("id")).data('item');
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            idtype: item.idtype,
+            id: item.uri
+          }),
+          idtype: item.idtype,
+          apicat: "houserental"
+        });
+
+        jhr.done(function(data) {
+          var $extra = $(".ehou" + item.id);
+          $(".hou-extra").gmap3('destroy').empty().slideUp(function() {
+            $extra.slideDown(function(){
+              var html = _this.templateCarousel(data);
+              $extra.css("height", "425px");
+              $extra.html(html);
+            });
+          });
+        });
+      },
+
+      slideMap: function(e) {
+        var $this = $(e.currentTarget);
+        var item = $("." + $this.data("id")).data('item');
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            idtype: item.idtype,
+            id: item.uri
+          }),
+          idtype: item.idtype,
+          apicat: "houserental"
+        });
+
+        jhr.done(function(data) {
+          var origin, dest, $extra, xhrDuration, $duration;
+          var latLng = [data.lat, data.lng];
+          $extra = $(".ehou" + item.id);
+          $extra.css("height", "225px");
+          $(".hou-extra").gmap3('destroy').empty().slideUp(function() {
+            $extra.slideDown(function(){
+              $extra.gmap3({
+                marker: {
+                  latLng: latLng
+                },
+                map: {
+                  options: {
+                    zoom: 12
+                  }
+                }
+              });
+            });
+          });
+        });
+      },
+
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
         }
       },
 
@@ -2148,6 +2130,26 @@
         this.infiniteScroll();
       },
 
+      filterRoomType: function() {
+        var $checked = $('.lp-hou-roomtype:checked');
+        var _this = this;
+        this.state.roomType = [];
+        if (!$checked.length) {
+          this.state.roomType = [
+                                "entire_home",
+                                "private_room",
+                                "shared_room"
+                              ];
+        } else {
+          $checked.each(function() {
+            _this.state.roomType.push($(this).val());
+          });
+        }
+
+        this.resetListings();
+        this.fetchRentals();
+      },
+
       updateHeading: function(items) {
         var data = {
           numOfItems: this.collection.length,
@@ -2179,6 +2181,202 @@
         });
         $('#lp-hou-list').html(html);
         $('#lp-hou-sortby').val("relevance");
+        this.updateHeading();
+        this.updateProviders();
+        this.filterProviders();
+      }
+    }),
+
+    // =======================================================
+    // aListTouview - listings
+    // =======================================================
+    aListTou: Parse.View.extend({
+      el: "#pg-listview",
+      templateList: _.template($('#tmpl-tou-aList').html()),
+      templateWell: _.template($('#tmpl-tou-well').html()),
+      collection: [],
+      sortedCollection: [],
+      state: {
+        prevSize: 0,
+        page: 1
+      },
+
+      initialize: function() {
+        this.resetState();
+        this.fetchGuides();
+      },
+
+      events: {
+        "change .lp-tou-providers": "filterProviders",
+        "change #lp-tou-sortby": "sortListings",
+        "click .btn-tou-map": "slideMap",
+        "click .btn-tou-bookit": "checkUserState"
+      },
+
+      resetState: function() {
+        this.state = {
+          prevSize: 0,
+          page: 1
+        };
+      },
+
+      fetchGuides: function() {
+        var _this = this;
+        _this.toggleLoading();
+        Outpost.helpers.fetchGuides(this.state).done(function(data) {
+          _this.collection = _this.collection.concat(data);
+          _this.render();
+          _this.toggleLoading();
+        });
+      },
+
+      toggleLoading: function() {
+        var $loader = $('#lp-tou-ls');
+        if ($loader.hasClass("lp-hidden")) {
+          $loader.removeClass("lp-hidden");
+          $loader.show();
+        } else {
+          $loader.addClass("lp-hidden");
+          $loader.hide();
+        }
+      },
+
+      loadMore: function() {
+        $.waypoints('destroy');
+        this.state.page += 1;
+        this.fetchGuides();
+      },
+
+      infiniteScroll: function() {
+        var _this = this;
+        var size = 0, index = 0;
+        var tr = ".lp-aList-tou";
+
+        size = _this.collection.length;
+        if (_this.state.prevSize < size) {
+          if (size <= 5) {
+            _this.state.prevSize = size;
+            _this.loadMore();
+          } else {
+            index = size - 5;
+            $(tr + ':eq(' + index + ')').waypoint(function(direction) {
+              if (direction === "down" &&  $(this).is(":visible")) {
+                _this.state.prevSize = size;
+                _this.loadMore();
+              }
+            });
+          }
+        }
+      },
+
+      slideMap: function(e) {
+        var $this = $(e.currentTarget);
+        var item = $("." + $this.data("id")).data('item');
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            idtype: item.idtype,
+            id: item.uri
+          }),
+          idtype: item.idtype,
+          apicat: "tourism"
+        });
+
+        $(".tou-extra").gmap3('destroy').empty().slideUp(function() {
+          jhr.done(function(data) {
+            var origin, dest, $extra, xhrDuration, $duration;
+            var address = data.origin;
+            $extra = $(".etou" + item.id);
+            $extra.css("height", "225px");
+            $extra.slideDown(function(){
+              $extra.gmap3({
+                marker: {
+                  address: address
+                },
+                map: {
+                  options: {
+                    zoom: 12
+                  }
+                }
+              });
+            });
+          });
+        });
+      },
+
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
+        }
+      },
+
+      sortListings: function(e) {
+        var sortby = $(e.currentTarget).val();
+        this.sortedCollection = _(this.collection).clone();
+        switch (sortby) {
+          case "relevance":
+            this.sortedRender();
+            break;
+          case "date":
+            Outpost.helpers.sortDate(this.sortedCollection);
+            this.sortedRender();
+            break;
+          case "low2high":
+            Outpost.helpers.sortLowToHigh(this.sortedCollection);
+            this.sortedRender();
+            break;
+          case "high2low":
+            Outpost.helpers.sortHighToLow(this.sortedCollection);
+            this.sortedRender();
+            break;
+        }
+
+        this.filterProviders();
+      },
+
+      filterProviders: function() {
+        var $checked = $('.lp-tou-providers:checked');
+        if (!$checked.length) {
+          $('.lp-aList-tou').show();
+        } else {
+          $('.lp-aList-tou').hide();
+          $checked.each(function() {
+            $('.alist-' + $(this).val()).show();
+          });
+        }
+
+        $.waypoints('destroy');
+        this.infiniteScroll();
+      },
+
+      updateHeading: function() {
+        var data = {
+          numOfItems: this.collection.length,
+          origLocation: Outpost.searchQuery.origLocation,
+          destLocation: Outpost.searchQuery.destLocation
+        };
+        var html = this.templateWell(data);
+        $('#lp-tou-well').html(html);
+      },
+
+      updateProviders: function() {
+        $('#fil-num-vay').text($('.alist-vayable').length);
+      },
+
+      sortedRender: function() {
+        var html = this.templateList({
+          items: this.sortedCollection
+        });
+        $('#lp-tou-list').html(html);
+      },
+
+      render: function() {
+        var html = this.templateList({
+          items: this.collection
+        });
+        $('#lp-tou-list').html(html);
+        $('#lp-tou-sortby').val("relevance");
         this.updateHeading();
         this.updateProviders();
         this.filterProviders();
@@ -2477,7 +2675,6 @@
         $('.pg-page').empty();
         _this.template('help', {}).done(function(tmpl) {
           var hook = Outpost.help.hook;
-          console.log(hook);
           _this.$el.html(tmpl);
           if (hook && hook !== "about") {
             $('body, html').animate({

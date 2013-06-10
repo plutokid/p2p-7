@@ -251,6 +251,15 @@
         case "blablacar":
           uri = data.id;
           break;
+        case "airbnb":
+          uri = data.id;
+          break;
+        case "nflats":
+          uri = data.id;
+          break;
+        case "vayable":
+          uri = data.id;
+          break;
       }
       return uri;
     },
@@ -665,6 +674,42 @@
 
       var request = $.ajax({
         url: 'http://outpost.travel/api/beta/houserental/',
+        type: 'GET',
+        dataType: 'jsonp',
+        data: data
+      });
+      request.done(function(data) {
+        dff.resolve(data);
+      });
+      return dff.promise();
+    },
+
+    fetchGuides: function(state) {
+      var dff = $.Deferred();
+      var options = Outpost.searchQuery;
+      var data = {
+        eloc: options.destLocation,
+        destlat: options.destLocationLat,
+        destlon: options.destLocationLng,
+        destState: options.destState,
+        destCountry: options.destCountry,
+
+        sloc: options.origLocation,
+        origlat: options.origLocationLat,
+        origlon: options.origLocationLng,
+        origState: options.origState,
+        origCountry: options.origCountry,
+
+        sdate: options.sdate,
+        edate: options.edate,
+
+        guests: options.guests,
+
+        page: state.page
+      };
+
+      var request = $.ajax({
+        url: 'http://outpost.travel/api/beta/tourism/',
         type: 'GET',
         dataType: 'jsonp',
         data: data

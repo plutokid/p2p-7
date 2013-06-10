@@ -35,9 +35,9 @@
     <div class="span12">
       <div class="lp-tab-section">
         <ul class="nav nav-pills">
-          <li class="active"><a href="#lp-ridesharing" data-toggle="tab">Ride shares</a></li>
-          <li><a href="#lp-spacerentals" data-toggle="tab">Place rentals</a></li>
-          <li><a href="#lp-localguides" data-toggle="tab">Local guides</a></li>
+          <li class="active"><a class="lp-aTab" href="#lp-ridesharing" data-toggle="tab">Ride shares</a></li>
+          <li><a class="lp-aTab" href="#lp-spacerentals" data-toggle="tab">Place rentals</a></li>
+          <li><a class="lp-aTab" href="#lp-localguides" data-toggle="tab">Local guides</a></li>
         </ul>
       </div>
       <div class="tab-content">
@@ -91,7 +91,7 @@
               Searching for rideshares near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
             </div>
             <div class="lp-lists" id="lp-rid-list"></div>
-            <div class="lp-spinner css-red" id="lp-rid-ls" style="display: none;">
+            <div class="lp-spinner css-red lp-hidden" id="lp-rid-ls" style="display: none;">
               <div class="icon-spinner icon-spin icon-4x"></div>
             </div>
           </div>
@@ -108,13 +108,13 @@
                 <div id="lp-hou-roomType" class="accordion-body in collapse">
                   <div class="accordion-inner">
                     <label class="checkbox">
-                      <input type="checkbox" name="room_types" value="Entire home/apt">Entire home/apt
+                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="entire_home">Entire home/apt
                     </label>
                     <label class="checkbox">
-                      <input type="checkbox" name="room_types" value="Private room">Private room
+                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="private_room">Private room
                     </label>
                     <label class="checkbox">
-                      <input type="checkbox" name="room_types" value="Shared room">Shared room
+                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="shared_room">Shared room
                     </label>
                   </div>
                 </div>
@@ -177,42 +177,53 @@
               Searching for vacation rentals near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
             </div>
             <div class="lp-lists" id="lp-hou-list"></div>
-            <div class="lp-spinner css-blue" id="lp-hou-ls" style="display: none;">
+            <div class="lp-spinner css-blue lp-hidden" id="lp-hou-ls" style="display: none;">
               <div class="icon-spinner icon-spin icon-4x"></div>
             </div>
           </div>
         </div>
         <div class="tab-pane" id="lp-localguides">
-          <div class="well">Showing <b>23 guides</b> near <b>Montréal, QC, Canada</b>.</div>
-          <div class="lp-lists">
-            <div class="lp-aList">
-              <div class="lp-list-head lpl-vayable">
-                <img class="lp-list-pp" src="https://a2.muscache.com/users/602927/profile_pic/1363356486/small.jpg">
-                <h4 class="lp-list-title">Cute Furnished Studio Apartment</h4>
+          <div class="span3">
+            <div class="accordion lp-sidebar">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Sort by
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <select class="lp-sortfilter" id="lp-tou-sortby">
+                      <option value="relevance">Relevance</option>
+                      <option value="low2high">Price: Low to high</option>
+                      <option value="high2low">Price: High to low</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div class="lp-list-body">
-                <img class="lp-list-img" src="http://dv8ioedqdle5b.cloudfront.net/assets/8189/main/image1360677657.jpg">
-                <span class="lp-list-info">
-                  <ul>
-                    <li>
-                      <span class="icon-user css-blue tfpx"></span>
-                      <span class="lp-list-type">City guide</span>
-                    </li>
-                    <li>
-                      <span class="icon-map-marker css-green tfpx"></span>
-                      <span class="lp-list-location">Montreal The Plateau</span>
-                    </li>
-                    <li>
-                      <span class="icon-money css-red tfpx"></span>
-                      <span class="lp-list-price"><b>$92</b> per person</span>
-                    </li>
-                  </ul>
-                </span>
-                <span class="lp-left-group">
-                  <a class="out-btn btn-vay btn-vay-details" data-id="someid" href="javascript:void(0)">Details &nbsp;<i class="icon-play"></i></a>
-                  <a class="out-btn btn-vay btn-vay-bookit" href="javascript:void(0)">Book it &nbsp;<i class="icon-share"></i></a>
-                  <a class="out-btn btn-vay btn-add" href="javascript:void(0)">Add &nbsp;<i class="icon-plus"></i></a>
-                </span>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Providers
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <label class="checkbox">
+                      <input class="lp-tou-providers" type="checkbox" value="vayable">Vayable <span class="fil-num" id="fil-num-vay"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="span9 pull-right margin0">
+            <div class="well" id="lp-tou-well">
+              Searching for guides near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
+            </div>
+            <div class="lp-lists" id="lp-tou-list">
+              <div class="lp-spinner css-green lp-hidden" id="lp-tou-ls" style="display: none;">
+                <div class="icon-spinner icon-spin icon-4x"></div>
               </div>
             </div>
           </div>
@@ -226,64 +237,49 @@
     $('.lp-sidebar').affix({
       offset: 150
     });
-    $("#lp-price-input-hou").slider({
-      range: true,
-      values: [10, 300],
-      min: 1,
-      max: 300,
-      slide: function (event, ui) {
-        $("#lp-price-value-min-hou").text(ui.values[0]);
-        if (ui.values[1] === 300) {
-          $("#lp-price-value-max-hou").text("300+");
+
+    // REFINE SEARCH INIT
+    var options = {
+      types: ['(cities)']
+    };
+    new google.maps.places.Autocomplete($('#refine-orig-location')[0], options);
+    new google.maps.places.Autocomplete($('#refine-dest-location')[0], options);
+
+    var $sdate = $('#refine-sdate');
+    var $edate = $("#refine-edate");
+
+    var customRange = function customRange(input) {
+      var minDate;
+      var startDateVal = $sdate.val();
+      if (input.id === 'refine-edate') {
+        if (startDateVal) {
+          minDate = new Date(startDateVal);
+          minDate.setDate(minDate.getDate() + 1);
+          return {
+            minDate: minDate
+          };
         } else {
-          $("#lp-price-value-max-hou").text(ui.values[1]);
+          return {
+            minDate: 1
+          };
         }
+      }
+    };
+
+    $sdate.datepicker({
+      minDate: 0,
+      inline: true,
+      onClose: function(selectedDate) {
+        $edate.focus();
       }
     });
 
-    // REFINE SEARCH INIT
-        var options = {
-          types: ['(cities)']
-        };
-        new google.maps.places.Autocomplete($('#refine-orig-location')[0], options);
-        new google.maps.places.Autocomplete($('#refine-dest-location')[0], options);
-
-        var $sdate = $('#refine-sdate');
-        var $edate = $("#refine-edate");
-
-        var customRange = function customRange(input) {
-          var minDate;
-          var startDateVal = $sdate.val();
-          if (input.id === 'refine-edate') {
-            if (startDateVal) {
-              minDate = new Date(startDateVal);
-              minDate.setDate(minDate.getDate() + 1);
-              return {
-                minDate: minDate
-              };
-            } else {
-              return {
-                minDate: 1
-              };
-            }
-          }
-        };
-
-        $sdate.datepicker({
-          minDate: 0,
-          inline: true,
-          onClose: function(selectedDate) {
-            $edate.focus();
-          }
-        });
-
-        $edate.datepicker({
-          inline: true,
-          beforeShow: customRange,
-          onClose: function() {
-            $('#refine-guest').focus();
-          }
-        });
-
+    $edate.datepicker({
+      inline: true,
+      beforeShow: customRange,
+      onClose: function() {
+        $('#refine-guest').focus();
+      }
+    });
   })();
 </script>

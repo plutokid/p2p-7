@@ -1311,13 +1311,18 @@ color: white;
   margin: 0;
 }
 
-.carousel-details-text {
+.sv-hou-details-text {
   padding: 8px;
   white-space: pre-wrap;
 }
 
 .css-details-text {
   width: 380px;
+  float: left;
+}
+
+.css-details-text-tou {
+  width: 100%;
   float: left;
 }
 
@@ -1337,7 +1342,7 @@ color: white;
 }
 
 .aReview {
-  margin: 10px 10px 0 10px;
+  margin: 0 0 0 10px;
   padding: 8px;
   background: #f1f1f1;
 }
@@ -1394,8 +1399,19 @@ color: white;
 }
 
 .lp-list-title {
-  color: white;
   display: inline;
+}
+
+.lp-list-title a {
+  color: white;
+}
+
+.lp-list-title a:hover {
+  text-decoration: underline;
+}
+
+.lp-list-title a:visited {
+  color: #7f8c8d;
 }
 
 .lp-list-pp {
@@ -1413,10 +1429,10 @@ color: white;
 }
 
 .lpl-airbnb {
-  background:url("../img/airbnb.png") no-repeat #24b0cf 627px 3px;
+  background:url("../img/airbnb.png") no-repeat #24b0cf 621px 3px;
 }
 .lpl-nflats {
-  background:url("../img/9flats.png") no-repeat #24b0cf 627px 3px;
+  background:url("../img/9flats.png") no-repeat #24b0cf 621px 3px;
 }
 
 .lpl-kangaride {
@@ -1433,7 +1449,7 @@ color: white;
 }
 
 .lpl-vayable {
-  background:url("../img/vayable.png") no-repeat #95d17b 617px 3px;
+  background:url("../img/vayable.png") no-repeat #95d17b 612px 4px;
 }
 
 .tfpx {
@@ -1455,7 +1471,7 @@ color: white;
 
 .lp-left-group {
   height: 150px;
-  background-color: #2c3e50;
+  background-color: #bdc3c7;
   float: right;
   width: 100px;
   text-align: center;
@@ -1477,61 +1493,41 @@ color: white;
   border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
 }
 
-.btn-hou-details {
-  background: #24b0cf;
-}
-
-.btn-hou-bookit {
-  background: #3498db;
-}
-
-.btn-hou-map {
-  background: #2980b9;
+.btn-hou {
+  background: #0b4f5e;
 }
 
 .btn-hou:hover {
   color: white;
+  background: #2c3e50;
+}
+
+.btn-rid {
   background: #0b4f5e;
 }
-
-.btn-rid-details {
-  background: #ec5f41;
-}
-
-.btn-rid-bookit {
-  background: #e74c3c;
-}
-
-.btn-rid-map {
-  background: #c0392b;
-}
-
-.btn-add {
-  background: #95a5a6;
-}
-
 .btn-rid:hover {
   color: white;
+  background: #2c3e50;
+}
+
+.btn-tou {
   background: #0b4f5e;
 }
 
-.btn-vay-details {
-  background: #95d17b;
-}
-
-.btn-vay-bookit {
-  background: #2ecc71;
-}
-
-.btn-vay:hover {
+.btn-tou:hover {
   color: white;
-  background: #0b4f5e;
+  background: #2c3e50;
 }
 
 .lp-list-img {
   cursor: pointer;
   transition: 0.1s opacity linear;
-  border-radius: 0 0 0 3px;
+  float: left;
+  width: 216px;
+  height: 150px;
+}
+
+.lp-list-img-tou {
   float: left;
   width: 216px;
   height: 150px;
@@ -1625,7 +1621,7 @@ color: white;
   font-weight: bold;
 }
 
-.lp-hou-pricewrap {
+.lp-hou-pricewrap, .lp-tou-pricewrap {
   color: white;
   background: #24b0cf;
   padding: 12px;
@@ -1635,7 +1631,11 @@ color: white;
   width: 70px;
 }
 
-.lp-hou-price {
+.lp-tou-pricewrap {
+  background: #95d17b;
+}
+
+.lp-hou-price, .lp-tou-price {
   font-size: 27px;
   margin-top: 2px;
   font-weight: bold;
@@ -1696,7 +1696,7 @@ color: white;
 }
 
 .item-content {
-  padding:5px 10px;
+  padding: 5px 10px 25px;
 }
 
 .panel-subtitle {
@@ -1711,6 +1711,7 @@ color: white;
 }
 
 .span270 {
+  float: right;
   width: 270px;
 }
 
@@ -1759,18 +1760,39 @@ color: white;
   border-radius: 0 0 3px 3px;
 }
 
-.btn-con-dri {
+.btn-block {
   height: 45px;
   font-weight: bold;
   font-size: 24px;
-  background: #ec5f41;
   padding-top: 11px;
   text-align: center;
+}
+
+.btn-con-dri {
+  background: #ec5f41;
 }
 
 .btn-con-dri:hover {
   color: white;
   background: #e74c3c;
+}
+
+.btn-sv-hou {
+  background: #3498db;
+}
+
+.btn-sv-hou:hover {
+  color: white;
+  background: #2980b9;
+}
+
+.btn-sv-tou {
+  background: #2ecc71;
+}
+
+.btn-sv-tou:hover {
+  color: white;
+  background: #27ae60;
 }
 
 .item-desc-box {
@@ -1838,6 +1860,20 @@ color: white;
 
 .provider-blablacar {
   width: 120px;
+}
+
+.provider-airbnb {
+  width: 120px;
+}
+
+.provider-nflats {
+  width: 150px;
+  margin-top: -7px;
+}
+
+.provider-vayable {
+  width: 122px;
+  margin-top: -4px;
 }
 
 .provider-desc {
@@ -2074,4 +2110,79 @@ border-bottom: 1px solid #bbb;
 
 .registeration-btn:active {
 box-shadow: inset 0 0 0 1px rgba(0,0,0,0.075),0 0 0 #000;
+}
+
+/*SAP HOU */
+.panel-subtitle-hou {
+  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-left: 20px;
+  font-size: 18px;
+}
+
+.text-yellow {
+  color: #f39c12;
+}
+
+.sv-hou-carousel-inner img {
+  height: 425px;
+  width: 100%;
+}
+
+.ul-panel-grey {
+  background: #34495e;
+  margin: 0;
+  padding: 5px;
+  border-radius: 3px 3px 0 0;
+}
+
+.ul-panel-grey li {
+  margin: 1px 7px;
+}
+
+.ul-panel-grey li a {
+  color: #333;
+  border-radius: 3px;
+  background-color: rgba(236, 240, 241, 0.3);
+}
+
+.item-beds {
+  font-size: 19px;
+  margin: 10px 0;
+  font-family: inherit;
+  font-weight: bold;
+  line-height: 20px;
+  color: inherit;
+  text-rendering: optimizelegibility;
+  display: inline-block;
+}
+
+.single-street, .single-map {
+  width: 100%;
+  height: 425px;
+}
+
+.single-street img, .single-map img {
+  max-width: none;
+}
+
+td.details-td {
+  border-left: 0;
+  width: 100px;
+  text-align: right;
+  word-wrap: break-word;
+  font-weight: bold;
+}
+
+.hou-review-text {
+  clear: both;
+}
+
+.review-title-hou {
+  margin: 0;
+  margin-left: 10px;
+}
+
+.w620 {
+  width: 620px;
 }

@@ -243,119 +243,32 @@
 
   <!-- CAROUSEL TMPL -->
   <script id="tmpl-carousel" type="text/template">
-    <div class="slb modal hide fade">
-      <div class="modal-header air-modal-header" style="background:url(<%= item.infoWindowIcon %>) no-repeat #24b0cf 565px 3px;">
-        <h3><%= item.desc %></h3>
+    <div id="svhouCarousel" class="carousel slide air-carousel">
+      <ol class="carousel-indicators">
+        <% var j = 0; %>
+        <% _.each(imgs, function(src) { %>
+          <li data-target="#svhouCarousel" data-slide-to="<%= j %>" class="<%= j ? '' : 'active' %>"></li>
+          <% j++ %>
+        <% }); %>
+      </ol>
+      <!-- Carousel items -->
+      <div class="carousel-inner sv-hou-carousel-inner">
+        <% var i = 0; %>
+        <% _.each(imgs, function(src) { %>
+          <div class="item <%= i ? '' : 'active' %> ">
+            <img class="modal-img" src="<%= src %>">
+            <% if (captions[i]) { %>
+              <div class="carousel-caption">
+                <h5><%= captions[i] %></h5>
+              </div>
+            <% } %>
+          </div>
+          <% i++ %>
+        <% }); %>
       </div>
-      <div class="modal-body air-modal-body">
-        <div class="tab-content">
-          <div class="tab-pane active" id="tab-gallery">
-            <div id="slbCarousel" class="carousel slide air-carousel">
-              <ol class="carousel-indicators">
-                <% var j = 0; %>
-                <% _.each(imgs, function(src) { %>
-                  <li data-target="#slbCarousel" data-slide-to="<%= j %>" class="<%= j ? '' : 'active' %>"></li>
-                  <% j++ %>
-                <% }); %>
-              </ol>
-              <!-- Carousel items -->
-              <div class="carousel-inner">
-                <% var i = 0; %>
-                <% _.each(imgs, function(src) { %>
-                  <div class="item <%= i ? '' : 'active' %> ">
-                    <img class="modal-img" src="<%= src %>">
-                    <% if (captions[i]) { %>
-                      <div class="carousel-caption">
-                        <h5><%= captions[i] %></h5>
-                      </div>
-                    <% } %>
-                  </div>
-                  <% i++ %>
-                <% }); %>
-              </div>
-              <!-- Carousel nav -->
-              <a class="carousel-control left" href="#slbCarousel" data-slide="prev">&lsaquo;</a>
-              <a class="carousel-control right" href="#slbCarousel" data-slide="next">&rsaquo;</a>
-            </div>
-          </div>
-          <div class="tab-pane" id="tab-details">
-            <p class="details-address">$<%= item.price2 %> per night - <span class="css-red"><%= address %></span></p>
-            <div class="css-details-text">
-              <p class="carousel-details-text"><%= text %></p>
-            </div>
-            <div class="css-details-ameneties">
-              <table class="table table-condensed table-hover table-bordered table-striped">
-                <tbody>
-                  <% _.each(smallInfo, function(aInfo) { %>
-                    <tr>
-                      <td><%= aInfo[0] %></td>
-                      <td><%= aInfo[1] %></td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
-              <table class="table table-condensed table-hover">
-                <caption><b>Amenities</b></caption>
-                <tbody>
-                  <% _.each(amenities, function(aAmenitie) { %>
-                    <tr>
-                      <td><%= aAmenitie %></td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="tab-pane" id="tab-reviews">
-            <div class="css-details-text">
-              <% if (review)  { %>
-              <div class="aReview">
-                <div class="css-imgname">
-                  <img src="<%= review.img %>" class="img-polaroid">
-                  <span class="name"><%= review.name %></span>
-                </div>
-                <div class="review-text">
-                  <%= review.comment %>
-                </div>
-              </div>
-              <% } else { %>
-              <div class="aReview">
-                No reviews
-              </div>
-              <% } %>
-            </div>
-            <div class="css-details-ameneties css-imgnameprof">
-              <div class="css-imgnamebig">
-                <img width="225px" src="<%= profile.img %>">
-              </div>
-              <table class="table table-condensed">
-                <caption><b><%= profile.name %></b></caption>
-                <tbody>
-                  <% _.each(profile.profileInfo, function(aInfo) { %>
-                    <tr>
-                      <td><%= aInfo[0] %></td>
-                      <td><%= aInfo[1] %></td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="tab-pane tab-streetview map" id="tab-streetview">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer air-modal-footer">
-        <ul class="nav nav-pills air-nav-foot">
-          <li class="active"><a href="#tab-gallery" data-toggle="pill">Gallery</a></li>
-          <li><a href="#tab-details" data-toggle="pill">Details</a></li>
-          <li><a href="#tab-reviews" data-toggle="pill">Reviews</a></li>
-          <li><a class="menu-streetview" href="#tab-streetview" data-latlng="<%= JSON.stringify(latLng) %>" data-toggle="pill">Street View</a></li>
-        </ul>
-        <a class="btn btn-small info-book-air ga-gotovendor pull-right" href="<%= item.link %>" target="_blank">
-          <i class="icon-share"></i>&nbsp;Book for $<%= item.price2 %> a night
-        </a>
-      </div>
+      <!-- Carousel nav -->
+      <a class="carousel-control left" href="#svhouCarousel" data-slide="prev">&lsaquo;</a>
+      <a class="carousel-control right" href="#svhouCarousel" data-slide="next">&rsaquo;</a>
     </div>
   </script>
 
@@ -645,6 +558,14 @@
     Showing <b><%= numOfItems %> <%= place %></b> near <b><%= location %></b> <%= sdate %> <%= edate %> that accommodates <b>at least <%= guests %></b>.
   </script>
 
+  <script id="tmpl-tou-well" type="text/template">
+    <%
+      var location = destLocation || origLocation;
+      var guides = numOfItems > 1 ? "guides" : "guide";
+    %>
+    Showing <b><%= numOfItems %> <%= guides %></b> near <b><%= location %></b>.
+  </script>
+
   <script id="tmpl-rid-aList" type="text/template">
     <% _.each(items, function(item) { %>
     <%
@@ -655,7 +576,7 @@
     <div class="lp-aList lp-aList-rid <%= idtype %> <%= id %>" data-item='<%= json_item %>'>
       <div class="lp-list-head lpl-<%= item.idtype %>">
         <img class="lp-list-pp" src="<%= item.img %>">
-        <h4 class="lp-list-title"><%= item.date + " - " + item.time %></h4>
+        <h4 class="lp-list-title"><a href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.date + " - " + item.time %></a></h4>
       </div>
       <div class="lp-list-body">
         <div class="lp-rid-wrap">
@@ -695,10 +616,9 @@
           </div>
         </div>
         <span class="lp-left-group">
-          <a class="out-btn btn-rid btn-rid-details" href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>">Details &nbsp;<i class="icon-play"></i></a>
+          <a class="out-btn btn-rid btn-rid-details" href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
           <a class="out-btn btn-rid btn-rid-bookit" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-rid btn-rid-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
-          <a class="out-btn btn-rid btn-add" href="javascript:void(0)">Add &nbsp;<i class="icon-plus"></i></a>
         </span>
       </div>
       <div class="lp-extra rid-extra erid<%= item.id %>" style="display: none"></div>
@@ -716,10 +636,10 @@
     <div class="lp-aList lp-aList-hou <%= idtype %> <%= id %>" data-item='<%= json_item %>'>
       <div class="lp-list-head lpl-<%= item.idtype %>">
         <img class="lp-list-pp" src="<%= item.profileImg %>">
-        <h4 class="lp-list-title"><%= item.desc %></h4>
+        <h4 class="lp-list-title"><a href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.desc %></a></h4>
       </div>
       <div class="lp-list-body">
-        <img class="lp-list-img" src="<%= item.roomImg %>">
+        <img class="lp-list-img" data-id="<%= id %>" src="<%= item.roomImg %>">
         <div class="lp-list-info">
           <ul>
             <li>
@@ -737,10 +657,9 @@
           </div>
         </div>
         <span class="lp-left-group">
-          <a class="out-btn btn-hou btn-hou-details" data-id="someid" href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>">Details &nbsp;<i class="icon-play"></i></a>
+          <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
           <a class="out-btn btn-hou btn-hou-bookit" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-hou btn-hou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
-          <a class="out-btn btn-hou btn-add" data-id="someid" href="javascript:void(0)">Add &nbsp;<i class="icon-plus"></i></a>
         </span>
       </div>
       <div class="lp-extra hou-extra ehou<%= item.id %>" style="display: none"></div>
@@ -748,8 +667,49 @@
     <% }); %>
   </script>
 
+  <script id="tmpl-tou-aList" type="text/template">
+    <% _.each(items, function(item) { %>
+    <%
+      var json_item = JSON.stringify(item);
+      var idtype = "alist-" + item.idtype;
+      var id = "tou-" + item.id;
+    %>
+    <div class="lp-aList lp-aList-tou <%= idtype %> <%= id %>" data-item='<%= json_item %>'>
+      <div class="lp-list-head lpl-<%= item.idtype %>">
+        <img class="lp-list-pp" src="<%= item.profileImg %>">
+        <h4 class="lp-list-title"><a href="/#!/item/localguide/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.desc %></a></h4>
+      </div>
+      <div class="lp-list-body">
+        <img class="lp-list-img-tou" data-id="<%= id %>" src="<%= item.img %>">
+        <div class="lp-list-info">
+          <ul>
+            <li>
+              <span class="icon-user css-blue tfpx"></span>
+              <span class="lp-list-type">City guide</span>
+            </li>
+            <li>
+              <span class="icon-map-marker css-green tfpx"></span>
+              <span class="lp-list-location"><%= item.origin %></span>
+            </li>
+          </ul>
+          <div class="lp-tou-pricewrap">
+            <div class="lp-tou-price">$<%= item.price %></div>
+            <div class="lp-tou-pricedesc">per person</div>
+          </div>
+        </div>
+        <span class="lp-left-group">
+          <a class="out-btn btn-tou btn-tou-details" href="/#!/item/localguide/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
+          <a class="out-btn btn-tou btn-tou-bookit" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
+          <a class="out-btn btn-tou btn-tou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
+        </span>
+      </div>
+      <div class="lp-extra tou-extra etou<%= item.id %>" style="display: none"></div>
+    </div>
+    <% }); %>
+  </script>
+
   <!-- DEPENDENCIES -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.1/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
   <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
   <script src="js/vendor/bootstrap.min.js"></script>
   <script src="js/vendor/underscore-min.js"></script>
