@@ -9,9 +9,6 @@
   });
 
   $(document).ready(function() {
-    // Initializes cache objects
-    Outpost.helpers.initCache();
-
     // New google map
     google.maps.visualRefresh = true;
 

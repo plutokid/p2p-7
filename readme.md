@@ -1,2 +1,2 @@
 Plan yo' trip with P2P madness son.
-This is [Outpost](http://outpostp2p.com/ "P2P MADDNESSS").http://outpostp2p.com/
+This is [Outpost](http://outpost.travel/ "P2P MADDNESSS").

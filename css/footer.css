@@ -1,14 +1,12 @@
 .hp-about-tagline {
-
 	font-size: 40px;
-    width: 85%;
-    font-weight: 300;
-    line-height: 118%;
-    padding-bottom: 12px;
+  width: 85%;
+  font-weight: 300;
+  line-height: 118%;
+  padding-bottom: 12px;
 }
 
 .hp-about-section-left {
-
 	margin-top: 14px !important;
 	padding-top: 24px !important;
 	font-size: 16px;
@@ -16,11 +14,9 @@
 	padding: 0;
 	font-weight: normal;
 	line-height: 1;
-
 }
 
 .hp-about-section-right {
-
 	padding-left: 300px;
 	margin-top: 14px !important;
 	padding-top: 24px !important;
@@ -39,14 +35,9 @@
 	width: 60%;
 	margin: 0 0 15px;
 	display: block;
--webkit-margin-before: 1em;
--webkit-margin-after: 1em;
--webkit-margin-start: 0px;
--webkit-margin-end: 0px;
 }
 
 .hp-about-paragraph-right {
-
 	padding-bottom: 10px;
 	padding-left: 300px;
 	font-size: 14px;
@@ -55,41 +46,26 @@
 	width: 60%;
 	margin: 0 0 15px;
 	display: block;
--webkit-margin-before: 1em;
--webkit-margin-after: 1em;
--webkit-margin-start: 0px;
--webkit-margin-end: 0px;
-
-
-
 }
 
 .hp-about-img {
-
 	margin-left: 420px;
 	position: absolute;
 	margin-top: -30px;
-	transform:rotate(7deg);
--ms-transform:rotate(7deg); /* IE 9 */
--webkit-transform:rotate(7deg); /* Safari and Chrome */
-
+	transform:rotate(-5deg);
+	-webkit-transform: rotate(-5deg);
 }
 
 .hp-about-img2 {
-
 	margin-left: 0px;
 	position: absolute;
 	margin-top: -30px;
-	transform:rotate(-7deg);
--ms-transform:rotate(-7deg); /* IE 9 */
--webkit-transform:rotate(-7deg); /* Safari and Chrome */
-
+	transform:rotate(7deg);
+	-webkit-transform: rotate(7deg);
 }
 
 .hp-about-img3 {
-
 	margin-left: 480px;
 	position: absolute;
 	margin-top: -50px;
-
 }
