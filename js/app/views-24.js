@@ -67,9 +67,17 @@
 
       submitForm: function(e) {
         e.preventDefault();
+
+        // Remove datepicker UI from page
+        $('.ui-datepicker').hide();
+
+        var origCity = $("#js-orig-location-input").val();
+        var destCity = $("#js-dest-location-input").val();
+        var hasComma = destCity.indexOf(",");
+        destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
         var queryString = {
-          origCity: encodeURI($("#ho-orig-location-input").val()),
-          destCity: encodeURI($("#js-dest-location-input").val()),
+          origCity: encodeURI(origCity),
+          destCity: encodeURI(destCity),
           sdate: $('#ho-sdate-input').val(),
           edate: $('#ho-edate-input').val(),
           guests: $('#ho-guest-input').val()
@@ -126,9 +134,13 @@
 
       refineSearch: function(e) {
         e.preventDefault();
+        var validatedValues = this.validate();
+        var origCity = validatedValues.origCity;
+        var destCity = validatedValues.destCity;
+        console.log(origCity);
         var queryString = {
-          origCity: encodeURI($("#refine-orig-location").val()),
-          destCity: encodeURI($("#refine-dest-location").val()),
+          origCity: encodeURI(origCity),
+          destCity: encodeURI(destCity),
           sdate: $('#refine-sdate').val(),
           edate: $('#refine-edate').val(),
           guests: $('#refine-guest').val()
@@ -140,6 +152,26 @@
       navigateToListView: function(queryString) {
         var path = "!/search/?" + queryString;
         Outpost.mvc.router.navigate(path, true);
+      },
+
+      validate: function() {
+        var origCity = $("#refine-orig-location").val();
+        var destCity = $("#refine-dest-location").val();
+        var hasCommaOrig = destCity.indexOf(",");
+        var hasCommaDest = destCity.indexOf(",");
+        var $pacContainer = $('.pac-container');
+        var pacContainerLen = $pacContainer.length;
+        var $pcOrig = $('.pac-container:eq(0)');
+        var $pcDest = $('.pac-container:eq(1)');
+        var firstOrig = $pcOrig.find(".pac-item:first").text();
+        var firstDest = $pcDest.find(".pac-item:first").text();
+        origCity = hasCommaOrig === -1 ? firstOrig : origCity;
+        destCity = hasCommaDest === -1 ? firstDest : destCity;
+
+        return {
+          origCity: origCity,
+          destCity: destCity
+        };
       },
 
       render: function() {
@@ -624,8 +656,7 @@
           });
         }
 
-        $.waypoints('destroy');
-        this.infiniteScroll();
+        this.lazyLoad();
       },
 
       updateHeading: function() {
@@ -651,6 +682,14 @@
           items: this.sortedCollection
         });
         $('#lp-rid-list').html(html);
+      },
+
+      lazyLoad: function() {
+        var $activeTab = $('.tab-pane.active');
+        if ($activeTab.attr('id') === "lp-ridesharing") {
+          $.waypoints('destroy');
+          this.infiniteScroll();
+        }
       },
 
       render: function() {
@@ -901,8 +940,7 @@
           });
         }
 
-        $.waypoints('destroy');
-        this.infiniteScroll();
+        this.lazyLoad();
       },
 
       filterRoomType: function() {
@@ -948,6 +986,14 @@
           items: this.sortedCollection
         });
         $('#lp-hou-list').html(html);
+      },
+
+      lazyLoad: function() {
+        var $activeTab = $('.tab-pane.active');
+        if ($activeTab.attr('id') === "lp-spacerentals") {
+          $.waypoints('destroy');
+          this.infiniteScroll();
+        }
       },
 
       render: function() {
@@ -1121,8 +1167,7 @@
           });
         }
 
-        $.waypoints('destroy');
-        this.infiniteScroll();
+        this.lazyLoad();
       },
 
       updateHeading: function() {
@@ -1144,6 +1189,14 @@
           items: this.sortedCollection
         });
         $('#lp-tou-list').html(html);
+      },
+
+      lazyLoad: function() {
+        var $activeTab = $('.tab-pane.active');
+        if ($activeTab.attr('id') === "lp-localguides") {
+          $.waypoints('destroy');
+          this.infiniteScroll();
+        }
       },
 
       render: function() {

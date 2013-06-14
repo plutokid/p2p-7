@@ -120,6 +120,29 @@
 
     },
 
+    resetLocations: function(arg) {
+      switch (arg) {
+        case "orig":
+          Outpost.searchQuery.origLocation = "";
+          Outpost.searchQuery.origLocationLat = "";
+          Outpost.searchQuery.origLocationLng = "";
+        break;
+        case "dest":
+          Outpost.searchQuery.destLocation = "";
+          Outpost.searchQuery.destLocationLat = "";
+          Outpost.searchQuery.destLocationLng = "";
+        break;
+        case "both":
+          Outpost.searchQuery.origLocation = "";
+          Outpost.searchQuery.origLocationLat = "";
+          Outpost.searchQuery.origLocationLng = "";
+          Outpost.searchQuery.destLocation = "";
+          Outpost.searchQuery.destLocationLat = "";
+          Outpost.searchQuery.destLocationLng = "";
+        break;
+      }
+    },
+
     renderTemplate: function(tmpl_name, tmpl_data) {
       var ajaxPromise,
           tmpl_dir,
@@ -171,7 +194,7 @@
       if (!Outpost.HTMLcache[data.uri]) {
         Outpost.HTMLcache[data.uri] = $.ajax({
           type: "GET",
-          url: "http://outpost.travel/api/v2/" + data.apicat + "/single.php",
+          url: "http://outpost.travel/api/beta/" + data.apicat + "/single.php",
           data: {
             uri: encodeURIComponent(data.uri),
             idtype: data.idtype
@@ -235,10 +258,14 @@
       }
 
       Outpost.cache["ipaddress"].done(function(data) {
+        var location = "";
+        if (data.city) {
+          location = data.city + ", " +
+                     data.region + ", " +
+                     data.country;
+        }
         dff.resolve({
-          location: data.city + ", " +
-                    data.region + ", " +
-                    data.country,
+          location: location,
           latLng: [Number(data.lat), Number(data.lon)],
           country: data.countryCode,
           state: data.region,
@@ -426,7 +453,7 @@
 
       if (!this.ridRequests[query]) {
         this.ridRequests[query] = $.ajax({
-          url: 'http://outpost.travel/api/v2/rideshare/',
+          url: 'http://outpost.travel/api/beta/rideshare/',
           type: 'GET',
           dataType: 'jsonp',
           data: data
@@ -483,7 +510,7 @@
 
       if (!this.houRequests[query]) {
         this.houRequests[query] = $.ajax({
-          url: 'http://outpost.travel/api/v2/houserental/',
+          url: 'http://outpost.travel/api/beta/houserental/',
           type: 'GET',
           dataType: 'jsonp',
           data: data
@@ -534,7 +561,7 @@
 
       if (!this.touRequests[query]) {
         this.touRequests[query] = $.ajax({
-          url: 'http://outpost.travel/api/v2/tourism/',
+          url: 'http://outpost.travel/api/beta/tourism/',
           type: 'GET',
           dataType: 'jsonp',
           data: data

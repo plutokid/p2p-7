@@ -3,11 +3,11 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    Hamed -- Lead Dev -- @wololodev
 
 # THANKS
 
-    <name>
+    Ovi
 
 # TECHNOLOGY COLOPHON
 

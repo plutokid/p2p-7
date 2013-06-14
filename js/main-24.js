@@ -14,9 +14,5 @@
 
     // Initializes the MVC
     new Outpost.views.main();
-
-    $.getJSON("https://api.twitter.com/1/statuses/user_timeline/outposttravel.json?count=1&include_rts=1&callback=?", function(data) {
-      $("#latest-tweet").html(data[0].text);
-    });
   });
 })(window, jQuery, undefined);

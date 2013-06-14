@@ -54,14 +54,15 @@
         var options = Outpost.searchQuery;
         var dff = $.Deferred();
         if (!params) {
+          Outpost.helpers.resetLocations("both");
           geoPromise = Outpost.helpers.ipToGeo();
           geoPromise.done(function(data) {
             dff.resolve({
               origCity: encodeURI(data.location),
               destCity: "",
-              sdate: "",
-              edate: "",
-              guests: ""
+              sdate: Outpost.searchQuery.sdate,
+              edate: Outpost.searchQuery.edate,
+              guests: Outpost.searchQuery.guests
             });
           });
         } else {

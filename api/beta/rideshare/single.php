@@ -59,7 +59,7 @@
 
     $json["destination"] = explode(")", $title[2]);
     $json["destination"] = $json["destination"][1];
-    $json["destination"] = trim(str_replace("to", "", $json["destination"]));
+    $json["destination"] = trim(str_replace(" to ", "", $json["destination"]));
 
     if ($json["origin"] === "Québec") {
       $json["origin"] = "Quebec City";

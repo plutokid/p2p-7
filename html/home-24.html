@@ -35,7 +35,7 @@
                 <span class="icon-search css-searchicon"></span>&nbsp;Search
               </button>
             </div>
-            <input type="hidden" id="ho-orig-location-input">
+            <input type="hidden" id="js-orig-location-input">
           </form>
         </div>
       </div>
@@ -125,8 +125,8 @@
 
     geoPromise.done(function(data) {
       var origLocation = data.location;
-      if (origLocation.length > 7) {
-        $('#ho-orig-location-input').val(origLocation);
+      if (data.city) {
+        $('#js-orig-location-input').val(origLocation);
       }
     });
 

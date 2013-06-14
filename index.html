@@ -58,8 +58,6 @@
         </div>
       </div>
       <div class="footer-right">
-        <h5 class="margin0">Latest tweet:</h5>
-        <p class="latest-tweet margin0" id="latest-tweet"></p>
       </div>
     </div>
   </footer>
@@ -173,7 +171,7 @@
     <div class="navbar">
       <div class="navbar-outpost">
         <div class="container navbar-container">
-          <a class="header-logo-link" href="#!/">
+          <a class="header-logo-link" href="/">
             <img class="logo" src="img/outpost_logo.png" alt="outpost logo">
           </a>
           <div class="css-mainmenu js-mainmenu" id="js-mainmenu">
@@ -181,12 +179,18 @@
               <li><a class="navbar-btn quick-search-btn" id="js-whataround" href="#!/search/">
                 <div class="inner-button-contents">
                   <i class="icon-location-arrow"></i>
-                  <span>Quick search</span>
+                  <span>What's around me ?</span>
                 </div>
               </a></li>
               <% if (!name) { %>
                 <li><button class="navbar-btn sign-up-btn" data-toggle="modal" href="#js-signup-modal">Sign up</button></li>
               <% } else { %>
+                <li><a class="navbar-btn stash-btn" id="js-stash" href="javascript:void(0)">
+                  <div class="inner-button-contents">
+                    <i class="icon-cart"></i>
+                    <span>Stash</span>
+                  </div>
+                </a></li>
                 <li><a class="btn-nav"><%= name %></a></li>
                 <li><a class="btn-nav js-logout" href="javascript:void(0)">Logout</a></li>
               <% } %>
@@ -555,7 +559,11 @@
       }
       guests = guests > 1 ? guests + " guests" : guests + " guest";
     %>
+    <% if (location) { %>
     Showing <b><%= numOfItems %> <%= place %></b> near <b><%= location %></b> <%= sdate %> <%= edate %> that accommodates <b>at least <%= guests %></b>.
+    <% } else { %>
+    Showing <b><%= numOfItems %> <%= place %></b> around the world <%= sdate %> <%= edate %> that accommodates <b>at least <%= guests %></b>.
+    <% } %>
   </script>
 
   <script id="tmpl-tou-well" type="text/template">
@@ -563,7 +571,11 @@
       var location = destLocation || origLocation;
       var guides = numOfItems > 1 ? "guides" : "guide";
     %>
+    <% if (location) { %>
     Showing <b><%= numOfItems %> <%= guides %></b> near <b><%= location %></b>.
+    <% } else { %>
+    Showing <b><%= numOfItems %> <%= guides %></b> around the world</b>.
+    <% } %>
   </script>
 
   <script id="tmpl-rid-aList" type="text/template">
@@ -729,6 +741,7 @@
   <!-- CUSTOM -->
   <script src="js/main-24.js"></script>
   <!-- FACEBOOK SDK -->
+  <!-- 
   <div id="fb-root"></div>
   <script>
     window.fbAsyncInit = function() {
@@ -771,6 +784,12 @@
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
   </script>
 
+  <script type="text/javascript">
+  _atrk_opts = { atrk_acct:"pNdKh1awVK00ay", domain:"outpost.travel",dynamic: true};
+  (function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+  </script>
+  <noscript><img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=pNdKh1awVK00ay" style="display:none" height="1" width="1" alt="" /></noscript>
+ -->
   <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-39723359-1']);
