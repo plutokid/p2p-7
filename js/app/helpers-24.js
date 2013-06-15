@@ -295,7 +295,6 @@
       Outpost.cache[origin + dest].done(function(data) {
         dff.resolve(data);
       });
-
       return dff.promise();
     },
 

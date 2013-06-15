@@ -93,11 +93,15 @@
                 <span class="item-per item-per-seat">per night (<%= currency %>)</span>
               </div>
               <div class="item-seatleft-box">
-                <strong class="item-beds"><%= numOfBedrooms %></strong>
-                <span class="item-seat-left"><%= numOfBedrooms <= 1 ? "bedroom" : "bedrooms" %></span>
-                <span>&amp;</span>
-                <strong class="item-beds"><%= numOfBeds %></strong>
-                <span><%= numOfBeds <= 1 ? "bed" : "beds" %></span>
+                <% if (numOfBedrooms) { %>
+                  <strong class="item-beds"><%= numOfBedrooms %></strong>
+                  <span class="item-seat-left"><%= numOfBedrooms <= 1 ? "bedroom" : "bedrooms" %></span>
+                  <span>&amp;</span>
+                <% } %>
+                <% if (numOfBeds) { %>
+                  <strong class="item-beds"><%= numOfBeds %></strong>
+                  <span><%= numOfBeds <= 1 ? "bed" : "beds" %></span>
+                <% } %>
               </div>
               <div class="item-desc-box">
                 <p class="item-desc">

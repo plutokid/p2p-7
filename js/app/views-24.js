@@ -579,35 +579,34 @@
             }
           });
 
-          $(".rid-extra").gmap3('destroy').empty().slideUp(function() {
-            $extra.slideDown(function() {
-              $extra.gmap3({
-                getroute: {
-                  options: {
-                    origin: origin,
-                    destination: dest,
-                    travelMode: google.maps.DirectionsTravelMode.DRIVING
-                  },
-                  callback: function(results) {
-                    if (results) {
-                      $(this).gmap3({
-                        map: {
-                          options: {
-                            zoom: 13
-                          }
-                        },
-                        directionsrenderer: {
-                          options: {
-                            directions: results
-                          }
+          $(".rid-extra").gmap3('destroy').empty().slideUp();
+          $extra.slideDown(function() {
+            $extra.gmap3({
+              getroute: {
+                options: {
+                  origin: origin,
+                  destination: dest,
+                  travelMode: google.maps.DirectionsTravelMode.DRIVING
+                },
+                callback: function(results) {
+                  if (results) {
+                    $(this).gmap3({
+                      map: {
+                        options: {
+                          zoom: 13
                         }
-                      });
-                    } else {
-                      $extra.html("Location not properly located");
-                    }
+                      },
+                      directionsrenderer: {
+                        options: {
+                          directions: results
+                        }
+                      }
+                    });
+                  } else {
+                    $extra.html("Location not properly located");
                   }
                 }
-              });
+              }
             });
           });
         });
@@ -853,12 +852,11 @@
 
         jhr.done(function(data) {
           var $extra = $(".ehou" + item.id);
-          $(".hou-extra").gmap3('destroy').empty().slideUp(function() {
-            $extra.slideDown(function(){
-              var html = _this.templateCarousel(data);
-              $extra.css("height", "425px");
-              $extra.html(html);
-            });
+          $(".hou-extra").gmap3('destroy').empty().slideUp();
+          $extra.slideDown(function(){
+            var html = _this.templateCarousel(data);
+            $extra.css("height", "425px");
+            $extra.html(html);
           });
         });
       },
@@ -880,18 +878,17 @@
           var latLng = [data.lat, data.lng];
           $extra = $(".ehou" + item.id);
           $extra.css("height", "225px");
-          $(".hou-extra").gmap3('destroy').empty().slideUp(function() {
-            $extra.slideDown(function(){
-              $extra.gmap3({
-                marker: {
-                  latLng: latLng
-                },
-                map: {
-                  options: {
-                    zoom: 12
-                  }
+          $(".hou-extra").gmap3('destroy').empty().slideUp();
+          $extra.slideDown(function(){
+            $extra.gmap3({
+              marker: {
+                latLng: latLng
+              },
+              map: {
+                options: {
+                  zoom: 12
                 }
-              });
+              }
             });
           });
         });
@@ -1102,23 +1099,22 @@
           apicat: "tourism"
         });
 
-        $(".tou-extra").gmap3('destroy').empty().slideUp(function() {
-          jhr.done(function(data) {
-            var origin, dest, $extra, xhrDuration, $duration;
-            var address = data.origin;
-            $extra = $(".etou" + item.id);
-            $extra.css("height", "225px");
-            $extra.slideDown(function(){
-              $extra.gmap3({
-                marker: {
-                  address: address
-                },
-                map: {
-                  options: {
-                    zoom: 12
-                  }
+        $(".tou-extra").gmap3('destroy').empty().slideUp();
+        jhr.done(function(data) {
+          var origin, dest, $extra, xhrDuration, $duration;
+          var address = data.origin;
+          $extra = $(".etou" + item.id);
+          $extra.css("height", "225px");
+          $extra.slideDown(function(){
+            $extra.gmap3({
+              marker: {
+                address: address
+              },
+              map: {
+                options: {
+                  zoom: 12
                 }
-              });
+              }
             });
           });
         });
