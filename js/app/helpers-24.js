@@ -194,7 +194,7 @@
       if (!Outpost.HTMLcache[data.uri]) {
         Outpost.HTMLcache[data.uri] = $.ajax({
           type: "GET",
-          url: "http://outpost.travel/api/beta/" + data.apicat + "/single.php",
+          url: "/api/beta/" + data.apicat + "/single.php",
           data: {
             uri: encodeURIComponent(data.uri),
             idtype: data.idtype
@@ -453,7 +453,7 @@
 
       if (!this.ridRequests[query]) {
         this.ridRequests[query] = $.ajax({
-          url: 'http://outpost.travel/api/beta/rideshare/',
+          url: '/api/beta/rideshare/',
           type: 'GET',
           dataType: 'jsonp',
           data: data
@@ -510,7 +510,7 @@
 
       if (!this.houRequests[query]) {
         this.houRequests[query] = $.ajax({
-          url: 'http://outpost.travel/api/beta/houserental/',
+          url: '/api/beta/houserental/',
           type: 'GET',
           dataType: 'jsonp',
           data: data
@@ -561,7 +561,7 @@
 
       if (!this.touRequests[query]) {
         this.touRequests[query] = $.ajax({
-          url: 'http://outpost.travel/api/beta/tourism/',
+          url: '/api/beta/tourism/',
           type: 'GET',
           dataType: 'jsonp',
           data: data
