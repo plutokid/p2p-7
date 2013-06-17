@@ -53,6 +53,8 @@
         var _this = this;
         var options = Outpost.searchQuery;
         var dff = $.Deferred();
+
+        // If /listview/ only
         if (!params) {
           Outpost.helpers.resetLocations("both");
           geoPromise = Outpost.helpers.ipToGeo();
@@ -70,8 +72,8 @@
         }
 
         dff.done(function(params) {
-          var origCity = decodeURI(params.origCity);
-          var destCity = decodeURI(params.destCity);
+          var origCity = Outpost.helpers.debarURI(params.origCity);
+          var destCity = Outpost.helpers.debarURI(params.destCity);
 
           if (destCity) {
             _this.$title.text(destCity + " - Outpost");

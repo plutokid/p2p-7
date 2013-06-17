@@ -113,7 +113,7 @@
   function nflats($url) {
     global $idtype;
     $uri = $url;
-    $url = "https://api.9flats.com/api/v3/places/" . $url . "?client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
+    $url = "https://api.9flats.com/api/v4/places/" . $url . "?client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
     $html = file_get_contents($url);
     $single = json_decode($html);
     $single = $single->place;

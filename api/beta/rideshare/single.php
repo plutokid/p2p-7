@@ -31,8 +31,8 @@
       'http'=>array(
         'method'=>"GET",
         'header'=>"Accept-language: en\r\n" .
-                  "Cookie: foo=bar\r\n" . 
-                  "Content-Type: text/html; charset=utf-8\r\n" . 
+                  "Cookie: foo=bar\r\n" .
+                  "Content-Type: text/html; charset=utf-8\r\n" .
                   "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/19.0.597.107 Safari/534.13\r\n"
       )
     );
@@ -66,7 +66,7 @@
     } else if ($json["destination"] === "Québec") {
       $json["destination"] = "Quebec City";
     }
-    
+
     $json["description"] = trim(str_replace(array("«", "»"), "", $single->find('em', 0)->plaintext));
     $json["numOfSeats"] = count($single->find('option'));
 

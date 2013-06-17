@@ -9,7 +9,7 @@
     // =======================================================
     main: Parse.View.extend({
       initialize: function() {
-        // Initialize 
+        // Initialize
         Outpost.mvc.views.navBar = new Outpost.views.navBar();
 
         // Initialize the router module
@@ -76,8 +76,8 @@
         var hasComma = destCity.indexOf(",");
         destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
         var queryString = {
-          origCity: encodeURI(origCity),
-          destCity: encodeURI(destCity),
+          origCity: Outpost.helpers.enbarURI(origCity),
+          destCity: Outpost.helpers.enbarURI(destCity),
           sdate: $('#ho-sdate-input').val(),
           edate: $('#ho-edate-input').val(),
           guests: $('#ho-guest-input').val()
@@ -137,10 +137,9 @@
         var validatedValues = this.validate();
         var origCity = validatedValues.origCity;
         var destCity = validatedValues.destCity;
-        console.log(origCity);
         var queryString = {
-          origCity: encodeURI(origCity),
-          destCity: encodeURI(destCity),
+          origCity: Outpost.helpers.enbarURI(origCity),
+          destCity: Outpost.helpers.enbarURI(destCity),
           sdate: $('#refine-sdate').val(),
           edate: $('#refine-edate').val(),
           guests: $('#refine-guest').val()
@@ -167,7 +166,6 @@
         var firstDest = $pcDest.find(".pac-item:first").text();
         origCity = hasCommaOrig === -1 ? firstOrig : origCity;
         destCity = hasCommaDest === -1 ? firstDest : destCity;
-
         return {
           origCity: origCity,
           destCity: destCity
@@ -176,6 +174,7 @@
 
       render: function() {
         var _this = this;
+        this.$el.off().empty();
         $('.pg-page').empty();
         _this.template('listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
@@ -882,7 +881,31 @@
           $extra.slideDown(function(){
             $extra.gmap3({
               marker: {
-                latLng: latLng
+                latLng: latLng,
+                data: data.address,
+                events: {
+                  mouseover: function(marker, event, context) {
+                    var map = $(this).gmap3("get"),
+                      infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                    if (infowindow) {
+                      infowindow.open(map, marker);
+                      infowindow.setContent(context.data);
+                    } else {
+                      $(this).gmap3({
+                        infowindow:{
+                          anchor:marker,
+                          options:{content: context.data}
+                        }
+                      });
+                    }
+                  },
+                  mouseout: function() {
+                    var infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                    if (infowindow) {
+                      infowindow.close();
+                    }
+                  }
+                }
               },
               map: {
                 options: {
@@ -1108,7 +1131,31 @@
           $extra.slideDown(function(){
             $extra.gmap3({
               marker: {
-                address: address
+                address: address,
+                data: address,
+                events: {
+                  mouseover: function(marker, event, context) {
+                    var map = $(this).gmap3("get"),
+                      infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                    if (infowindow) {
+                      infowindow.open(map, marker);
+                      infowindow.setContent(context.data);
+                    } else {
+                      $(this).gmap3({
+                        infowindow:{
+                          anchor:marker,
+                          options:{content: context.data}
+                        }
+                      });
+                    }
+                  },
+                  mouseout: function() {
+                    var infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                    if (infowindow) {
+                      infowindow.close();
+                    }
+                  }
+                }
               },
               map: {
                 options: {

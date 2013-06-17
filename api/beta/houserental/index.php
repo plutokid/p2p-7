@@ -80,8 +80,8 @@
   if ($endDate) {
     $endDate = date('Y-m-d', strtotime($endDate));
   }
-  
-  $url = "https://api.9flats.com/api/v3/places";
+
+  $url = "https://api.9flats.com/api/v4/places";
   $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate}&search[end_date]={$endDate}&search[number_of_beds]={$guests}&search[price_min]={$min2}&search[price_max]={$max2}&search[page]={$page}&search[place_type]={$nflatsroomtype}&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
   $url = $url.$qry_str;
   $html = file_get_contents($url);

@@ -134,9 +134,9 @@
       <h3 id="about-outpost">About Outpost</h3>
     </div>
     <div class="modal-body">
-      <p>Outpost is a search engine that aggregates listings from many peer to peer websites 
-        such as houserental, rideshare, tourism, etc. and lists them into one place. Users can plan 
-        their trip using sharing economy services only and compare prices between the appropriate 
+      <p>Outpost is a search engine that aggregates listings from many peer to peer websites
+        such as houserental, rideshare, tourism, etc. and lists them into one place. Users can plan
+        their trip using sharing economy services only and compare prices between the appropriate
         networks. The service allows them to book rideshares, places to stay and activities at
         the most affordable prices available. This new way of travelling is based solely on non-commercial
         services and allows users to discover unique experiences at their destination that no commercial
@@ -176,10 +176,10 @@
           </a>
           <div class="css-mainmenu js-mainmenu" id="js-mainmenu">
             <ul class="css-nav">
-              <li><a class="navbar-btn quick-search-btn" id="js-whataround" href="#!/search/">
+              <li><a class="navbar-btn what-around-btn" id="js-whataround" href="#!/search/">
                 <div class="inner-button-contents">
                   <i class="icon-location-arrow"></i>
-                  <span>What's around me ?</span>
+                  <span>&nbsp;What&lsquo;s around me ?</span>
                 </div>
               </a></li>
               <% if (!name) { %>
@@ -187,8 +187,8 @@
               <% } else { %>
                 <li><a class="navbar-btn stash-btn" id="js-stash" href="javascript:void(0)">
                   <div class="inner-button-contents">
-                    <i class="icon-cart"></i>
-                    <span>Stash</span>
+                    <i class="icon-shopping-cart"></i>
+                    <span>&nbsp;Stash</span>
                   </div>
                 </a></li>
                 <li><a class="btn-nav"><%= name %></a></li>
@@ -395,7 +395,7 @@
   </script>
 
   <script id="tmpl-houserentalRow" type="text/template">
-    <% 
+    <%
       var markers = [];
       _.each(items, function(item) {
         Outpost.state.numOfRes++
@@ -741,7 +741,7 @@
   <!-- CUSTOM -->
   <script src="js/main-24.js"></script>
   <!-- FACEBOOK SDK -->
-  <!-- 
+  <!--
   <div id="fb-root"></div>
   <script>
     window.fbAsyncInit = function() {
