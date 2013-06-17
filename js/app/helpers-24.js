@@ -126,19 +126,19 @@
           Outpost.searchQuery.origLocation = "";
           Outpost.searchQuery.origLocationLat = "";
           Outpost.searchQuery.origLocationLng = "";
+          Outpost.searchQuery.origCountry = "";
+          Outpost.searchQuery.origState = "";
         break;
         case "dest":
           Outpost.searchQuery.destLocation = "";
           Outpost.searchQuery.destLocationLat = "";
           Outpost.searchQuery.destLocationLng = "";
+          Outpost.searchQuery.destCountry = "";
+          Outpost.searchQuery.destState = "";
         break;
         case "both":
-          Outpost.searchQuery.origLocation = "";
-          Outpost.searchQuery.origLocationLat = "";
-          Outpost.searchQuery.origLocationLng = "";
-          Outpost.searchQuery.destLocation = "";
-          Outpost.searchQuery.destLocationLat = "";
-          Outpost.searchQuery.destLocationLng = "";
+          Outpost.helpers.resetLocations("orig");
+          Outpost.helpers.resetLocations("dest");
         break;
       }
     },

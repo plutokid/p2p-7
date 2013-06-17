@@ -1,7 +1,7 @@
 <?php
-error_reporting(0);
-header('Content-Type: application/javascript');
-header("Access-Control-Allow-Origin: *");
+  // error_reporting(0);
+  header('Content-Type: application/javascript');
+  header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
 
   $startLocation = urlencode($_GET["sloc"]);
@@ -15,13 +15,13 @@ header("Access-Control-Allow-Origin: *");
   $destLat = $_GET["destlat"];
   $destLon = $_GET["destlon"];
 
-  $state1 = $_GET["origState"];
-  $state2 = $_GET["destState"];
+  $state1 = isset($_GET["origState"]) ? $_GET["origState"] : '';
+  $state2 = isset($_GET["destState"]) ? $_GET["destState"] : '';
   $city1 = explode(',', urldecode($startLocation));
   $city1 = str_replace(array("é", "è"), "e", $city1[0]);
   $city2 = explode(',', urldecode($endLocation));
   $city2 = str_replace(array("é", "è"), "e", $city2[0]);
-  
+
   $country1 = $_GET["origCountry"];
   $country2 = $_GET["destCountry"];
 
@@ -100,8 +100,8 @@ header("Access-Control-Allow-Origin: *");
       'http'=>array(
         'method'=>"GET",
         'header'=>"Accept-language: en\r\n" .
-                  "Cookie: foo=bar\r\n" . 
-                  "Content-Type: text/html; charset=utf-8\r\n" . 
+                  "Cookie: foo=bar\r\n" .
+                  "Content-Type: text/html; charset=utf-8\r\n" .
                   "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/19.0.597.107 Safari/534.13\r\n"
       )
     );
@@ -116,11 +116,9 @@ header("Access-Control-Allow-Origin: *");
     $crap[] = "'";
 
     $vroom = $poolList->find('table');
-    if ($vroom[4]) {
+    if (isset($vroom[4])) {
       $lastDate = $vroom[4]->find('tr', 0)->plaintext;
       foreach($vroom[4]->find('tr') as $aRide) {
-        $price_full = $aRide->find('.itineraryPrice', 0)->plaintext;
-        $price = 0 + $price_full;
           $seat = 0;
           foreach ($aRide->find('img[alt="White Man"]') as $guy) {
             $seat++;
@@ -139,6 +137,8 @@ header("Access-Control-Allow-Origin: *");
             $lastDate = $aRide->prev_sibling()->plaintext;
           }
 
+          $price_full = $aRide->find('.itineraryPrice', 0)->plaintext;
+          $price = 0 + $price_full;
           $link = $aRide->getAttribute('onclick');
           $ride['link'] = str_replace($crap, '', $link);
           $cleanLink = str_replace("http://www.kangaride.com/", '', $ride['link']);
@@ -174,18 +174,19 @@ header("Access-Control-Allow-Origin: *");
     $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer&pageID={$page}";
     $url = $url.$qry_str;
     $html = file_get_contents($url);
-    
+
     $poolList->load($html);
-    $lastDate = $poolList->find('h3.headline span', 0)->plaintext;
-    $lastDate = explode("&mdash;", $lastDate);
-    if ($lastDate[1])
-      $lastDate = $lastDate[1];
-    else
-      $lastDate = substr($lastDate[0], 10);
+    if ($lastDate = $poolList->find('h3.headline span', 0)) {
+      $lastDate = $lastDate->plaintext;
+      $lastDate = explode("&mdash;", $lastDate);
+      if ($lastDate[1])
+        $lastDate = $lastDate[1];
+      else
+        $lastDate = substr($lastDate[0], 10);
+    }
     foreach($poolList->find('.ride_list a') as $aRide) {
-      $price_full = $aRide->find('.price_box p', 0)->plaintext;
-      $price = 0 + substr($price_full, 1);
-      if ($ride['img'] = $aRide->find('img', 0)->src) {
+      if ($aRide->find('img', 0)) {
+        $ride['img'] = $aRide->find('img', 0)->src;
         $seat = $aRide->find('.count', 0)->plaintext;
         if ($seat) {
           $seat = 0 + $seat;
@@ -199,11 +200,13 @@ header("Access-Control-Allow-Origin: *");
         if ($aRide->prev_sibling()->hasAttribute('class')) {
           $lastDate = $aRide->prev_sibling()->plaintext;
           $lastDate = explode("&mdash;", $lastDate);
-          if ($lastDate[1])
+          if (isset($lastDate[1]))
             $lastDate = $lastDate[1];
           else
             $lastDate = substr($lastDate[0], 10);
         }
+        $price_full = $aRide->find('.price_box p', 0)->plaintext;
+        $price = 0 + substr($price_full, 1);
         $ride['link'] = $aRide->href;
         $ride['link'] = str_replace('&searchPageID=1', '', $ride['link']);
         $ride['id'] = filter_var($ride['link'], FILTER_SANITIZE_NUMBER_INT);
@@ -305,6 +308,7 @@ header("Access-Control-Allow-Origin: *");
 
   if ($country == "world") {
     $url = "http://www.blablacar.com/search-car-sharing-result";
+    $startDate2 = '';
     if ($startDate) {
       $startDate2 = urldecode($startDate);
       $startDate2 = explode("/", $startDate2);

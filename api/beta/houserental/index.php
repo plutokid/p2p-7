@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  // error_reporting(0);
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
@@ -82,7 +82,7 @@
   }
 
   $url = "https://api.9flats.com/api/v4/places";
-  $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate}&search[end_date]={$endDate}&search[number_of_beds]={$guests}&search[price_min]={$min2}&search[price_max]={$max2}&search[page]={$page}&search[place_type]={$nflatsroomtype}&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
+  $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate}&search[end_date]={$endDate}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=21&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
   $url = $url.$qry_str;
   $html = file_get_contents($url);
   $nflatsjson = json_decode($html);
