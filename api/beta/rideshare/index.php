@@ -1,5 +1,5 @@
 <?php
-  // error_reporting(0);
+  error_reporting(0);
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
@@ -187,8 +187,8 @@
     foreach($poolList->find('.ride_list a') as $aRide) {
       if ($aRide->find('img', 0)) {
         $ride['img'] = $aRide->find('img', 0)->src;
-        $seat = $aRide->find('.count', 0)->plaintext;
-        if ($seat) {
+        if ($seat = $aRide->find('.count', 0)) {
+          $seat = $seat->plaintext;
           $seat = 0 + $seat;
           if ($guests  > $seat) {
             continue;
@@ -217,7 +217,7 @@
         $originfull = $aRide->find('.inner', 0)->innertext;
         $origin = explode('<span class="trip_type one_way"></span>', $originfull);
 
-        if (!$origin[1]) {
+        if (!isset($origin[1])) {
           $origin = explode('<span class="trip_type round_trip"></span>', $originfull);
         }
 
@@ -227,7 +227,7 @@
         $ride['destination'] = $origin[1];
         $desc = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
         $desc = explode('/', $desc);
-        if ($desc[2]) {
+        if (isset($desc[2])) {
           $ride['time'] = str_replace("Departs", "", $desc[2]);
           $ride['desc'] = $desc[0].$desc[1];
         } else {

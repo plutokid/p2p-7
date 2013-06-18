@@ -1,5 +1,5 @@
 <?php
-  // error_reporting(0);
+  error_reporting(0);
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');

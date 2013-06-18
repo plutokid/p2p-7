@@ -1,6 +1,6 @@
 <?php
   // Comment out the next line when developing to report every type of error
-  // error_reporting(0);
+  error_reporting(0);
 
   // For JSONP convinience
   header('Content-Type: application/javascript');
@@ -9,9 +9,9 @@
   // Request DOM Scraper library
   require_once('../../simple_html_dom.php');
 
-  // Gather the params (encode if expecting spaces or wierd chars in a variable)
-  $startLocation = urlencode($_GET["sloc"]);
-  $endLocation = urlencode($_GET["eloc"]);
+  // Gather the params
+  $startLocation = $_GET["sloc"];
+  $endLocation = $_GET["eloc"];
   $startDate = $_GET["sdate"];
   $endDate = $_GET["edate"];
   $guests = $_GET["guests"];
@@ -34,7 +34,16 @@
     $endLocation = $startLocation;
   }
 
+  // Define the city only
+  $city = explode(',', $endLocation);
+  $city = $city[0];
+
+  // Encode this since it may have spaces and wierd chars
+  $endLocation = urlencode($endLocation);
+
   // Converting dates to dashes for some providers
+  $startDate_dash = '';
+  $endDate_dash = '';
   if ($startDate) {
     $startDate_dash = date('Y-m-d', strtotime($startDate));
   }
@@ -46,24 +55,27 @@
   // Setting up the room_type filter for each provider
   $airRoomType = '';
   $nflatsroomtype = '';
+  $roomaramaRoomtype = '';
   for ($z=0; $z < count($roomType); $z++) {
     $nflatsroomtype .= $roomType[$z].'+';
     switch ($roomType[$z]) {
       case 'entire_home':
         $airRoomType .= "&room_types[]=".urlencode("Entire home/apt");
+        $roomaramaRoomtype .= "other";
         break;
       case 'private_room':
         $airRoomType .= "&room_types[]=".urlencode("Private room");
+        $roomaramaRoomtype .= "room";
         break;
       case 'shared_room':
         $airRoomType .= "&room_types[]=".urlencode("Shared room");
+        $roomaramaRoomtype .= "room";
         break;
       default:
         $airRoomType .= '';
         break;
     }
   }
-
   // Declare the globar array for us to feed on
   $output = array();
 
@@ -130,14 +142,39 @@
   }
 
   // Starting Roomorama
+  // Roomorama date validation
+  if (!$startDate_dash || !$endDate_dash) {
+    $startDate_dash = '';
+    $endDate_dash = '';
+  }
   $url = "https://api.roomorama.com/v1.0/rooms.json";
-  $qry_str = "?destination={$endLocation}&check_in={$startDate}&check_out={$endDate}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
+  $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
   $url = $url . $qry_str;
   $html = file_get_contents($url);
   $roomoramajson = json_decode($html);
   if ($roomoramajson->result) {
     foreach($roomoramajson->result as $aRoom) {
-      $room['id'] = str_replace("-", "", filter_var($aRoom->id, FILTER_SANITIZE_NUMBER_INT));
+      $room['type'] = $aRoom->type; // could be subtype or type
+      switch ($room['type']) {
+        case 'room':
+          $roomTypeRoo = "room";
+          break;
+        default:
+          $roomTypeRoo = "other";
+          break;
+      }
+
+      if ($roomTypeRoo == "room" && $roomaramaRoomtype == "other") {
+        continue;
+      }
+
+
+      if ($roomTypeRoo == "other" && ($roomaramaRoomtype == "room" || $roomaramaRoomtype == "roomroom")) {
+        continue;
+      }
+
+
+      $room['id'] = $aRoom->id;
       $room['uri'] = $room['id'];
       $room['idtype'] = "roomorama";
       $room['roomImg'] = $aRoom->thumbnail;
@@ -151,7 +188,6 @@
       $room['infoWindowIcon'] = "img/roomorama.png";
       //$room['moreinfo'] = ;
       $room['latLng'] = array($aRoom->lat, $aRoom->lng);
-      $room['type'] = $aRoom->type; // could be subtype or type
       $room['neigh'] = $aRoom->city;
       $room['origin'] = $room['neigh'];
 

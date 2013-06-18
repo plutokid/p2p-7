@@ -13,6 +13,9 @@
     case 'nflats':
       $json = nflats($url);
       break;
+    case 'roomorama':
+      $json = roomorama($url);
+      break;
   }
   echo $_GET['callback'] . '('.$json.')';
 
@@ -189,6 +192,100 @@
       '$'."{$single->pricing->charge_per_extra_person} {$json['currency']} / night after {$single->place_details->charge_per_extra_person_limit} guests"
     );
 
+    $json["review"] = false;
+
+    return json_encode($json);
+  }
+
+  function roomorama($url) {
+    global $idtype;
+    $uri = $url;
+    $url = "https://api.roomorama.com/v1.0/rooms/" . $url . ".json";
+    $html = file_get_contents($url);
+    $single = json_decode($html);
+    $single = $single->result;
+
+    $json["title"] = $single->title;
+    $json["price"] = "$".round($single->price);
+    $json["currency"] = $single->currency_code;
+    $json["numOfBeds"] = $single->num_double_beds + $single->num_single_beds + $single->num_sofa_beds;
+    $json["numOfBedrooms"] = $single->num_rooms;
+    $json["house_rules"] = $single->cancellation_policy;
+    $json["link"] = $single->url;
+
+    $json["picture_url"] = "img/rsz_noavatar.png";
+    $json["name"] = $single->host->display;
+    $json["response_time"] = "&nbsp;";
+    $json["amenities"] = explode(',', $single->amenities);
+
+    $json["city"] = $single->city;
+    $json["zipcode"] = "";
+    $json["country"] = $single->country_code;
+    $json["property_type"] = $single->type;
+    $json["room_type"] = $single->subtype;
+    $json["address"] = "{$json['city']}, {$json['country']}";
+
+    $json["logopath"] = "img/roomorama.png";
+    $json["idtype"] = $idtype;
+    $json["logodesc"] = "With Roomorama, you can find short term rentals and short term apartments for short term stays in the most popular US, Canadian and European cities.";
+
+    $gallery = $single->images;
+    $imgArr = array();
+    for ($i = 0; $i < count($gallery); $i++) {
+      $imgArr[] = $gallery[$i]->image;
+      $captions[] = "";
+    }
+    $json["imgs"] = $imgArr;
+    $json["captions"] = $captions;
+
+    $json["lat"] = $single->lat;
+    $json["lng"] = $single->lng;
+
+    $json["desc"] = $single->description;
+
+    $json["smallInfo"] = array();
+    $json["smallInfo"][] = array(
+      "Accommodates:",
+      $single->max_guests
+    );
+    $json["smallInfo"][] = array(
+      "Cancellation:",
+      $single->cancellation_policy ? "Strict" : "None"
+    );
+    if ($single->num_double_beds) {
+      $json["smallInfo"][] = array(
+        "Double beds",
+        $single->num_double_beds
+      );
+    }
+    if ($single->num_single_beds) {
+      $json["smallInfo"][] = array(
+        "Single beds",
+        $single->num_single_beds
+      );
+    }
+    if ($single->num_sofa_beds) {
+      $json["smallInfo"][] = array(
+        "Sofa beds",
+        $single->num_sofa_beds
+      );
+    }
+    $json["smallInfo"][] = array(
+      "Bathrooms:",
+      $single->num_bathrooms
+    );
+    $json["smallInfo"][] = array(
+      "Minimum Stay:",
+      $single->min_stay
+    );
+    $json["smallInfo"][] = array(
+      "Check In:",
+      $single->check_in_time
+    );
+    $json["smallInfo"][] = array(
+      "Check Out:",
+      $single->check_out_time
+    );
     $json["review"] = false;
 
     return json_encode($json);
