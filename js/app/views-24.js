@@ -1375,10 +1375,6 @@
             data.name = first_name.substring(0, first_name.indexOf(' '));
             data.name = data.name || first_name;
             Outpost.mvc.views.navBar.render(data);
-            Outpost.helpers.showAlertBox({
-              text: "You're logged in, happy hunting!&nbsp;",
-              type: "alertbox-success"
-            });
           },
           error: function(user, error) {
             Outpost.state.$loader.hide();

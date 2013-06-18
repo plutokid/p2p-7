@@ -83,11 +83,6 @@
           }
 
         }).fail(function(xmlHttpRequest, textStatus, errorThrown) {
-          Outpost.helpers.showAlertBox({
-            type: "alert-error",
-            text: "<strong>Oops!</strong> something, somehow," +
-                  "somewhere went terribly wrong."
-          });
           lat = undefined;
           lng = undefined;
         });
@@ -326,16 +321,6 @@
       } else {
         Outpost.helpers.resetLocations("dest");
       }
-    },
-
-    showAlertBox: function(data) {
-      var $alertNodes = $('#alert-box');
-      var tmpl = _.template($('#tmpl-alert').html());
-      var html = tmpl(data);
-      $alertNodes.append(html);
-      setTimeout(function() {
-        $alertNodes.find($(".alert")).alert('close');
-      }, 3000);
     },
 
     sortDate: function(collection) {
