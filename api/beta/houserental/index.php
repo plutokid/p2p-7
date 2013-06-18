@@ -108,6 +108,38 @@
       $output[] = $room;
     }
   }
+  
+  // Starting Roomorama
+  $url = "https://api.roomorama.com/v1.0/rooms.json";
+  $qry_str = "?destination={$endLocation}&check_in={$startDate}&check_out={$endDate}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
+  $url = $url . $qry_str;
+  $html = file_get_contents($url);
+  $roomoramajson = json_decode($html);
+  if ($roomoramajson->result)
+  {
+    foreach($roomoramajson->result as $aRoom)
+    {
+    $room['id'] = str_replace("-", "", filter_var($aRoom->result->id, FILTER_SANITIZE_NUMBER_INT));
+	  $room['uri'] = $room['id'];
+      $room['idtype'] = "roomorama";
+      $room['roomImg'] = $aRoom->result->thumbnail;
+      $room['profileImg'] = "img/noprofile.jpg";
+      $room['profileName'] = $aRoom->result->host->display;
+      $room['price'] = $aRoom->result->price;
+      $room['price2'] = $aRoom->result->price;
+      $room['desc'] = str_replace("'", "", $aRoom->result->title);
+      $room['link'] = $aRoom->result->url;
+      $room['iconPath'] = "img/roomorama.ico";
+      $room['infoWindowIcon'] = "img/roomorama.png";
+      //$room['moreinfo'] = $aRoom->result->place_details->links[0]->href."?&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
+      $room['latLng'] = array($aRoom->result->lat, $aRoom->result->lng);
+      $room['type'] = $aRoom->result->subtype; // could be subtype or type
+      $room['neigh'] = $aRoom->result->city;
+      $room['origin'] = $room['neigh'];
+    
+      $output[] = $room;
+    }
+  }
 
   echo $_GET['callback'] . '('.json_encode($output).')';
 
