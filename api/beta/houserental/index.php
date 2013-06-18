@@ -135,22 +135,22 @@
   $roomoramajson = json_decode($html);
   if ($roomoramajson->result) {
     foreach($roomoramajson->result as $aRoom) {
-      $room['id'] = str_replace("-", "", filter_var($aRoom->result->id, FILTER_SANITIZE_NUMBER_INT));
+      $room['id'] = str_replace("-", "", filter_var($aRoom->id, FILTER_SANITIZE_NUMBER_INT));
       $room['uri'] = $room['id'];
       $room['idtype'] = "roomorama";
-      $room['roomImg'] = $aRoom->result->thumbnail;
+      $room['roomImg'] = $aRoom->thumbnail;
       $room['profileImg'] = "img/noprofile.jpg";
-      $room['profileName'] = $aRoom->result->host->display;
-      $room['price'] = $aRoom->result->price;
-      $room['price2'] = $aRoom->result->price;
-      $room['desc'] = str_replace("'", "", $aRoom->result->title);
-      $room['link'] = $aRoom->result->url;
+      $room['profileName'] = $aRoom->host->display;
+      $room['price'] = $aRoom->price;
+      $room['price2'] = $aRoom->price;
+      $room['desc'] = str_replace("'", "", $aRoom->title);
+      $room['link'] = $aRoom->url;
       $room['iconPath'] = "img/roomorama.ico";
       $room['infoWindowIcon'] = "img/roomorama.png";
       //$room['moreinfo'] = ;
-      $room['latLng'] = array($aRoom->result->lat, $aRoom->result->lng);
-      $room['type'] = $aRoom->result->subtype; // could be subtype or type
-      $room['neigh'] = $aRoom->result->city;
+      $room['latLng'] = array($aRoom->lat, $aRoom->lng);
+      $room['type'] = $aRoom->type; // could be subtype or type
+      $room['neigh'] = $aRoom->city;
       $room['origin'] = $room['neigh'];
 
       $output[] = $room;
