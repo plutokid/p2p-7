@@ -1,5 +1,5 @@
 <?php
-  // Comment out the next line when in develloping to report every type of error
+  // Comment out the next line when developing to report every type of error
   // error_reporting(0);
 
   // For JSONP convinience
@@ -34,6 +34,15 @@
     $endLocation = $startLocation;
   }
 
+  // Converting dates to dashes for some providers
+  if ($startDate) {
+    $startDate_dash = date('Y-m-d', strtotime($startDate));
+  }
+
+  if ($endDate) {
+    $endDate_dash = date('Y-m-d', strtotime($endDate));
+  }
+
   // Setting up the room_type filter for each provider
   $airRoomType = '';
   $nflatsroomtype = '';
@@ -61,6 +70,7 @@
   // Instantiate a new DOM Scrapping object
   $rooms = new simple_html_dom();
 
+  // Start Airbnb
   $url = "https://www.airbnb.com/s";
   $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}&price_min={$min}&price_max={$max}&page={$page}{$airRoomType}";
   $url = $url.$qry_str;
@@ -91,16 +101,8 @@
   }
 
    // Starting 9flats
-  if ($startDate) {
-    $startDate = date('Y-m-d', strtotime($startDate));
-  }
-
-  if ($endDate) {
-    $endDate = date('Y-m-d', strtotime($endDate));
-  }
-
   $url = "https://api.9flats.com/api/v4/places";
-  $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate}&search[end_date]={$endDate}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=21&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
+  $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate_dash}&search[end_date]={$endDate_dash}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=21&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
   $url = $url.$qry_str;
   $html = file_get_contents($url);
   $nflatsjson = json_decode($html);
