@@ -1,8 +1,15 @@
 <?php
+  // Comment out the next line when in develloping to report every type of error
   // error_reporting(0);
+
+  // For JSONP convinience
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
+
+  // Request DOM Scraper library
   require_once('../../simple_html_dom.php');
+
+  // Gather the params (encode if expecting spaces or wierd chars in a variable)
   $startLocation = urlencode($_GET["sloc"]);
   $endLocation = urlencode($_GET["eloc"]);
   $startDate = $_GET["sdate"];
@@ -12,18 +19,22 @@
   $min = $_GET["price_min"];
   $max = $_GET["price_max"];
   $roomType = $_GET["room_type"];
+
+  // Convert to int
   $min = 0 + $min;
   $max = 0 + $max;
 
+  // 300$ max cap should be maxed out to 10000
   if ($max == 300) {
     $max = 10000;
   }
 
-  if (!$endLocation)
+  // If destination is not defined, grab the origin city instead
+  if (!$endLocation) {
     $endLocation = $startLocation;
+  }
 
-  $output = array();
-  $rooms = new simple_html_dom();
+  // Setting up the room_type filter for each provider
   $airRoomType = '';
   $nflatsroomtype = '';
   for ($z=0; $z < count($roomType); $z++) {
@@ -43,6 +54,13 @@
         break;
     }
   }
+
+  // Declare the globar array for us to feed on
+  $output = array();
+
+  // Instantiate a new DOM Scrapping object
+  $rooms = new simple_html_dom();
+
   $url = "https://www.airbnb.com/s";
   $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}&price_min={$min}&price_max={$max}&page={$page}{$airRoomType}";
   $url = $url.$qry_str;
@@ -108,19 +126,17 @@
       $output[] = $room;
     }
   }
-  
+
   // Starting Roomorama
   $url = "https://api.roomorama.com/v1.0/rooms.json";
   $qry_str = "?destination={$endLocation}&check_in={$startDate}&check_out={$endDate}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
   $url = $url . $qry_str;
   $html = file_get_contents($url);
   $roomoramajson = json_decode($html);
-  if ($roomoramajson->result)
-  {
-    foreach($roomoramajson->result as $aRoom)
-    {
-    $room['id'] = str_replace("-", "", filter_var($aRoom->result->id, FILTER_SANITIZE_NUMBER_INT));
-    $room['uri'] = $room['id'];
+  if ($roomoramajson->result) {
+    foreach($roomoramajson->result as $aRoom) {
+      $room['id'] = str_replace("-", "", filter_var($aRoom->result->id, FILTER_SANITIZE_NUMBER_INT));
+      $room['uri'] = $room['id'];
       $room['idtype'] = "roomorama";
       $room['roomImg'] = $aRoom->result->thumbnail;
       $room['profileImg'] = "img/noprofile.jpg";
@@ -136,11 +152,11 @@
       $room['type'] = $aRoom->result->subtype; // could be subtype or type
       $room['neigh'] = $aRoom->result->city;
       $room['origin'] = $room['neigh'];
-    
+
       $output[] = $room;
     }
   }
-  
+
   echo $_GET['callback'] . '('.json_encode($output).')';
 
 ?>
