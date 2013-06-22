@@ -103,8 +103,9 @@ a:focus {
   margin-top: -20px;
   height: 913px;
   background-size: cover;
-  background-image: url("../img/labg.jpg");
+  background-image: url(../img/bg_psh.png);
   background-attachment: fixed;
+  transition: background-image 0.8s ease-in;
 }
 
 .search {
@@ -247,22 +248,74 @@ a:focus {
   float: left;
 }
 
-.marketing-titles {
-  width: 909px;
+.marketing-wrapper {
+  background: rgba(52, 73, 94, 0.6);
+  width: 1050px;
+  height: 200px;
   margin: 0 auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+.marketing-wrapper > div {
+  margin: 17px auto 0 auto;
+  width: 1018px;
+}
+
+.marketing-titles {
+
+}
+
+.sl-nav {
+  display: block;
+  height: 51px;
+  margin: 0;
+}
+
+.sl-nav li {
+  list-style: none;
+  float: left;
+  width: 33.33%;
+  margin: 0;
+}
+
+.sl-nav a {
+  padding: 15px;
+  display: block;
+  text-align: center;
+  font-size: 20px;
+  color: white;
+  background: #2c3e50;
+  text-shadow: 0 0 15px rgba(0,0,0,0.6),0 -1px 1px rgba(0,0,0,0.6);
+  border-bottom: 1px #161F27 solid;
+  box-shadow: 0 2px 6px rgba(0,0,0,.065);
+}
+
+.sl-nav a:hover {
+  background: #34495e;
+}
+
+.sl-nav .active a {
+  background: linear-gradient(to bottom, rgba(52,73,94,1) 5%,rgba(52,73,94,0.01) 99%,rgba(255,255,255,0) 100%);
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.bdr-left {
+  border-left: 1px #161F27 solid;
 }
 
 .marketing-header {
   font-size: 48px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: #fff;
   line-height: 1.2;
   text-shadow: 0 0 15px rgba(0,0,0,0.6),0 -1px 1px rgba(0,0,0,0.6);
+  text-align: center;
 }
 
 .marketing-sub {
 font-size: 20px;
-margin-bottom: 20px;
+margin-bottom: 15px;
 color: #fff;
 line-height: 1.2;
   text-shadow: 0 0 15px rgba(0,0,0,0.6),0 -1px 1px rgba(0,0,0,0.6);
@@ -865,20 +918,10 @@ background-color: #2284A1;
 }
 
 .aroundtext {
-
   margin-left:30px;
   padding-right: 10px;
-
 }
 
-/*landing page search*/
-.css-main-search {
-  width: 910px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 0;
-  margin-bottom: 0;
-}
 
 .inner-search {
   position: relative;
@@ -895,18 +938,22 @@ background-color: #2284A1;
   padding: 4px;
 }
 
-.ho-arrow {
-  font-size: 24px;
-}
-
 .calendar-prepend {
-position: absolute;
-right: 10px;
-color: black;
-top: 9px;
+  position: absolute;
+  right: 10px;
+  color: black;
+  top: 9px;
 }
 
-#ho-sdate-input, #ho-edate-input, #ho-guest-input {
+.hp-arrow {
+  font-size: 26px;
+  color: white;
+  display: block;
+  margin-top: 6px;
+}
+
+#sl-hou-sdate-input, #sl-hou-edate-input, #sl-hou-guest-input,
+#sl-rid-sdate-input, #sl-rid-edate-input, #sl-rid-guest-input {
   color: #5a5a5a;
   height: 23px;
   margin: 0;
@@ -914,27 +961,78 @@ top: 9px;
   box-shadow: inset 1px 1px 5px rgba(0,0,0,0.4);
   border: 1px solid #000;
   text-shadow: 0 1px 1px #fff;
-  padding: 8px 12px;
+  padding: 9px 12px 7px 12px;
   font-size: 17px;
   border-radius: 3px;
   transition: border linear 0.2s,box-shadow linear 0.2s;
 }
 
-.ho-guest-input {
-  height: 41px !important;
-  width: 120px !important;
+#sl-hou-guest-input {
+  height: 41px;
+  width: 120px;
 }
 
-.ho-to-date {
+#sl-rid-guest-input {
+  width: 108px;
+  height: 41px;
 }
 
-.ho-guest-input {
-  width: 87px;
+#sl-hou-dest-location-input, #sl-rid-dest-location-input,
+#sl-rid-orig-location-input, #sl-exp-dest-location-input {
+  color: #5a5a5a;
+  height: 23px;
+  margin: 0;
+  box-shadow: inset 1px 1px 5px rgba(0,0,0,0.4);
+  border: 1px solid #000;
+  text-shadow: 0 1px 1px #fff;
+  padding: 9px 12px 7px 12px;
+  font-size: 17px;
+  border-radius: 3px;
+  transition: border linear 0.2s,box-shadow linear 0.2s;
 }
 
-.ho-more-options {
-  margin-top: 5px;
-  margin-left: -16px;
+#sl-exp-dest-location-input {
+  width: 852px;
+}
+
+#sl-hou-dest-location-input {
+  width: 448px;
+}
+
+#sl-rid-dest-location-input,
+#sl-rid-orig-location-input {
+  width: 200px;
+}
+
+#hou-searchIt, #rid-searchIt, #exp-searchIt {
+  float: left;
+  height: 41px;
+  line-height: normal;
+  font-size: 15px;
+  padding: 0.6em 1.3em;
+  background-color: #34495e;
+  border: 1px solid rgb(21, 31, 41);
+  font-weight: bold;
+  display: inline-block;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-bottom: 0;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0.2em rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.2),0 0 0 #000;
+  color: #fff;
+  transition: box-shadow linear 0.2s;
+  text-shadow: 0 -1px 0px rgba(0,0,0,0.2);
+}
+
+#hou-searchIt:hover, #rid-searchIt:hover, #exp-searchIt:hover {
+  background-image: linear-gradient(to top, #34495e 0%,#2c3e50 100%);
+}
+
+#hou-searchIt:active, #rid-searchIt:active, #exp-searchIt:active {
+box-shadow: inset 0 1px 4px 1px rgba(0,0,0,0.3),0 0 0 #000;
 }
 
 .search-bar-wrapper form {
@@ -981,19 +1079,6 @@ top: 9px;
   margin:0 3px;
 }
 
-#js-dest-location-input {
-  color: #5a5a5a;
-  width: 340px;
-  height: 23px;
-  margin: 0;
-  box-shadow: inset 1px 1px 5px rgba(0,0,0,0.4);
-  border: 1px solid #000;
-  text-shadow: 0 1px 1px #fff;
-  padding: 8px 12px;
-  font-size: 17px;
-  border-radius: 3px;
-  transition: border linear 0.2s,box-shadow linear 0.2s;
-}
 
 .mobile-whats {
   display: inline-block;
@@ -1008,37 +1093,6 @@ top: 9px;
   transition: background 300ms ease-out;
   background: #2284a1 !important;
 }*/
-
-#searchIt {
-  float: left;
-  height: 41px;
-  line-height: normal;
-  font-size: 15px;
-  padding: 0.6em 1.3em;
-  background-color: #34495e;
-  border: 1px solid rgb(21, 31, 41);
-  font-weight: bold;
-  display: inline-block;
-  box-sizing: border-box;
-  text-align: center;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  text-transform: uppercase;
-  vertical-align: middle;
-  margin-bottom: 0;
-  border-radius: 3px;
-  box-shadow: inset 0 0 0.2em rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.2),0 0 0 #000;
-  color: #fff;
-  transition: box-shadow linear 0.2s;
-  text-shadow: 0 -1px 0px rgba(0,0,0,0.2);
-}
-
-#searchIt:hover {
-  background-image: linear-gradient(to top, #34495e 0%,#2c3e50 100%);
-}
-
-#searchIt:active {
-box-shadow: inset 0 1px 4px 1px rgba(0,0,0,0.3),0 0 0 #000;
-}
 
 .load-more {
   width: 95%;

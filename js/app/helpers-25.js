@@ -10,7 +10,8 @@
 
   // To hold the app state
   Outpost.state = {
-    $loader: $('#js-bsload')
+    $loader: $('#js-bsload'),
+    homeTabHook: "rentals"
   };
 
   Outpost.help = {};

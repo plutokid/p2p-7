@@ -62,7 +62,50 @@
       },
 
       events: {
-        "submit #js-searchForm": "submitForm"
+        "submit #js-searchForm": "submitForm",
+        "click .sl-tabs": "openTab",
+        "shown .sl-tabs": "transitionTab"
+      },
+
+      openTab: function(e) {
+        e.preventDefault();
+        var tab = $(e.currentTarget).data("name");
+        var path = "!/" + tab;
+        Outpost.mvc.router.navigate(path, false);
+      },
+
+      transitionTab: function(e) {
+        var tab = $(e.currentTarget).data("name");
+        $('.ui-datepicker').hide();
+        switch (tab) {
+          case "rentals":
+            $('#sl-hou-dest-location-input').focus();
+            $(".main-head").css({
+              backgroundImage: "url(../img/rentalsbg.jpg)"
+            }, 1000);
+            $(".marketing-wrapper").animate({
+              backgroundColor: "rgba(41, 128, 185, 0.85)"
+            }, 400);
+            break;
+          case "rides":
+            $('#sl-rid-orig-location-input').focus();
+            $(".main-head").css({
+              backgroundImage: "url(../img/ridesbg.jpg)"
+            }, 1000);
+            $(".marketing-wrapper").animate({
+              backgroundColor: "rgba(192, 57, 43, 0.85)"
+            }, 400);
+            break;
+          case "experiences":
+            $('#sl-exp-dest-location-input').focus();
+            $(".main-head").css({
+              backgroundImage: "url(../img/expbg.jpg)"
+            }, 1000);
+            $(".marketing-wrapper").animate({
+              backgroundColor: "rgba(39, 174, 96, 0.85)"
+            }, 400);
+            break;
+        }
       },
 
       submitForm: function(e) {
@@ -96,6 +139,7 @@
         $('.pg-page').empty();
         _this.template('home', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
+          $('.sl-tab-' + Outpost.state.homeTabHook).tab('show');
         });
       }
     }),

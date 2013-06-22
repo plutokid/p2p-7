@@ -1,42 +1,132 @@
 <!-- Landing hero header -->
 <div id="landingpage">
   <div class="main-head" id="main-head">
-    <div class="marketing-titles" id="marketing-titles">
-      <h1 class="marketing-header">The fastest, simplest way to travel.</h1>
-      <h2 class="marketing-sub">Ride, rent and share experiences with people all around the world.</h2>
-    </div>
-    <!-- Main form -->
-    <div class="css-main-search" id="js-firstSearch">
-      <div class="inner-search">
-        <div class="search-bar-wrapper">
-          <form class="form-inline" id="js-searchForm">
-            <div class="inner-form row-fluid">
-              <div class="input-wrapper">
-                <input class="css-input-sea" id="js-dest-location-input" type="text" autocomplete="off" placeholder="Enter your destination city" autofocus required>
-              </div>
-              <div class="input-wrapper">
-                <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
-                <input class="input-small ho-from-date" id="ho-sdate-input" placeholder="From" type="text">
-              </div>
-              <div class="input-wrapper">
-                <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
-                <input class="input-small ho-to-date" placeholder="To" id="ho-edate-input" type="text">
-              </div>
-              <div class="input-wrapper">
-                <select class="ho-guest-input" id="ho-guest-input">
-                  <option value="1">1 guest</option>
-                  <option value="2">2 guests</option>
-                  <option value="3">3 guests</option>
-                  <option value="4">4 guests</option>
-                  <option value="5">5 guests</option>
-                </select>
-              </div>
-              <button class="css-searchit" id="searchIt" type="submit">
-                <span class="icon-search css-searchicon"></span>&nbsp;Search
-              </button>
+    <div class="main-center" id="marketing-titles">
+      <h1 class="marketing-header">A unique and affordable way to travel.</h1>
+      <div class="marketing-wrapper">
+        <!-- Selection Tabs -->
+        <ul class="sl-nav" id="tab-search-selection">
+          <li><a class="sl-tabs sl-tab-rentals" data-name="rentals" data-toggle="tab" href="#sl-rentals">Place Rentals</a></li>
+          <li><a class="sl-tabs sl-tab-rides bdr-left" data-name="rides" data-toggle="tab" href="#sl-rideshares">Rideshares</a></li>
+          <li><a class="sl-tabs sl-tab-experiences bdr-left" data-name="experiences" data-toggle="tab" href="#sl-localguides">Experiences</a></li>
+        </ul>
+        <!-- Selection Content -->
+        <div class="tab-content">
+          <div class="tab-pane active" id="sl-rentals">
+            <div class="marketing-titles">
+              <h2 class="marketing-sub">Rent from over 400,000 short term and vacation rentals in 34,000 cities.</h2>
             </div>
-            <input type="hidden" id="js-orig-location-input">
-          </form>
+            <div class="css-main-search">
+              <div class="inner-search">
+                <div class="search-bar-wrapper">
+                  <form class="form-inline" id="sl-hou-searchForm">
+                    <div class="inner-form row-fluid">
+                      <div class="input-wrapper">
+                        <input class="css-input-sea" id="sl-hou-dest-location-input" type="text" autocomplete="off" placeholder="Where do you want to go ?" required>
+                      </div>
+                      <div class="input-wrapper">
+                        <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                        <input class="input-small sl-hou-from-date" id="sl-hou-sdate-input" placeholder="Check in" type="text">
+                      </div>
+                      <div class="input-wrapper">
+                        <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                        <input class="input-small sl-hou-to-date" placeholder="Check out" id="sl-hou-edate-input" type="text">
+                      </div>
+                      <div class="input-wrapper">
+                        <select class="sl-hou-guest-input" id="sl-hou-guest-input">
+                          <option value="1">1 guest</option>
+                          <option value="2">2 guests</option>
+                          <option value="3">3 guests</option>
+                          <option value="4">4 guests</option>
+                          <option value="5">5 guests</option>
+                          <option value="6">6 guests</option>
+                          <option value="7">7 guests</option>
+                          <option value="8">8 guests</option>
+                          <option value="9">9 guests</option>
+                          <option value="10">10 guests</option>
+                          <option value="11">11 guests</option>
+                          <option value="12">12 guests</option>
+                          <option value="13">13 guests</option>
+                          <option value="14">14 guests</option>
+                          <option value="15">15 guests</option>
+                          <option value="16">16+ guests</option>
+                        </select>
+                      </div>
+                      <button class="css-searchit" id="hou-searchIt" type="submit">
+                        <span class="icon-search css-searchicon"></span>&nbsp;Search
+                      </button>
+                    </div>
+                    <input type="hidden" id="sl-hou-orig-location-input">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="sl-rideshares">
+            <div class="marketing-titles">
+              <h2 class="marketing-sub">Find local, commuter, or long distance rides and carpooling in over 7,000 cities.</h2>
+            </div>
+            <div class="css-main-search">
+              <div class="inner-search">
+                <div class="search-bar-wrapper">
+                  <form class="form-inline" id="sl-rid-searchForm">
+                    <div class="inner-form row-fluid">
+                      <div class="input-wrapper">
+                        <input class="css-input-sea" id="sl-rid-orig-location-input" type="text" autocomplete="off" placeholder="Departure city">
+                      </div>
+                      <div class="input-wrapper">
+                        <i class="icon-long-arrow-right hp-arrow"></i>
+                      </div>
+                      <div class="input-wrapper">
+                        <input class="css-input-sea" id="sl-rid-dest-location-input" type="text" autocomplete="off" placeholder="Destination city">
+                      </div>
+                      <div class="input-wrapper">
+                        <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                        <input class="input-small sl-rid-from-date" id="sl-rid-sdate-input" placeholder="Departure" type="text">
+                      </div>
+                      <div class="input-wrapper">
+                        <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+                        <input class="input-small sl-rid-to-date" placeholder="Return" id="sl-rid-edate-input" type="text">
+                      </div>
+                      <div class="input-wrapper">
+                        <select class="sl-rid-guest-input" id="sl-rid-guest-input">
+                          <option value="1">1 seat</option>
+                          <option value="2">2 seats</option>
+                          <option value="3">3 seats</option>
+                          <option value="4">4 seats</option>
+                          <option value="5">5 seats</option>
+                        </select>
+                      </div>
+                      <button class="css-searchit" id="rid-searchIt" type="submit">
+                        <span class="icon-search css-searchicon"></span>&nbsp;Search
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="sl-localguides">
+            <div class="marketing-titles">
+              <h2 class="marketing-sub">Find activities, tours, and memorable things to do, all hosted by local people in over 400 cities.</h2>
+            </div>
+            <div class="css-main-search">
+              <div class="inner-search">
+                <div class="search-bar-wrapper">
+                  <form class="form-inline" id="sl-exp-searchForm">
+                    <div class="inner-form row-fluid">
+                      <div class="input-wrapper">
+                        <input class="css-input-sea" id="sl-exp-dest-location-input" type="text" autocomplete="off" placeholder="Find something to do in.." required>
+                      </div>
+                      <button class="css-searchit" id="exp-searchIt" type="submit">
+                        <span class="icon-search css-searchicon"></span>&nbsp;Search
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -115,35 +205,17 @@
       $('#main-head').css("height", bgheight);
       $('#marketing-titles').css("padding-top", centerLanding);
     };
-    resizeLanding();
-
-    var geoPromise = Outpost.helpers.ipToGeo();
-    var destInput = document.getElementById('js-dest-location-input');
-    var options = {
-      types: ['(cities)']
-    };
-
-    var destTypeahead = new google.maps.places.Autocomplete(destInput, options);
-
-
-    geoPromise.done(function(data) {
-      var origLocation = data.location;
-      if (data.city) {
-        $('#js-orig-location-input').val(origLocation);
-      }
-    });
-
-    google.maps.event.addListener(destTypeahead, 'place_changed', function() {
-      $('#ho-sdate-input').focus();
-    });
-
-    var $sdate = $('#ho-sdate-input');
-    var $edate = $("#ho-edate-input");
 
     var customRange = function customRange(input) {
       var minDate;
-      var startDateVal = $sdate.val();
-      if (input.id === 'ho-edate-input') {
+      var id = input.id;
+      var startDateVal = "";
+      if (id === 'sl-hou-edate-input') {
+        startDateVal = $hou_sdate.val();
+      } else if (id === 'sl-rid-edate-input') {
+        startDateVal = $rid_sdate.val();
+      }
+      if (id === 'sl-hou-edate-input' || id === 'sl-rid-edate-input') {
         if (startDateVal) {
           minDate = new Date(startDateVal);
           minDate.setDate(minDate.getDate() + 1);
@@ -158,26 +230,87 @@
       }
     };
 
-    $sdate.datepicker({
+    var geoPromise = Outpost.helpers.ipToGeo();
+
+    var options = {
+      types: ['(cities)']
+    };
+
+    var houDestInput = document.getElementById('sl-hou-dest-location-input');
+    var ridOrigInput = document.getElementById('sl-rid-orig-location-input');
+    var ridDestInput = document.getElementById('sl-rid-dest-location-input');
+    var expDestInput = document.getElementById('sl-exp-dest-location-input');
+
+    var houDestTA = new google.maps.places.Autocomplete(houDestInput, options);
+    var ridOrigTA = new google.maps.places.Autocomplete(ridOrigInput, options);
+    var ridDestTA = new google.maps.places.Autocomplete(ridDestInput, options);
+    var expDestTA = new google.maps.places.Autocomplete(expDestInput, options);
+
+    var $hou_sdate = $('#sl-hou-sdate-input');
+    var $hou_edate = $('#sl-hou-edate-input');
+    var $rid_sdate = $('#sl-rid-sdate-input');
+    var $rid_edate = $('#sl-rid-edate-input');
+
+    $hou_sdate.datepicker({
       minDate: 0,
       inline: true,
       numberOfMonths: 2,
       onClose: function(selectedDate) {
-        $edate.focus();
+        $hou_edate.focus();
       }
     });
 
-    $edate.datepicker({
+    $hou_edate.datepicker({
       inline: true,
       numberOfMonths: 2,
       beforeShow: customRange,
       onClose: function() {
-        $('#ho-guest-input').focus();
+        $('#sl-hou-guest-input').focus();
+      }
+    });
+
+    $rid_sdate.datepicker({
+      minDate: 0,
+      inline: true,
+      numberOfMonths: 2,
+      onClose: function(selectedDate) {
+        $rid_edate.focus();
+      }
+    });
+
+    $rid_edate.datepicker({
+      inline: true,
+      numberOfMonths: 2,
+      beforeShow: customRange,
+      onClose: function() {
+        $('#sl-rid-guest-input').focus();
+      }
+    });
+
+    google.maps.event.addListener(houDestTA, 'place_changed', function() {
+      $hou_sdate.focus();
+    });
+    google.maps.event.addListener(ridOrigTA, 'place_changed', function() {
+      ridDestInput.focus();
+    });
+    google.maps.event.addListener(ridDestTA, 'place_changed', function() {
+      $rid_sdate.focus();
+    });
+    google.maps.event.addListener(expDestTA, 'place_changed', function() {
+      $('#exp-searchIt').focus();
+    });
+
+    geoPromise.done(function(data) {
+      var origLocation = data.location;
+      if (data.city) {
+        ridDestInput.value = origLocation;
       }
     });
 
     $(window).resize(function() {
       resizeLanding();
     });
+
+    resizeLanding();
   })();
 </script>
