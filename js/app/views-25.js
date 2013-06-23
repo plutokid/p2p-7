@@ -72,38 +72,63 @@
         var tab = $(e.currentTarget).data("name");
         var path = "!/" + tab;
         Outpost.mvc.router.navigate(path, false);
+        // $('.sl-tab-' + tab).tab('show');
       },
 
       transitionTab: function(e) {
         var tab = $(e.currentTarget).data("name");
+        var $title = $('title');
+        var $ridOrig = $('#sl-rid-orig-location-input');
+        var $ridDest = $('#sl-rid-dest-location-input');
         $('.ui-datepicker').hide();
         switch (tab) {
           case "rentals":
+            $title.text(
+              "Outpost - Cheap Vacation Rentals - " +
+              "Short Term Spaces and Rooms - " +
+              "Compare many P2P Travel Websites"
+            );
             $('#sl-hou-dest-location-input').focus();
-            $(".main-head").css({
+            $("#main-head").css({
               backgroundImage: "url(../img/rentalsbg.jpg)"
-            }, 1000);
+            });
             $(".marketing-wrapper").animate({
-              backgroundColor: "rgba(41, 128, 185, 0.85)"
-            }, 400);
+              backgroundColor: "rgba(41, 128, 185, 0.80)"
+            }, 500);
             break;
           case "rides":
-            $('#sl-rid-orig-location-input').focus();
-            $(".main-head").css({
+            $title.text(
+              "Outpost - Rideshares and Carpools - " +
+              "Long Distance, Commuter, Local, Private Groups - " +
+              "Search from many P2P Travel Websites"
+            );
+
+            if ($ridOrig.val()) {
+              $ridDest.focus();
+            } else {
+              $ridOrig.focus();
+            }
+
+            $("#main-head").css({
               backgroundImage: "url(../img/ridesbg.jpg)"
-            }, 1000);
+            });
             $(".marketing-wrapper").animate({
-              backgroundColor: "rgba(192, 57, 43, 0.85)"
-            }, 400);
+              backgroundColor: "rgba(192, 57, 43, 0.80)"
+            }, 500);
             break;
           case "experiences":
+            $title.text(
+              "Outpost - Experiences and Activities - " +
+              "Find the rarest and best locations from locals - " +
+              "P2P Travel Aggregator Websites"
+            );
             $('#sl-exp-dest-location-input').focus();
-            $(".main-head").css({
+            $("#main-head").css({
               backgroundImage: "url(../img/expbg.jpg)"
-            }, 1000);
+            });
             $(".marketing-wrapper").animate({
-              backgroundColor: "rgba(39, 174, 96, 0.85)"
-            }, 400);
+              backgroundColor: "rgba(39, 174, 96, 0.80)"
+            }, 500);
             break;
         }
       },

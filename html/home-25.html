@@ -6,13 +6,13 @@
       <div class="marketing-wrapper">
         <!-- Selection Tabs -->
         <ul class="sl-nav" id="tab-search-selection">
-          <li><a class="sl-tabs sl-tab-rentals" data-name="rentals" data-toggle="tab" href="#sl-rentals">Place Rentals</a></li>
-          <li><a class="sl-tabs sl-tab-rides bdr-left" data-name="rides" data-toggle="tab" href="#sl-rideshares">Rideshares</a></li>
-          <li><a class="sl-tabs sl-tab-experiences bdr-left" data-name="experiences" data-toggle="tab" href="#sl-localguides">Experiences</a></li>
+          <li><a class="sl-tabs sl-tab-rentals" data-name="rentals" data-toggle="tab" href="#rentals">Place Rentals</a></li>
+          <li><a class="sl-tabs sl-tab-rides bdr-left" data-name="rides" data-toggle="tab" href="#rides">Rideshares</a></li>
+          <li><a class="sl-tabs sl-tab-experiences bdr-left" data-name="experiences" data-toggle="tab" href="#experiences">Experiences</a></li>
         </ul>
         <!-- Selection Content -->
         <div class="tab-content">
-          <div class="tab-pane active" id="sl-rentals">
+          <div class="tab-pane" id="rentals">
             <div class="marketing-titles">
               <h2 class="marketing-sub">Rent from over 400,000 short term and vacation rentals in 34,000 cities.</h2>
             </div>
@@ -62,7 +62,7 @@
               </div>
             </div>
           </div>
-          <div class="tab-pane" id="sl-rideshares">
+          <div class="tab-pane" id="rides">
             <div class="marketing-titles">
               <h2 class="marketing-sub">Find local, commuter, or long distance rides and carpooling in over 7,000 cities.</h2>
             </div>
@@ -106,7 +106,7 @@
               </div>
             </div>
           </div>
-          <div class="tab-pane" id="sl-localguides">
+          <div class="tab-pane" id="experiences">
             <div class="marketing-titles">
               <h2 class="marketing-sub">Find activities, tours, and memorable things to do, all hosted by local people in over 400 cities.</h2>
             </div>
@@ -303,7 +303,8 @@
     geoPromise.done(function(data) {
       var origLocation = data.location;
       if (data.city) {
-        ridDestInput.value = origLocation;
+        $(ridOrigInput).val(origLocation);
+        $(ridDestInput).focus();
       }
     });
 

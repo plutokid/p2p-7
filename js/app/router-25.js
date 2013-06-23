@@ -46,11 +46,6 @@
 
       tabRentals: function() {
         Outpost.state.homeTabHook = "rentals";
-        this.$title.text(
-          "Outpost - Cheap Vacation Rentals - " +
-          "Short Term Spaces and Rooms - " +
-          "Compare many P2P Travel Websites"
-        );
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();
         } else {
@@ -60,11 +55,6 @@
 
       tabRides: function() {
         Outpost.state.homeTabHook = "rides";
-        this.$title.text(
-          "Outpost - Rideshares and Carpools - " +
-          "Long Distance, Commuter, Local, Private Groups - " +
-          "Search from many P2P Travel Websites"
-        );
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();
         } else {
@@ -74,11 +64,6 @@
 
       tabExperiences: function() {
         Outpost.state.homeTabHook = "experiences";
-        this.$title.text(
-          "Outpost - Experiences and Activities - " +
-          "Find the rarest and best locations from locals - " +
-          "P2P Travel Aggregator Websites"
-        );
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();
         } else {

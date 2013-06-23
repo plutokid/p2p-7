@@ -103,9 +103,8 @@ a:focus {
   margin-top: -20px;
   height: 913px;
   background-size: cover;
-  background-image: url(../img/bg_psh.png);
+  background-image: url("../img/bg_psh.png");
   background-attachment: fixed;
-  transition: background-image 0.8s ease-in;
 }
 
 .search {
