@@ -9,16 +9,27 @@
       routes: {
         "!/item/:type/:provider/:id": "singleview",
         "!/item/:type/:provider/:id/": "singleview",
-        "!/search/": "listview",
+
         "!/help/*hook": "helppage",
         "!/help/*hook/": "helppage",
 
-        "!/rentals": "tabRentals",
-        "!/rentals/": "tabRentals",
-        "!/rides": "tabRides",
-        "!/rides/": "tabRides",
-        "!/experiences": "tabExperiences",
-        "!/experiences/": "tabExperiences",
+        "!/:type": "listview2",
+        "!/:type/": "listview2",
+
+        // "!/rentals/": "tabRentals",
+        // "!/rentals": "tabRentals",
+        // "rentals/": "tabRentals",
+        // "rentals": "tabRentals",
+
+        // "!/rides/": "tabRides",
+        // "!/rides": "tabRides",
+        // "rides/": "tabRides",
+        // "rides": "tabRides",
+
+        // "!/experiences/": "tabExperiences",
+        // "!/experiences": "tabExperiences",
+        // "experiences/": "tabExperiences",
+        // "experiences": "tabExperiences",
 
         "*actions": "home"
       },
@@ -44,12 +55,35 @@
         }
       },
 
-      tabRentals: function() {
-        Outpost.state.homeTabHook = "rentals";
-        if (Outpost.mvc.views.indexPage) {
-          Outpost.mvc.views.indexPage.render();
+      tabRentals: function(params) {
+        if (params) {
+          var options = Outpost.searchQuery;
+          var destCity = Outpost.helpers.debarURI(params.destCity);
+          Outpost.helpers.defineDestLoc(destCity);
+          options.sdate = params.sdate;
+          options.edate = params.edate;
+          options.guests = params.guests;
+
+          if (options.sdate) {
+            options.sdateObj = moment(options.sdate, "MM/DD/YYYY");
+          }
+
+          if (options.edate) {
+            options.edateObj = moment(options.edate, "MM/DD/YYYY");
+          }
+
+          if (Outpost.mvc.views.ren_listPage) {
+            Outpost.mvc.views.ren_listPage.initialize();
+          } else {
+            Outpost.mvc.views.ren_listPage = new Outpost.views.ren_listPage();
+          }
         } else {
-          Outpost.mvc.views.indexPage = new Outpost.views.indexPage();
+          Outpost.state.homeTabHook = "rentals";
+          if (Outpost.mvc.views.indexPage) {
+            Outpost.mvc.views.indexPage.render();
+          } else {
+            Outpost.mvc.views.indexPage = new Outpost.views.indexPage();
+          }
         }
       },
 
@@ -146,6 +180,16 @@
           Outpost.mvc.views.singlePage.render();
         } else {
           Outpost.mvc.views.singlePage = new Outpost.views.singlePage();
+        }
+      },
+
+      listview2: function(type, params) {
+        console.log(type, params);
+        Outpost.list.type = type;
+        if (Outpost.mvc.views.listPage2) {
+          Outpost.mvc.views.listPage2.render();
+        } else {
+          Outpost.mvc.views.listPage2 = new Outpost.views.listPage2();
         }
       }
     })

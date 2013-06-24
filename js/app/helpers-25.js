@@ -16,6 +16,7 @@
 
   Outpost.help = {};
   Outpost.single = {};
+  Outpost.list = {};
   Outpost.stash = {};
 
   // To hold the MVC instatiation

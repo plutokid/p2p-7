@@ -9,7 +9,7 @@
     // =======================================================
     main: Parse.View.extend({
       initialize: function() {
-        // Initialize
+        // Initialize the navBar
         Outpost.mvc.views.navBar = new Outpost.views.navBar();
 
         // Initialize the router module
@@ -62,17 +62,15 @@
       },
 
       events: {
-        "submit #js-searchForm": "submitForm",
+        "submit #sl-hou-searchForm": "houSubmitForm",
         "click .sl-tabs": "openTab",
         "shown .sl-tabs": "transitionTab"
       },
 
       openTab: function(e) {
         e.preventDefault();
-        var tab = $(e.currentTarget).data("name");
-        var path = "!/" + tab;
+        var path = "!/" + $(e.currentTarget).data("name");
         Outpost.mvc.router.navigate(path, false);
-        // $('.sl-tab-' + tab).tab('show');
       },
 
       transitionTab: function(e) {
@@ -133,30 +131,29 @@
         }
       },
 
-      submitForm: function(e) {
+      houSubmitForm: function(e) {
         e.preventDefault();
 
         // Remove datepicker UI from page
         $('.ui-datepicker').hide();
 
-        var origCity = $("#js-orig-location-input").val();
-        var destCity = $("#js-dest-location-input").val();
+        // var origCity = $("#js-orig-location-input").val();
+        var destCity = $("#sl-hou-dest-location-input").val();
         var hasComma = destCity.indexOf(",");
         destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
         var queryString = {
-          origCity: Outpost.helpers.enbarURI(origCity),
+          // origCity: Outpost.helpers.enbarURI(origCity),
           destCity: Outpost.helpers.enbarURI(destCity),
-          sdate: $('#ho-sdate-input').val(),
-          edate: $('#ho-edate-input').val(),
-          guests: $('#ho-guest-input').val()
+          sdate: $('#sl-hou-sdate-input').val(),
+          edate: $('#sl-hou-edate-input').val(),
+          guests: $('#sl-hou-guest-input').val()
         };
         queryString = $.param(queryString);
-        this.navigateToListView(queryString);
+        this.navigateTo("!/rentals?" + queryString);
       },
 
-      navigateToListView: function(queryString) {
-        var path = "!/search/?" + queryString;
-        Outpost.mvc.router.navigate(path, true);
+      navigateTo: function(queryString) {
+        Outpost.mvc.router.navigate(queryString, true);
       },
 
       render: function() {
@@ -255,7 +252,7 @@
     }),
 
     // =======================================================
-    // SingleView - Page
+    // SingleView - Page (@SPV)
     // =======================================================
     singlePage: Parse.View.extend({
       el: "#pg-singleview",
@@ -279,6 +276,33 @@
             new Outpost.views.singleTou();
             break;
         }
+      }
+    }),
+
+    // =======================================================
+    // ListView - Page (@LVP)
+    // =======================================================
+    listPage2: Parse.View.extend({
+      el: "#pg-listview2",
+
+      initialize: function() {
+        this.render();
+      },
+
+      render: function() {
+        $('.pg-page').empty();
+        console.log(Outpost.list.type);
+        // switch (Outpost.list.type) {
+        //   case "rides":
+        //     new Outpost.views.singleRid();
+        //     break;
+        //   case "rentals":
+        //     new Outpost.views.singleHou();
+        //     break;
+        //   case "experiences":
+        //     new Outpost.views.singleTou();
+        //     break;
+        // }
       }
     }),
 
@@ -772,10 +796,11 @@
     }),
 
     // =======================================================
-    // aListHouview - listings
+    // rentals list view - listings (rlv)
     // =======================================================
-    aListHou: Parse.View.extend({
-      el: "#pg-listview",
+    ren_listPage: Parse.View.extend({
+      el: "#pg-renlistview",
+      template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
       templateCarousel: _.template($('#tmpl-carousel').html()),
@@ -794,9 +819,14 @@
       },
 
       initialize: function() {
-        this.resetState();
-        this.fetchRentals();
-        this.initSliderGUI();
+        $('.pg-page').empty();
+        var _this = this;
+        _this.template('ren_listview', {}).done(function(tmpl) {
+          _this.$el.html(tmpl);
+          _this.resetState();
+          _this.fetchRentals();
+          _this.initSliderGUI();
+        });
       },
 
       events: {
