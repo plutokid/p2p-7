@@ -10,13 +10,14 @@
 
   // To hold the app state
   Outpost.state = {
-    $loader: $('#js-bsload'),
-    homeTabHook: "rentals"
+    $loader: $('#js-bsload')
   };
 
   Outpost.help = {};
   Outpost.single = {};
-  Outpost.list = {};
+  Outpost.list = {
+    type: "rentals"
+  };
   Outpost.stash = {};
 
   // To hold the MVC instatiation
@@ -299,7 +300,7 @@
     },
 
     defineOrigLoc: function(orignalLocation) {
-      if (orignalLocation) {
+      if (orignalLocation && orignalLocation !== "undefined") {
         var csc = Outpost.helpers.genRdmLLCC(orignalLocation);
         var origlatLng = csc.latLng;
         Outpost.searchQuery.origLocation = orignalLocation;
@@ -314,7 +315,7 @@
     },
 
     defineDestLoc: function(destLocation) {
-      if (destLocation) {
+      if (destLocation && destLocation !== "undefined") {
         var csc = Outpost.helpers.genRdmLLCC(destLocation);
         var destLng = csc.latLng;
         Outpost.searchQuery.destLocation = destLocation;

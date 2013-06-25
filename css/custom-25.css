@@ -273,7 +273,7 @@ a:focus {
 .sl-nav li {
   list-style: none;
   float: left;
-  width: 33.33%;
+  width: 33.334%;
   margin: 0;
 }
 
@@ -941,7 +941,7 @@ background-color: #2284A1;
   position: absolute;
   right: 10px;
   color: black;
-  top: 9px;
+  top: 10px;
 }
 
 .hp-arrow {
@@ -952,7 +952,8 @@ background-color: #2284A1;
 }
 
 #sl-hou-sdate-input, #sl-hou-edate-input, #sl-hou-guest-input,
-#sl-rid-sdate-input, #sl-rid-edate-input, #sl-rid-guest-input {
+#sl-rid-sdate-input, #sl-rid-edate-input, #sl-rid-guest-input,
+#ref-ren-sdate, #ref-ren-edate, #ref-ren-guest {
   color: #5a5a5a;
   height: 23px;
   margin: 0;
@@ -966,9 +967,9 @@ background-color: #2284A1;
   transition: border linear 0.2s,box-shadow linear 0.2s;
 }
 
-#sl-hou-guest-input {
+#sl-hou-guest-input, #ref-ren-guest {
   height: 41px;
-  width: 120px;
+  width: 135px;
 }
 
 #sl-rid-guest-input {
@@ -977,7 +978,8 @@ background-color: #2284A1;
 }
 
 #sl-hou-dest-location-input, #sl-rid-dest-location-input,
-#sl-rid-orig-location-input, #sl-exp-dest-location-input {
+#sl-rid-orig-location-input, #sl-exp-dest-location-input,
+#ref-ren-dest-loc {
   color: #5a5a5a;
   height: 23px;
   margin: 0;
@@ -990,12 +992,16 @@ background-color: #2284A1;
   transition: border linear 0.2s,box-shadow linear 0.2s;
 }
 
+#ref-ren-dest-loc {
+  width: 355px;
+}
+
 #sl-exp-dest-location-input {
   width: 852px;
 }
 
 #sl-hou-dest-location-input {
-  width: 448px;
+  width: 435px;
 }
 
 #sl-rid-dest-location-input,
@@ -1003,7 +1009,8 @@ background-color: #2284A1;
   width: 200px;
 }
 
-#hou-searchIt, #rid-searchIt, #exp-searchIt {
+#hou-searchIt, #rid-searchIt, #exp-searchIt,
+#ref-ren-search {
   float: left;
   height: 41px;
   line-height: normal;
@@ -1622,14 +1629,16 @@ color: white;
 }
 
 .lp-refineSearch {
+  background: rgba(0, 0, 0, 0.58);
+  box-shadow: 0 0 5px #333333;
+  border: 1px solid #222222;
+  border-radius: 3px;
+  padding: 5px;
   margin-bottom: 10px;
+  height: 41px;
 }
 
 .lp-refineSearchForm {
-  background-color: rgba(52, 73, 94, 0.85);
-  padding: 7px;
-  border-radius: 3px;
-  height: 30px;
   margin: 0;
 }
 

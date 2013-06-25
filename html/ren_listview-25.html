@@ -2,33 +2,42 @@
   <div class="row">
     <div class="span12">
       <div class="lp-refineSearch">
-        <form class="lp-refineSearchForm" id="lp-refineSearch">
+        <form class="lp-refineSearchForm" id="ref-ren-form">
           <% var guests = Outpost.searchQuery.guests; %>
           <div class="input-wrapper">
-            <input class="filter-origin-location" id="refine-orig-location" type="text" value="<%= Outpost.searchQuery.origLocation %>" placeholder="Departure City">
+            <input id="ref-ren-dest-loc" type="text" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Where do you want to go ?">
           </div>
           <div class="input-wrapper">
-            <strong class="lp-arrowwhite">&nbsp;→&nbsp;</strong>
+            <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+            <input class="input-small sl-hou-from-date" id="ref-ren-sdate" placeholder="Check in" value="<%= Outpost.searchQuery.sdate %>" type="text">
           </div>
           <div class="input-wrapper">
-            <input id="refine-dest-location" type="text" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Destination City">
+            <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+            <input class="input-small sl-hou-to-date" id="ref-ren-edate" placeholder="Check out" value="<%= Outpost.searchQuery.edate %>" type="text">
           </div>
           <div class="input-wrapper">
-            <input class="input-small" id="refine-sdate" placeholder="Leaving on" value="<%= Outpost.searchQuery.sdate %>" type="text">
-          </div>
-          <div class="input-wrapper">
-            <input class="input-small" id="refine-edate" placeholder="Check out" value="<%= Outpost.searchQuery.edate %>" type="text">
-          </div>
-          <div class="input-wrapper">
-            <select class="guestfilter" id="refine-guest">
-              <option <%= guests ==="1" ? "selected" : '' %> value="1">1 guest</option>
-              <option <%= guests ==="2" ? "selected" : '' %> value="2">2 guests</option>
-              <option <%= guests ==="3" ? "selected" : '' %> value="3">3 guests</option>
-              <option <%= guests ==="4" ? "selected" : '' %> value="4">4 guests</option>
-              <option <%= guests ==="5" ? "selected" : '' %> value="5">5 guests</option>
+            <select class="sl-hou-guest-input" id="ref-ren-guest">
+              <option <%= guests === "1" ? "selected" : '' %> value="1">1 guest</option>
+              <option <%= guests === "2" ? "selected" : '' %> value="2">2 guests</option>
+              <option <%= guests === "3" ? "selected" : '' %> value="3">3 guests</option>
+              <option <%= guests === "4" ? "selected" : '' %> value="4">4 guests</option>
+              <option <%= guests === "5" ? "selected" : '' %> value="5">5 guests</option>
+              <option <%= guests === "6" ? "selected" : '' %> value="6">6 guests</option>
+              <option <%= guests === "7" ? "selected" : '' %> value="7">7 guests</option>
+              <option <%= guests === "8" ? "selected" : '' %> value="8">8 guests</option>
+              <option <%= guests === "9" ? "selected" : '' %> value="9">9 guests</option>
+              <option <%= guests === "10" ? "selected" : '' %> value="10">10 guests</option>
+              <option <%= guests === "11" ? "selected" : '' %> value="11">11 guests</option>
+              <option <%= guests === "12" ? "selected" : '' %> value="12">12 guests</option>
+              <option <%= guests === "13" ? "selected" : '' %> value="13">13 guests</option>
+              <option <%= guests === "14" ? "selected" : '' %> value="14">14 guests</option>
+              <option <%= guests === "15" ? "selected" : '' %> value="15">15 guests</option>
+              <option <%= guests === "16" ? "selected" : '' %> value="16">16+ guests</option>
             </select>
           </div>
-          <button class="out-btn lp-refineSearchbtn" id="refineSearchbtn" type="submit"><i class="icon-search"></i>&nbsp;Search</button>
+          <button class="css-searchit" id="ref-ren-search" type="submit">
+            <span class="icon-search css-searchicon"></span>&nbsp;Search
+          </button>
         </form>
       </div>
     </div>
@@ -131,23 +140,25 @@
   (function() {
     $('.pac-container').remove();
     $('.lp-sidebar').affix({
-      offset: 150
+      offset: 125
     });
+
+    var $sdate = $('#ref-ren-sdate');
+    var $edate = $("#ref-ren-edate");
 
     // REFINE SEARCH INIT
     var options = {
       types: ['(cities)']
     };
-    new google.maps.places.Autocomplete($('#refine-orig-location')[0], options);
-    new google.maps.places.Autocomplete($('#refine-dest-location')[0], options);
-
-    var $sdate = $('#refine-sdate');
-    var $edate = $("#refine-edate");
+    var houDestTA = new google.maps.places.Autocomplete($('#ref-ren-dest-loc')[0], options);
+    google.maps.event.addListener(houDestTA, 'place_changed', function() {
+      $sdate.focus();
+    });
 
     var customRange = function customRange(input) {
       var minDate;
       var startDateVal = $sdate.val();
-      if (input.id === 'refine-edate') {
+      if (input.id === 'ref-ren-edate') {
         if (startDateVal) {
           minDate = new Date(startDateVal);
           minDate.setDate(minDate.getDate() + 1);
@@ -174,7 +185,7 @@
       inline: true,
       beforeShow: customRange,
       onClose: function() {
-        $('#refine-guest').focus();
+        $('#ref-ren-guest').focus();
       }
     });
   })();

@@ -147,6 +147,7 @@
     $startDate_dash = '';
     $endDate_dash = '';
   }
+  $city = urlencode($city);
   $url = "https://api.roomorama.com/v1.0/rooms.json";
   $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
   $url = $url . $qry_str;

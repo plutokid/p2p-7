@@ -142,7 +142,7 @@
         var hasComma = destCity.indexOf(",");
         destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
         var queryString = {
-          // origCity: Outpost.helpers.enbarURI(origCity),
+          origCity: "",
           destCity: Outpost.helpers.enbarURI(destCity),
           sdate: $('#sl-hou-sdate-input').val(),
           edate: $('#sl-hou-edate-input').val(),
@@ -161,7 +161,7 @@
         $('.pg-page').empty();
         _this.template('home', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
-          $('.sl-tab-' + Outpost.state.homeTabHook).tab('show');
+          $('.sl-tab-' + Outpost.list.type).tab('show');
         });
       }
     }),
@@ -204,11 +204,11 @@
         var origCity = validatedValues.origCity;
         var destCity = validatedValues.destCity;
         var queryString = {
-          origCity: Outpost.helpers.enbarURI(origCity),
+          origCity: "",
           destCity: Outpost.helpers.enbarURI(destCity),
-          sdate: $('#refine-sdate').val(),
-          edate: $('#refine-edate').val(),
-          guests: $('#refine-guest').val()
+          sdate: $('#ref-ren-sdate').val(),
+          edate: $('#ref-ren-edate').val(),
+          guests: $('#ref-ren-guest').val()
         };
         queryString = $.param(queryString);
         this.navigateToListView(queryString);
@@ -222,10 +222,8 @@
       validate: function() {
         var origCity = $("#refine-orig-location").val();
         var destCity = $("#refine-dest-location").val();
-        var hasCommaOrig = destCity.indexOf(",");
+        var hasCommaOrig = origCity.indexOf(",");
         var hasCommaDest = destCity.indexOf(",");
-        var $pacContainer = $('.pac-container');
-        var pacContainerLen = $pacContainer.length;
         var $pcOrig = $('.pac-container:eq(0)');
         var $pcDest = $('.pac-container:eq(1)');
         var firstOrig = $pcOrig.find(".pac-item:first").text();
@@ -291,18 +289,380 @@
 
       render: function() {
         $('.pg-page').empty();
-        console.log(Outpost.list.type);
-        // switch (Outpost.list.type) {
-        //   case "rides":
-        //     new Outpost.views.singleRid();
-        //     break;
-        //   case "rentals":
-        //     new Outpost.views.singleHou();
-        //     break;
-        //   case "experiences":
-        //     new Outpost.views.singleTou();
-        //     break;
-        // }
+        switch (Outpost.list.type) {
+          case "rides":
+            new Outpost.views.rid_listPage();
+            break;
+          case "rentals":
+            new Outpost.views.ren_listPage();
+            break;
+          case "experiences":
+            new Outpost.views.exp_listPage();
+            break;
+        }
+      }
+    }),
+
+    // =======================================================
+    // rentals list view - listings (@RLP)
+    // =======================================================
+    ren_listPage: Parse.View.extend({
+      el: "#pg-renlistview",
+      template: Outpost.helpers.renderTemplate,
+      templateList: _.template($('#tmpl-hou-aList').html()),
+      templateWell: _.template($('#tmpl-hou-well').html()),
+      templateCarousel: _.template($('#tmpl-carousel').html()),
+      collection: [],
+      sortedCollection: [],
+      state: {
+        prevSize: 0,
+        page: 1,
+        min: 10,
+        max: 300,
+        roomType: [
+          "entire_home",
+          "private_room",
+          "shared_room"
+        ]
+      },
+
+      initialize: function() {
+        var _this = this;
+        _this.template('ren_listview', {}).done(function(tmpl) {
+          _this.$el.html(tmpl);
+          _this.resetState();
+          _this.fetchRentals();
+          _this.initSliderGUI();
+        });
+      },
+
+      events: {
+        "change .lp-hou-providers": "filterProviders",
+        "change .lp-hou-roomtype": "filterRoomType",
+        "change #lp-hou-sortby": "sortListings",
+        "click .btn-hou-map": "slideMap",
+        "click .lp-list-img": "slideCarousel",
+        "click .btn-hou-bookit": "checkUserState",
+        "submit #ref-ren-form": "refineSearch"
+      },
+
+      initSliderGUI: function() {
+        var _this = this;
+        $("#lp-price-input-hou").slider({
+          range: true,
+          values: [10, 300],
+          min: 0,
+          max: 300,
+          step: 10,
+          slide: function (event, ui) {
+            $("#lp-price-value-min-hou").text(ui.values[0]);
+            if (ui.values[1] === 300) {
+              $("#lp-price-value-max-hou").text("300+");
+            } else {
+              $("#lp-price-value-max-hou").text(ui.values[1]);
+            }
+          },
+          change: function(event, ui) {
+            $.waypoints('destroy');
+            _this.state.min = ui.values[0];
+            _this.state.max = ui.values[1];
+            _this.resetListings();
+            _this.fetchRentals();
+          }
+        });
+      },
+
+      resetState: function() {
+        this.state = {
+          prevSize: 0,
+          page: 1,
+          min: 10,
+          max: 300,
+          roomType: [
+            "entire_home",
+            "private_room",
+            "shared_room"
+          ]
+        };
+      },
+
+      resetListings: function() {
+        this.collection = [];
+        this.sortedCollection = [];
+        this.state.page = 1;
+        this.prevSize = 0;
+        $('#lp-hou-list').empty();
+      },
+
+      fetchRentals: function() {
+        var _this = this;
+        _this.toggleLoading();
+        Outpost.helpers.fetchRentals(this.state).done(function(data) {
+          _this.collection = _this.collection.concat(data);
+          _this.render();
+          _this.toggleLoading();
+        });
+      },
+
+      toggleLoading: function() {
+        var $loader = $('#lp-hou-ls');
+        if ($loader.hasClass("lp-hidden")) {
+          $loader.removeClass("lp-hidden");
+          $loader.show();
+        } else {
+          $loader.addClass("lp-hidden");
+          $loader.hide();
+        }
+      },
+
+      loadMore: function() {
+        $.waypoints('destroy');
+        this.state.page += 1;
+        this.fetchRentals();
+      },
+
+      infiniteScroll: function() {
+        var _this = this;
+        var size = 0, index = 0;
+        var tr = ".lp-aList-hou";
+
+        size = _this.collection.length;
+        if (_this.state.prevSize < size) {
+          if (size <= 5) {
+            _this.state.prevSize = size;
+            _this.loadMore();
+          } else {
+            index = size - 5;
+            $(tr + ':eq(' + index + ')').waypoint(function(direction) {
+              if (direction === "down" &&  $(this).is(":visible")) {
+                _this.state.prevSize = size;
+                _this.loadMore();
+              }
+            });
+          }
+        }
+      },
+
+      slideCarousel: function(e) {
+        var _this = this;
+        var $this = $(e.currentTarget);
+        var item = $("." + $this.data("id")).data('item');
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            idtype: item.idtype,
+            id: item.uri
+          }),
+          idtype: item.idtype,
+          apicat: "houserental"
+        });
+
+        jhr.done(function(data) {
+          var $extra = $(".ehou" + item.id);
+          $(".hou-extra").gmap3('destroy').empty().slideUp();
+          $extra.slideDown(function(){
+            var html = _this.templateCarousel(data);
+            $extra.css("height", "425px");
+            $extra.html(html);
+          });
+        });
+      },
+
+      slideMap: function(e) {
+        var $this = $(e.currentTarget);
+        var item = $("." + $this.data("id")).data('item');
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            idtype: item.idtype,
+            id: item.uri
+          }),
+          idtype: item.idtype,
+          apicat: "houserental"
+        });
+
+        jhr.done(function(data) {
+          var origin, dest, $extra, xhrDuration, $duration;
+          var latLng = [data.lat, data.lng];
+          $extra = $(".ehou" + item.id);
+          $extra.css("height", "225px");
+          $(".hou-extra").gmap3('destroy').empty().slideUp();
+          $extra.slideDown(function(){
+            $extra.gmap3({
+              marker: {
+                latLng: latLng,
+                data: data.address,
+                events: {
+                  mouseover: function(marker, event, context) {
+                    var map = $(this).gmap3("get"),
+                      infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                    if (infowindow) {
+                      infowindow.open(map, marker);
+                      infowindow.setContent(context.data);
+                    } else {
+                      $(this).gmap3({
+                        infowindow:{
+                          anchor:marker,
+                          options:{content: context.data}
+                        }
+                      });
+                    }
+                  },
+                  mouseout: function() {
+                    var infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                    if (infowindow) {
+                      infowindow.close();
+                    }
+                  }
+                }
+              },
+              map: {
+                options: {
+                  zoom: 12
+                }
+              }
+            });
+          });
+        });
+      },
+
+      refineSearch: function(e) {
+        e.preventDefault();
+        var validatedValues = this.validate();
+        var destCity = validatedValues.destCity;
+        var queryString = {
+          origCity: "",
+          destCity: Outpost.helpers.enbarURI(destCity),
+          sdate: $('#ref-ren-sdate').val(),
+          edate: $('#ref-ren-edate').val(),
+          guests: $('#ref-ren-guest').val()
+        };
+        queryString = $.param(queryString);
+        this.navigateTo("!/rentals?" + queryString);
+      },
+
+      navigateTo: function(queryString) {
+        Outpost.mvc.router.navigate(queryString, true);
+      },
+
+      validate: function() {
+        var destCity = $("#ref-ren-dest-loc").val();
+        var hasCommaDest = destCity.indexOf(",");
+        var $pcDest = $('.pac-container');
+        var firstDest = $pcDest.find(".pac-item:first").text();
+        destCity = hasCommaDest === -1 ? firstDest : destCity;
+        return {
+          destCity: destCity
+        };
+      },
+
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
+        }
+      },
+
+      sortListings: function(e) {
+        var sortby = $(e.currentTarget).val();
+        this.sortedCollection = _(this.collection).clone();
+        switch (sortby) {
+          case "relevance":
+            this.sortedRender();
+            break;
+          case "date":
+            Outpost.helpers.sortDate(this.sortedCollection);
+            this.sortedRender();
+            break;
+          case "low2high":
+            Outpost.helpers.sortLowToHigh(this.sortedCollection);
+            this.sortedRender();
+            break;
+          case "high2low":
+            Outpost.helpers.sortHighToLow(this.sortedCollection);
+            this.sortedRender();
+            break;
+        }
+
+        this.filterProviders();
+      },
+
+      filterProviders: function() {
+        var $checked = $('.lp-hou-providers:checked');
+        if (!$checked.length) {
+          $('.lp-aList-hou').show();
+        } else {
+          $('.lp-aList-hou').hide();
+          $checked.each(function() {
+            $('.alist-' + $(this).val()).show();
+          });
+        }
+
+        this.lazyLoad();
+      },
+
+      filterRoomType: function() {
+        var $checked = $('.lp-hou-roomtype:checked');
+        var _this = this;
+        this.state.roomType = [];
+        if (!$checked.length) {
+          this.state.roomType = [
+                                "entire_home",
+                                "private_room",
+                                "shared_room"
+                              ];
+        } else {
+          $checked.each(function() {
+            _this.state.roomType.push($(this).val());
+          });
+        }
+
+        this.resetListings();
+        this.fetchRentals();
+      },
+
+      updateHeading: function(items) {
+        var data = {
+          numOfItems: this.collection.length,
+          origLocation: Outpost.searchQuery.origLocation,
+          destLocation: Outpost.searchQuery.destLocation,
+          sdate: Outpost.searchQuery.sdateObj,
+          edate: Outpost.searchQuery.edateObj,
+          guests: Outpost.searchQuery.guests
+        };
+        var html = this.templateWell(data);
+        $('#lp-hou-well').html(html);
+      },
+
+      updateProviders: function() {
+        $('#fil-num-air').text($('.alist-airbnb').length);
+        $('#fil-num-nfl').text($('.alist-nflats').length);
+        $('#fil-num-roo').text($('.alist-roomorama').length);
+      },
+
+      lazyLoad: function() {
+        var $activeTab = $('.tab-pane.active');
+        if ($activeTab.attr('id') === "lp-spacerentals") {
+          $.waypoints('destroy');
+          this.infiniteScroll();
+        }
+      },
+
+      sortedRender: function() {
+        var html = this.templateList({
+          items: this.sortedCollection
+        });
+        $('#lp-hou-list').html(html);
+      },
+
+      render: function() {
+        var html = this.templateList({
+          items: this.collection
+        });
+        $('#lp-hou-list').html(html);
+        $('#lp-hou-sortby').val("relevance");
+        this.updateHeading();
+        this.updateProviders();
+        this.filterProviders();
       }
     }),
 
@@ -789,339 +1149,6 @@
         });
         $('#lp-rid-list').html(html);
         $('#lp-rid-sortby').val("relevance");
-        this.updateHeading();
-        this.updateProviders();
-        this.filterProviders();
-      }
-    }),
-
-    // =======================================================
-    // rentals list view - listings (rlv)
-    // =======================================================
-    ren_listPage: Parse.View.extend({
-      el: "#pg-renlistview",
-      template: Outpost.helpers.renderTemplate,
-      templateList: _.template($('#tmpl-hou-aList').html()),
-      templateWell: _.template($('#tmpl-hou-well').html()),
-      templateCarousel: _.template($('#tmpl-carousel').html()),
-      collection: [],
-      sortedCollection: [],
-      state: {
-        prevSize: 0,
-        page: 1,
-        min: 10,
-        max: 300,
-        roomType: [
-          "entire_home",
-          "private_room",
-          "shared_room"
-        ]
-      },
-
-      initialize: function() {
-        $('.pg-page').empty();
-        var _this = this;
-        _this.template('ren_listview', {}).done(function(tmpl) {
-          _this.$el.html(tmpl);
-          _this.resetState();
-          _this.fetchRentals();
-          _this.initSliderGUI();
-        });
-      },
-
-      events: {
-        "change .lp-hou-providers": "filterProviders",
-        "change .lp-hou-roomtype": "filterRoomType",
-        "change #lp-hou-sortby": "sortListings",
-        "click .btn-hou-map": "slideMap",
-        "click .lp-list-img": "slideCarousel",
-        "click .btn-hou-bookit": "checkUserState"
-      },
-
-      initSliderGUI: function() {
-        var _this = this;
-        $("#lp-price-input-hou").slider({
-          range: true,
-          values: [10, 300],
-          min: 0,
-          max: 300,
-          step: 10,
-          slide: function (event, ui) {
-            $("#lp-price-value-min-hou").text(ui.values[0]);
-            if (ui.values[1] === 300) {
-              $("#lp-price-value-max-hou").text("300+");
-            } else {
-              $("#lp-price-value-max-hou").text(ui.values[1]);
-            }
-          },
-          change: function(event, ui) {
-            $.waypoints('destroy');
-            _this.state.min = ui.values[0];
-            _this.state.max = ui.values[1];
-            _this.resetListings();
-            _this.fetchRentals();
-          }
-        });
-      },
-
-      resetState: function() {
-        this.state = {
-          prevSize: 0,
-          page: 1,
-          min: 10,
-          max: 300,
-          roomType: [
-            "entire_home",
-            "private_room",
-            "shared_room"
-          ]
-        };
-      },
-
-      resetListings: function() {
-        this.collection = [];
-        this.sortedCollection = [];
-        this.state.page = 1;
-        this.prevSize = 0;
-        $('#lp-hou-list').empty();
-      },
-
-      fetchRentals: function() {
-        var _this = this;
-        _this.toggleLoading();
-        Outpost.helpers.fetchRentals(this.state).done(function(data) {
-          _this.collection = _this.collection.concat(data);
-          _this.render();
-          _this.toggleLoading();
-        });
-      },
-
-      toggleLoading: function() {
-        var $loader = $('#lp-hou-ls');
-        if ($loader.hasClass("lp-hidden")) {
-          $loader.removeClass("lp-hidden");
-          $loader.show();
-        } else {
-          $loader.addClass("lp-hidden");
-          $loader.hide();
-        }
-      },
-
-      loadMore: function() {
-        $.waypoints('destroy');
-        this.state.page += 1;
-        this.fetchRentals();
-      },
-
-      infiniteScroll: function() {
-        var _this = this;
-        var size = 0, index = 0;
-        var tr = ".lp-aList-hou";
-
-        size = _this.collection.length;
-        if (_this.state.prevSize < size) {
-          if (size <= 5) {
-            _this.state.prevSize = size;
-            _this.loadMore();
-          } else {
-            index = size - 5;
-            $(tr + ':eq(' + index + ')').waypoint(function(direction) {
-              if (direction === "down" &&  $(this).is(":visible")) {
-                _this.state.prevSize = size;
-                _this.loadMore();
-              }
-            });
-          }
-        }
-      },
-
-      slideCarousel: function(e) {
-        var _this = this;
-        var $this = $(e.currentTarget);
-        var item = $("." + $this.data("id")).data('item');
-        var jhr = Outpost.helpers.loadAPI({
-          uri: Outpost.helpers.formURI({
-            idtype: item.idtype,
-            id: item.uri
-          }),
-          idtype: item.idtype,
-          apicat: "houserental"
-        });
-
-        jhr.done(function(data) {
-          var $extra = $(".ehou" + item.id);
-          $(".hou-extra").gmap3('destroy').empty().slideUp();
-          $extra.slideDown(function(){
-            var html = _this.templateCarousel(data);
-            $extra.css("height", "425px");
-            $extra.html(html);
-          });
-        });
-      },
-
-      slideMap: function(e) {
-        var $this = $(e.currentTarget);
-        var item = $("." + $this.data("id")).data('item');
-        var jhr = Outpost.helpers.loadAPI({
-          uri: Outpost.helpers.formURI({
-            idtype: item.idtype,
-            id: item.uri
-          }),
-          idtype: item.idtype,
-          apicat: "houserental"
-        });
-
-        jhr.done(function(data) {
-          var origin, dest, $extra, xhrDuration, $duration;
-          var latLng = [data.lat, data.lng];
-          $extra = $(".ehou" + item.id);
-          $extra.css("height", "225px");
-          $(".hou-extra").gmap3('destroy').empty().slideUp();
-          $extra.slideDown(function(){
-            $extra.gmap3({
-              marker: {
-                latLng: latLng,
-                data: data.address,
-                events: {
-                  mouseover: function(marker, event, context) {
-                    var map = $(this).gmap3("get"),
-                      infowindow = $(this).gmap3({get:{name:"infowindow"}});
-                    if (infowindow) {
-                      infowindow.open(map, marker);
-                      infowindow.setContent(context.data);
-                    } else {
-                      $(this).gmap3({
-                        infowindow:{
-                          anchor:marker,
-                          options:{content: context.data}
-                        }
-                      });
-                    }
-                  },
-                  mouseout: function() {
-                    var infowindow = $(this).gmap3({get:{name:"infowindow"}});
-                    if (infowindow) {
-                      infowindow.close();
-                    }
-                  }
-                }
-              },
-              map: {
-                options: {
-                  zoom: 12
-                }
-              }
-            });
-          });
-        });
-      },
-
-      checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        }
-      },
-
-      sortListings: function(e) {
-        var sortby = $(e.currentTarget).val();
-        this.sortedCollection = _(this.collection).clone();
-        switch (sortby) {
-          case "relevance":
-            this.sortedRender();
-            break;
-          case "date":
-            Outpost.helpers.sortDate(this.sortedCollection);
-            this.sortedRender();
-            break;
-          case "low2high":
-            Outpost.helpers.sortLowToHigh(this.sortedCollection);
-            this.sortedRender();
-            break;
-          case "high2low":
-            Outpost.helpers.sortHighToLow(this.sortedCollection);
-            this.sortedRender();
-            break;
-        }
-
-        this.filterProviders();
-      },
-
-      filterProviders: function() {
-        var $checked = $('.lp-hou-providers:checked');
-        if (!$checked.length) {
-          $('.lp-aList-hou').show();
-        } else {
-          $('.lp-aList-hou').hide();
-          $checked.each(function() {
-            $('.alist-' + $(this).val()).show();
-          });
-        }
-
-        this.lazyLoad();
-      },
-
-      filterRoomType: function() {
-        var $checked = $('.lp-hou-roomtype:checked');
-        var _this = this;
-        this.state.roomType = [];
-        if (!$checked.length) {
-          this.state.roomType = [
-                                "entire_home",
-                                "private_room",
-                                "shared_room"
-                              ];
-        } else {
-          $checked.each(function() {
-            _this.state.roomType.push($(this).val());
-          });
-        }
-
-        this.resetListings();
-        this.fetchRentals();
-      },
-
-      updateHeading: function(items) {
-        var data = {
-          numOfItems: this.collection.length,
-          origLocation: Outpost.searchQuery.origLocation,
-          destLocation: Outpost.searchQuery.destLocation,
-          sdate: Outpost.searchQuery.sdateObj,
-          edate: Outpost.searchQuery.edateObj,
-          guests: Outpost.searchQuery.guests
-        };
-        var html = this.templateWell(data);
-        $('#lp-hou-well').html(html);
-      },
-
-      updateProviders: function() {
-        $('#fil-num-air').text($('.alist-airbnb').length);
-        $('#fil-num-nfl').text($('.alist-nflats').length);
-        $('#fil-num-roo').text($('.alist-roomorama').length);
-      },
-
-      sortedRender: function() {
-        var html = this.templateList({
-          items: this.sortedCollection
-        });
-        $('#lp-hou-list').html(html);
-      },
-
-      lazyLoad: function() {
-        var $activeTab = $('.tab-pane.active');
-        if ($activeTab.attr('id') === "lp-spacerentals") {
-          $.waypoints('destroy');
-          this.infiniteScroll();
-        }
-      },
-
-      render: function() {
-        var html = this.templateList({
-          items: this.collection
-        });
-        $('#lp-hou-list').html(html);
-        $('#lp-hou-sortby').val("relevance");
         this.updateHeading();
         this.updateProviders();
         this.filterProviders();

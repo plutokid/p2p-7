@@ -16,20 +16,14 @@
         "!/:type": "listview2",
         "!/:type/": "listview2",
 
-        // "!/rentals/": "tabRentals",
-        // "!/rentals": "tabRentals",
-        // "rentals/": "tabRentals",
-        // "rentals": "tabRentals",
+        "rentals": "tabRentals",
+        "rentals/": "tabRentals",
 
-        // "!/rides/": "tabRides",
-        // "!/rides": "tabRides",
-        // "rides/": "tabRides",
-        // "rides": "tabRides",
+        "rides": "tabRides",
+        "rides/": "tabRides",
 
-        // "!/experiences/": "tabExperiences",
-        // "!/experiences": "tabExperiences",
-        // "experiences/": "tabExperiences",
-        // "experiences": "tabExperiences",
+        "experiences": "tabExperiences",
+        "experiences/": "tabExperiences",
 
         "*actions": "home"
       },
@@ -55,40 +49,17 @@
         }
       },
 
-      tabRentals: function(params) {
-        if (params) {
-          var options = Outpost.searchQuery;
-          var destCity = Outpost.helpers.debarURI(params.destCity);
-          Outpost.helpers.defineDestLoc(destCity);
-          options.sdate = params.sdate;
-          options.edate = params.edate;
-          options.guests = params.guests;
-
-          if (options.sdate) {
-            options.sdateObj = moment(options.sdate, "MM/DD/YYYY");
-          }
-
-          if (options.edate) {
-            options.edateObj = moment(options.edate, "MM/DD/YYYY");
-          }
-
-          if (Outpost.mvc.views.ren_listPage) {
-            Outpost.mvc.views.ren_listPage.initialize();
-          } else {
-            Outpost.mvc.views.ren_listPage = new Outpost.views.ren_listPage();
-          }
+      tabRentals: function() {
+        Outpost.list.type = "rentals";
+        if (Outpost.mvc.views.indexPage) {
+          Outpost.mvc.views.indexPage.render();
         } else {
-          Outpost.state.homeTabHook = "rentals";
-          if (Outpost.mvc.views.indexPage) {
-            Outpost.mvc.views.indexPage.render();
-          } else {
-            Outpost.mvc.views.indexPage = new Outpost.views.indexPage();
-          }
+          Outpost.mvc.views.indexPage = new Outpost.views.indexPage();
         }
       },
 
       tabRides: function() {
-        Outpost.state.homeTabHook = "rides";
+        Outpost.list.type = "rides";
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();
         } else {
@@ -97,7 +68,7 @@
       },
 
       tabExperiences: function() {
-        Outpost.state.homeTabHook = "experiences";
+        Outpost.list.type = "experiences";
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();
         } else {
@@ -184,12 +155,44 @@
       },
 
       listview2: function(type, params) {
-        console.log(type, params);
         Outpost.list.type = type;
-        if (Outpost.mvc.views.listPage2) {
-          Outpost.mvc.views.listPage2.render();
+        if (params) {
+          var searchQuery = Outpost.searchQuery;
+          var origCity = Outpost.helpers.debarURI(params.origCity);
+          var destCity = Outpost.helpers.debarURI(params.destCity);
+          Outpost.helpers.defineOrigLoc(origCity);
+          Outpost.helpers.defineDestLoc(destCity);
+          searchQuery.sdate = params.sdate;
+          searchQuery.edate = params.edate;
+          searchQuery.guests = params.guests;
+
+          if (searchQuery.sdate) {
+            searchQuery.sdateObj = moment(searchQuery.sdate, "MM/DD/YYYY");
+          }
+
+          if (searchQuery.edate) {
+            searchQuery.edateObj = moment(searchQuery.edate, "MM/DD/YYYY");
+          }
+
+          if (Outpost.mvc.views.listPage2) {
+            Outpost.mvc.views.listPage2.render();
+          } else {
+            Outpost.mvc.views.listPage2 = new Outpost.views.listPage2();
+          }
         } else {
-          Outpost.mvc.views.listPage2 = new Outpost.views.listPage2();
+          switch (type) {
+            case "rides":
+              this.tabRides();
+              break;
+            case "rentals":
+              this.tabRentals();
+              break;
+            case "experiences":
+              this.tabExperiences();
+              break;
+            default:
+              this.tabRentals();
+          }
         }
       }
     })
