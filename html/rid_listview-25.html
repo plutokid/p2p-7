@@ -1,0 +1,155 @@
+<div class="container">
+  <div class="row">
+    <div class="span12">
+      <div class="lp-refineSearch">
+        <form class="lp-refineSearchForm" id="ref-rid-form">
+          <% var guests = Outpost.searchQuery.guests; %>
+          <div class="input-wrapper">
+            <input id="ref-rid-orig-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.origLocation %>" placeholder="Departure city">
+          </div>
+          <div class="input-wrapper">
+            <i class="icon-long-arrow-right hp-arrow"></i>
+          </div>
+          <div class="input-wrapper">
+            <input id="ref-rid-dest-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Destination city">
+          </div>
+          <div class="input-wrapper">
+            <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+            <input class="input-small sl-rid-from-date" id="ref-rid-sdate" placeholder="Departure" value="<%= Outpost.searchQuery.sdate %>" type="text">
+          </div>
+          <div class="input-wrapper">
+            <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+            <input class="input-small sl-rid-to-date" id="ref-rid-edate" placeholder="Return" value="<%= Outpost.searchQuery.edate %>" type="text">
+          </div>
+          <div class="input-wrapper">
+            <select class="sl-rid-guest-input" id="ref-rid-guest">
+              <option <%= guests === "1" ? "selected" : '' %> value="1">1 seat</option>
+              <option <%= guests === "2" ? "selected" : '' %> value="2">2 seats</option>
+              <option <%= guests === "3" ? "selected" : '' %> value="3">3 seats</option>
+              <option <%= guests === "4" ? "selected" : '' %> value="4">4 seats</option>
+              <option <%= guests === "5" ? "selected" : '' %> value="5">5 seats</option>
+            </select>
+          </div>
+          <button class="css-searchit" id="ref-rid-search" type="submit">
+            <span class="icon-search css-searchicon"></span>&nbsp;Search
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="span12">
+      <div class="tab-pane active" id="lp-ridesharing">
+        <div class="span3">
+          <div class="accordion lp-sidebar">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle">
+                  Sort by
+                </a>
+              </div>
+              <div class="accordion-body in collapse">
+                <div class="accordion-inner">
+                  <select class="lp-sortfilter" id="lp-rid-sortby">
+                    <option value="relevance">Relevance</option>
+                    <option value="date">Date</option>
+                    <option value="low2high">Price: Low to high</option>
+                    <option value="high2low">Price: High to low</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle">
+                  Providers
+                </a>
+              </div>
+              <div class="accordion-body in collapse">
+                <div class="accordion-inner">
+                  <label class="checkbox">
+                    <input class="lp-rid-providers" type="checkbox" value="blablacar">BlaBlaCar <span class="fil-num" id="fil-num-bbc"></span>
+                  </label>
+                  <label class="checkbox">
+                    <input class="lp-rid-providers" type="checkbox" value="kangaride">Kangaride <span class="fil-num" id="fil-num-kan"></span>
+                  </label>
+                  <label class="checkbox">
+                    <input class="lp-rid-providers" type="checkbox" value="ridejoy">Ridejoy <span class="fil-num" id="fil-num-rid"></span>
+                  </label>
+                  <label class="checkbox">
+                    <input class="lp-rid-providers" type="checkbox" value="zimride">Zimride <span class="fil-num" id="fil-num-zim"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="span9 pull-right margin0">
+          <div class="well" id="lp-rid-well">
+            Searching for rideshares near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
+          </div>
+          <div class="lp-lists" id="lp-rid-list"></div>
+          <div class="lp-spinner css-red lp-hidden" id="lp-rid-ls" style="display: none;">
+            <div class="icon-spinner icon-spin icon-4x"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    $('.pac-container').remove();
+    $('.lp-sidebar').affix({
+      offset: 125
+    });
+
+    var $sdate = $('#ref-rid-sdate');
+    var $edate = $("#ref-rid-edate");
+
+    // REFINE SEARCH INIT
+    var options = {
+      types: ['(cities)']
+    };
+    var ridOrigTA = new google.maps.places.Autocomplete($('#ref-rid-orig-loc')[0], options);
+    var ridDestTA = new google.maps.places.Autocomplete($('#ref-rid-dest-loc')[0], options);
+    google.maps.event.addListener(ridOrigTA, 'place_changed', function() {
+      $('#ref-rid-dest-loc').focus();
+    });
+    google.maps.event.addListener(ridDestTA, 'place_changed', function() {
+      $sdate.focus();
+    });
+
+    var customRange = function customRange(input) {
+      var minDate;
+      var startDateVal = $sdate.val();
+      if (input.id === 'ref-rid-edate') {
+        if (startDateVal) {
+          minDate = new Date(startDateVal);
+          minDate.setDate(minDate.getDate() + 1);
+          return {
+            minDate: minDate
+          };
+        } else {
+          return {
+            minDate: 1
+          };
+        }
+      }
+    };
+
+    $sdate.datepicker({
+      minDate: 0,
+      inline: true,
+      onClose: function(selectedDate) {
+        $edate.focus();
+      }
+    });
+
+    $edate.datepicker({
+      inline: true,
+      beforeShow: customRange,
+      onClose: function() {
+        $('#ref-rid-guest').focus();
+      }
+    });
+  })();
+</script>

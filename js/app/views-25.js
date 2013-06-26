@@ -63,6 +63,7 @@
 
       events: {
         "submit #sl-hou-searchForm": "houSubmitForm",
+        "submit #sl-rid-searchForm": "ridSubmitForm",
         "click .sl-tabs": "openTab",
         "shown .sl-tabs": "transitionTab"
       },
@@ -137,7 +138,6 @@
         // Remove datepicker UI from page
         $('.ui-datepicker').hide();
 
-        // var origCity = $("#js-orig-location-input").val();
         var destCity = $("#sl-hou-dest-location-input").val();
         var hasComma = destCity.indexOf(",");
         destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
@@ -150,6 +150,33 @@
         };
         queryString = $.param(queryString);
         this.navigateTo("!/rentals?" + queryString);
+      },
+
+      ridSubmitForm: function(e) {
+        e.preventDefault();
+
+        // Remove datepicker UI from page
+        $('.ui-datepicker').hide();
+
+        var origCity = $("#sl-rid-orig-location-input").val();
+        var destCity = $("#sl-rid-dest-location-input").val();
+        var hasCommaOrig = origCity.indexOf(",");
+        var hasCommaDest = destCity.indexOf(",");
+        var $pcOrig = $('.pac-container:eq(1)');
+        var $pcDest = $('.pac-container:eq(2)');
+        var firstOrig = $pcOrig.find(".pac-item:first").text();
+        var firstDest = $pcDest.find(".pac-item:first").text();
+        origCity = hasCommaOrig === -1 ? firstOrig : origCity;
+        destCity = hasCommaDest === -1 ? firstDest : destCity;
+        var queryString = {
+          origCity: Outpost.helpers.enbarURI(origCity),
+          destCity: Outpost.helpers.enbarURI(destCity),
+          sdate: $('#sl-rid-sdate-input').val(),
+          edate: $('#sl-rid-edate-input').val(),
+          guests: $('#sl-rid-guest-input').val()
+        };
+        queryString = $.param(queryString);
+        this.navigateTo("!/rides?" + queryString);
       },
 
       navigateTo: function(queryString) {
@@ -288,6 +315,7 @@
       },
 
       render: function() {
+        this.$el.off().empty();
         $('.pg-page').empty();
         switch (Outpost.list.type) {
           case "rides":
@@ -304,10 +332,10 @@
     }),
 
     // =======================================================
-    // rentals list view - listings (@RLP)
+    // rentals list view - listings (@RENLP)
     // =======================================================
     ren_listPage: Parse.View.extend({
-      el: "#pg-renlistview",
+      el: "#pg-listview2",
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
@@ -667,6 +695,288 @@
     }),
 
     // =======================================================
+    // rides list view - listings (@RIDLP)
+    // =======================================================
+    rid_listPage: Parse.View.extend({
+      el: "#pg-listview2",
+      template: Outpost.helpers.renderTemplate,
+      templateList: _.template($('#tmpl-rid-aList').html()),
+      templateWell: _.template($('#tmpl-rid-well').html()),
+      collection: [],
+      sortedCollection: [],
+      state: {
+        prevSize: 0,
+        page: 1
+      },
+
+      initialize: function() {
+        var _this = this;
+        _this.template('rid_listview', {}).done(function(tmpl) {
+          _this.$el.html(tmpl);
+          _this.resetState();
+          _this.fetchRides();
+        });
+      },
+
+      events: {
+        "change .lp-rid-providers": "filterProviders",
+        "change #lp-rid-sortby": "sortListings",
+        "click .btn-rid-map": "slideMap",
+        "click .btn-rid-bookit": "checkUserState",
+        "submit #ref-rid-form": "refineSearch"
+      },
+
+      resetState: function() {
+        this.state = {
+          prevSize: 0,
+          page: 1
+        };
+      },
+
+      fetchRides: function() {
+        var _this = this;
+        _this.toggleLoading();
+        Outpost.helpers.fetchRideShares(this.state).done(function(data) {
+          _this.collection = _this.collection.concat(data);
+          _this.render();
+          _this.toggleLoading();
+        });
+      },
+
+      toggleLoading: function() {
+        var $loader = $('#lp-rid-ls');
+        if ($loader.hasClass("lp-hidden")) {
+          $loader.removeClass("lp-hidden");
+          $loader.show();
+        } else {
+          $loader.addClass("lp-hidden");
+          $loader.hide();
+        }
+      },
+
+      loadMore: function() {
+        $.waypoints('destroy');
+        this.state.page += 1;
+        this.fetchRides();
+      },
+
+      infiniteScroll: function() {
+        var _this = this;
+        var size = 0, index = 0;
+        var tr = ".lp-aList-rid";
+
+        size = _this.collection.length;
+        if (_this.state.prevSize < size) {
+          if (size <= 5) {
+            _this.state.prevSize = size;
+            _this.loadMore();
+          } else {
+            index = size - 5;
+            $(tr + ':eq(' + index + ')').waypoint(function(direction) {
+              if (direction === "down" &&  $(this).is(":visible")) {
+                _this.state.prevSize = size;
+                _this.loadMore();
+              }
+            });
+          }
+        }
+      },
+
+      slideMap: function(e) {
+        var $this = $(e.currentTarget);
+        var item = $("." + $this.data("id")).data('item');
+        var jhr = Outpost.helpers.loadAPI({
+          uri: Outpost.helpers.formURI({
+            idtype: item.idtype,
+            id: item.uri
+          }),
+          idtype: item.idtype,
+          apicat: "rideshare"
+        });
+
+        jhr.done(function(data) {
+          var origin, dest, $extra, xhrDuration, $duration;
+          $extra = $(".erid" + item.id);
+          $duration = $(".direcrid" + item.id);
+          origin = data.f_meeting_loc || item.origin;
+          dest = data.f_drop_loc || item.destination;
+
+          origin = origin.trim(), dest = dest.trim();
+          if (origin === "Quebec") {
+            origin += " city";
+          } else if (dest === "Quebec") {
+            dest += " city";
+          }
+
+          xhrDuration = Outpost.helpers.getDuration(origin, dest);
+          xhrDuration.done(function(data) {
+            if (data.routes.length) {
+              var km = data.routes[0].legs[0].distance.text;
+              var dur = data.routes[0].legs[0].duration.text;
+              $duration.find('.lp-rid-km').text(km);
+              $duration.find('.lp-rid-dur').text(dur);
+              $duration.show();
+            }
+          });
+
+          $(".rid-extra").gmap3('destroy').empty().slideUp();
+          $extra.slideDown(function() {
+            $extra.gmap3({
+              getroute: {
+                options: {
+                  origin: origin,
+                  destination: dest,
+                  travelMode: google.maps.DirectionsTravelMode.DRIVING
+                },
+                callback: function(results) {
+                  if (results) {
+                    $(this).gmap3({
+                      map: {
+                        options: {
+                          zoom: 13
+                        }
+                      },
+                      directionsrenderer: {
+                        options: {
+                          directions: results
+                        }
+                      }
+                    });
+                  } else {
+                    $extra.html("Location not properly located");
+                  }
+                }
+              }
+            });
+          });
+        });
+      },
+
+      checkUserState: function(e) {
+        var isLogged = Parse.User.current();
+        if (!isLogged) {
+          e.preventDefault();
+          $('#js-signup-modal').modal('show');
+        }
+      },
+
+      sortListings: function(e) {
+        var sortby = $(e.currentTarget).val();
+        this.sortedCollection = _(this.collection).clone();
+        switch (sortby) {
+          case "relevance":
+            this.sortedRender();
+            break;
+          case "date":
+            Outpost.helpers.sortDate(this.sortedCollection);
+            this.sortedRender();
+            break;
+          case "low2high":
+            Outpost.helpers.sortLowToHigh(this.sortedCollection);
+            this.sortedRender();
+            break;
+          case "high2low":
+            Outpost.helpers.sortHighToLow(this.sortedCollection);
+            this.sortedRender();
+            break;
+        }
+
+        this.filterProviders();
+      },
+
+      filterProviders: function() {
+        var $checked = $('.lp-rid-providers:checked');
+        if (!$checked.length) {
+          $('.lp-aList-rid').show();
+        } else {
+          $('.lp-aList-rid').hide();
+          $checked.each(function() {
+            $('.alist-' + $(this).val()).show();
+          });
+        }
+
+        this.lazyLoad();
+      },
+
+      updateHeading: function() {
+        var data = {
+          numOfItems: this.collection.length,
+          origLocation: Outpost.searchQuery.origLocation,
+          destLocation: Outpost.searchQuery.destLocation,
+          date: Outpost.searchQuery.sdateObj
+        };
+        var html = this.templateWell(data);
+        $('#lp-rid-well').html(html);
+      },
+
+      updateProviders: function() {
+        $('#fil-num-bbc').text($('.alist-blablacar').length);
+        $('#fil-num-kan').text($('.alist-kangaride').length);
+        $('#fil-num-rid').text($('.alist-ridejoy').length);
+        $('#fil-num-zim').text($('.alist-zimride').length);
+      },
+
+      sortedRender: function() {
+        var html = this.templateList({
+          items: this.sortedCollection
+        });
+        $('#lp-rid-list').html(html);
+      },
+
+      refineSearch: function(e) {
+        e.preventDefault();
+        var validatedValues = this.validate();
+        var origCity = validatedValues.origCity;
+        var destCity = validatedValues.destCity;
+        var queryString = {
+          origCity: Outpost.helpers.enbarURI(origCity),
+          destCity: Outpost.helpers.enbarURI(destCity),
+          sdate: $('#ref-rid-sdate').val(),
+          edate: $('#ref-rid-edate').val(),
+          guests: $('#ref-rid-guest').val()
+        };
+        queryString = "!/rides?" + $.param(queryString);
+        Outpost.mvc.router.navigate(queryString, true);
+      },
+
+      validate: function() {
+        var origCity = $("#ref-rid-orig-loc").val();
+        var destCity = $("#ref-rid-dest-loc").val();
+        var hasCommaOrig = origCity.indexOf(",");
+        var hasCommaDest = destCity.indexOf(",");
+        var $pcOrig = $('.pac-container:eq(0)');
+        var $pcDest = $('.pac-container:eq(1)');
+        var firstOrig = $pcOrig.find(".pac-item:first").text();
+        var firstDest = $pcDest.find(".pac-item:first").text();
+        origCity = hasCommaOrig === -1 ? firstOrig : origCity;
+        destCity = hasCommaDest === -1 ? firstDest : destCity;
+        return {
+          origCity: origCity,
+          destCity: destCity
+        };
+      },
+
+      lazyLoad: function() {
+        var $activeTab = $('.tab-pane.active');
+        if ($activeTab.attr('id') === "lp-ridesharing") {
+          $.waypoints('destroy');
+          this.infiniteScroll();
+        }
+      },
+
+      render: function() {
+        var html = this.templateList({
+          items: this.collection
+        });
+        $('#lp-rid-list').html(html);
+        $('#lp-rid-sortby').val("relevance");
+        this.updateHeading();
+        this.updateProviders();
+        this.filterProviders();
+      }
+    }),
+
+    // =======================================================
     // Rideshare - Single Page View
     // =======================================================
     singleRid: Parse.View.extend({
@@ -909,249 +1219,6 @@
             _this.loadMapView();
           });
         });
-      }
-    }),
-
-    // =======================================================
-    // aListRidview - listings
-    // =======================================================
-    aListRid: Parse.View.extend({
-      el: "#pg-listview",
-      templateList: _.template($('#tmpl-rid-aList').html()),
-      templateWell: _.template($('#tmpl-rid-well').html()),
-      collection: [],
-      sortedCollection: [],
-      state: {
-        prevSize: 0,
-        page: 1
-      },
-
-      initialize: function() {
-        this.resetState();
-        this.fetchRides();
-      },
-
-      events: {
-        "change .lp-rid-providers": "filterProviders",
-        "change #lp-rid-sortby": "sortListings",
-        "click .btn-rid-map": "slideMap",
-        "click .btn-rid-bookit": "checkUserState"
-      },
-
-      resetState: function() {
-        this.state = {
-          prevSize: 0,
-          page: 1
-        };
-      },
-
-      fetchRides: function() {
-        var _this = this;
-        _this.toggleLoading();
-        Outpost.helpers.fetchRideShares(this.state).done(function(data) {
-          _this.collection = _this.collection.concat(data);
-          _this.render();
-          _this.toggleLoading();
-        });
-      },
-
-      toggleLoading: function() {
-        var $loader = $('#lp-rid-ls');
-        if ($loader.hasClass("lp-hidden")) {
-          $loader.removeClass("lp-hidden");
-          $loader.show();
-        } else {
-          $loader.addClass("lp-hidden");
-          $loader.hide();
-        }
-      },
-
-      loadMore: function() {
-        $.waypoints('destroy');
-        this.state.page += 1;
-        this.fetchRides();
-      },
-
-      infiniteScroll: function() {
-        var _this = this;
-        var size = 0, index = 0;
-        var tr = ".lp-aList-rid";
-
-        size = _this.collection.length;
-        if (_this.state.prevSize < size) {
-          if (size <= 5) {
-            _this.state.prevSize = size;
-            _this.loadMore();
-          } else {
-            index = size - 5;
-            $(tr + ':eq(' + index + ')').waypoint(function(direction) {
-              if (direction === "down" &&  $(this).is(":visible")) {
-                _this.state.prevSize = size;
-                _this.loadMore();
-              }
-            });
-          }
-        }
-      },
-
-      slideMap: function(e) {
-        var $this = $(e.currentTarget);
-        var item = $("." + $this.data("id")).data('item');
-        var jhr = Outpost.helpers.loadAPI({
-          uri: Outpost.helpers.formURI({
-            idtype: item.idtype,
-            id: item.uri
-          }),
-          idtype: item.idtype,
-          apicat: "rideshare"
-        });
-
-        jhr.done(function(data) {
-          var origin, dest, $extra, xhrDuration, $duration;
-          $extra = $(".erid" + item.id);
-          $duration = $(".direcrid" + item.id);
-          origin = data.f_meeting_loc || item.origin;
-          dest = data.f_drop_loc || item.destination;
-
-          origin = origin.trim(), dest = dest.trim();
-          if (origin === "Quebec") {
-            origin += " city";
-          } else if (dest === "Quebec") {
-            dest += " city";
-          }
-
-          xhrDuration = Outpost.helpers.getDuration(origin, dest);
-          xhrDuration.done(function(data) {
-            if (data.routes.length) {
-              var km = data.routes[0].legs[0].distance.text;
-              var dur = data.routes[0].legs[0].duration.text;
-              $duration.find('.lp-rid-km').text(km);
-              $duration.find('.lp-rid-dur').text(dur);
-              $duration.show();
-            }
-          });
-
-          $(".rid-extra").gmap3('destroy').empty().slideUp();
-          $extra.slideDown(function() {
-            $extra.gmap3({
-              getroute: {
-                options: {
-                  origin: origin,
-                  destination: dest,
-                  travelMode: google.maps.DirectionsTravelMode.DRIVING
-                },
-                callback: function(results) {
-                  if (results) {
-                    $(this).gmap3({
-                      map: {
-                        options: {
-                          zoom: 13
-                        }
-                      },
-                      directionsrenderer: {
-                        options: {
-                          directions: results
-                        }
-                      }
-                    });
-                  } else {
-                    $extra.html("Location not properly located");
-                  }
-                }
-              }
-            });
-          });
-        });
-      },
-
-      checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        }
-      },
-
-      sortListings: function(e) {
-        var sortby = $(e.currentTarget).val();
-        this.sortedCollection = _(this.collection).clone();
-        switch (sortby) {
-          case "relevance":
-            this.sortedRender();
-            break;
-          case "date":
-            Outpost.helpers.sortDate(this.sortedCollection);
-            this.sortedRender();
-            break;
-          case "low2high":
-            Outpost.helpers.sortLowToHigh(this.sortedCollection);
-            this.sortedRender();
-            break;
-          case "high2low":
-            Outpost.helpers.sortHighToLow(this.sortedCollection);
-            this.sortedRender();
-            break;
-        }
-
-        this.filterProviders();
-      },
-
-      filterProviders: function() {
-        var $checked = $('.lp-rid-providers:checked');
-        if (!$checked.length) {
-          $('.lp-aList-rid').show();
-        } else {
-          $('.lp-aList-rid').hide();
-          $checked.each(function() {
-            $('.alist-' + $(this).val()).show();
-          });
-        }
-
-        this.lazyLoad();
-      },
-
-      updateHeading: function() {
-        var data = {
-          numOfItems: this.collection.length,
-          origLocation: Outpost.searchQuery.origLocation,
-          destLocation: Outpost.searchQuery.destLocation,
-          date: Outpost.searchQuery.sdateObj
-        };
-        var html = this.templateWell(data);
-        $('#lp-rid-well').html(html);
-      },
-
-      updateProviders: function() {
-        $('#fil-num-bbc').text($('.alist-blablacar').length);
-        $('#fil-num-kan').text($('.alist-kangaride').length);
-        $('#fil-num-rid').text($('.alist-ridejoy').length);
-        $('#fil-num-zim').text($('.alist-zimride').length);
-      },
-
-      sortedRender: function() {
-        var html = this.templateList({
-          items: this.sortedCollection
-        });
-        $('#lp-rid-list').html(html);
-      },
-
-      lazyLoad: function() {
-        var $activeTab = $('.tab-pane.active');
-        if ($activeTab.attr('id') === "lp-ridesharing") {
-          $.waypoints('destroy');
-          this.infiniteScroll();
-        }
-      },
-
-      render: function() {
-        var html = this.templateList({
-          items: this.collection
-        });
-        $('#lp-rid-list').html(html);
-        $('#lp-rid-sortby').val("relevance");
-        this.updateHeading();
-        this.updateProviders();
-        this.filterProviders();
       }
     }),
 

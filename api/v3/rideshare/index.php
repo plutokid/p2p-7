@@ -91,11 +91,6 @@
       $kangaPage = "&p={$page}";
     }
     $qry_str = $state1.$state2.$uri.$startDate2.$endDate2.$kangaPage;
-  // http://www.kangaride.com/itinerarySearch/QC/ON/rideshares_from_Montreal_to_Toronto.html
-  // http://www.kangaride.com/itinerarySearch/QC/rideshares_from_Montreal.html
-  // http://www.kangaride.com/itinerarySearch/QC/rideshares_to_Montreal.html
-  // http://www.kangaride.com/itinerarySearch/ON/QC/rideshares_from_Toronto_to_Montreal.html
-  // http://www.kangaride.com/itinerarySearch/QC/NY/rideshares_from_Montreal_to_New_York.html
     $opts = array(
       'http'=>array(
         'method'=>"GET",

@@ -153,7 +153,7 @@
   $url = $url . $qry_str;
   $html = file_get_contents($url);
   $roomoramajson = json_decode($html);
-  if ($roomoramajson->result) {
+  if (isset($roomoramajson->result)) {
     foreach($roomoramajson->result as $aRoom) {
       $room['type'] = $aRoom->type; // could be subtype or type
       switch ($room['type']) {
