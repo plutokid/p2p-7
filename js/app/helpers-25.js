@@ -398,12 +398,13 @@
       });
     },
 
-    fetchRideShares: function(state) {
+    fetchRideShares: function(state, idtype) {
       var dff = $.Deferred();
       var options = Outpost.searchQuery;
       var query = "";
       this.ridRequests = this.ridRequests || [];
       var data = {
+        idtype: idtype,
         eloc: options.destLocation,
         destlat: options.destLocationLat,
         destlon: options.destLocationLng,
@@ -425,6 +426,7 @@
       };
 
       query = Outpost.helpers.genSearchQuery([
+        data.idtype,
         data.sloc,
         data.eloc,
         data.sdate,
@@ -449,13 +451,14 @@
       return dff.promise();
     },
 
-    fetchRentals: function(state) {
+    fetchRentals: function(state, idtype) {
       var dff = $.Deferred();
       var options = Outpost.searchQuery;
       var query = "";
       this.houRequests = this.houRequests || [];
 
       var data = {
+        idtype: idtype,
         eloc: options.destLocation,
         destlat: options.destLocationLat,
         destlon: options.destLocationLng,
@@ -479,6 +482,7 @@
       };
 
       query = Outpost.helpers.genSearchQuery([
+        data.idtype,
         data.sloc,
         data.eloc,
         data.sdate,

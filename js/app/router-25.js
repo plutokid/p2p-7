@@ -13,8 +13,8 @@
         "!/help/*hook": "helppage",
         "!/help/*hook/": "helppage",
 
-        "!/:type": "listview2",
-        "!/:type/": "listview2",
+        "!/:type": "listview",
+        "!/:type/": "listview",
 
         "rentals": "tabRentals",
         "rentals/": "tabRentals",
@@ -88,61 +88,6 @@
         }
       },
 
-      listview: function(params) {
-        var geoPromise;
-        var _this = this;
-        var options = Outpost.searchQuery;
-        var dff = $.Deferred();
-
-        // If /listview/ only
-        if (!params) {
-          Outpost.helpers.resetLocations("both");
-          geoPromise = Outpost.helpers.ipToGeo();
-          geoPromise.done(function(data) {
-            dff.resolve({
-              origCity: encodeURI(data.location),
-              destCity: "",
-              sdate: Outpost.searchQuery.sdate,
-              edate: Outpost.searchQuery.edate,
-              guests: Outpost.searchQuery.guests
-            });
-          });
-        } else {
-          dff.resolve(params);
-        }
-
-        dff.done(function(params) {
-          var origCity = Outpost.helpers.debarURI(params.origCity);
-          var destCity = Outpost.helpers.debarURI(params.destCity);
-
-          if (destCity) {
-            _this.$title.text(destCity + " - Outpost");
-          } else {
-            _this.$title.text(origCity + " - Outpost");
-          }
-
-          Outpost.helpers.defineOrigLoc(origCity);
-          Outpost.helpers.defineDestLoc(destCity);
-          options.sdate = params.sdate;
-          options.edate = params.edate;
-          options.guests = params.guests ? params.guests : "1";
-
-          if (options.sdate) {
-            options.sdateObj = moment(options.sdate, "MM/DD/YYYY");
-          }
-
-          if (options.edate) {
-            options.edateObj = moment(options.edate, "MM/DD/YYYY");
-          }
-
-          if (Outpost.mvc.views.listPage) {
-            Outpost.mvc.views.listPage.render();
-          } else {
-            Outpost.mvc.views.listPage = new Outpost.views.listPage();
-          }
-        });
-      },
-
       singleview: function(type, provider, id) {
         Outpost.single.type = type;
         Outpost.single.provider = provider;
@@ -154,7 +99,7 @@
         }
       },
 
-      listview2: function(type, params) {
+      listview: function(type, params) {
         Outpost.list.type = type;
         if (params) {
           var searchQuery = Outpost.searchQuery;
@@ -174,10 +119,10 @@
             searchQuery.edateObj = moment(searchQuery.edate, "MM/DD/YYYY");
           }
 
-          if (Outpost.mvc.views.listPage2) {
-            Outpost.mvc.views.listPage2.render();
+          if (Outpost.mvc.views.listPage) {
+            Outpost.mvc.views.listPage.render();
           } else {
-            Outpost.mvc.views.listPage2 = new Outpost.views.listPage2();
+            Outpost.mvc.views.listPage = new Outpost.views.listPage();
           }
         } else {
           switch (type) {

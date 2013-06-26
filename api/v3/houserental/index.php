@@ -6,9 +6,6 @@
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
 
-  // Request DOM Scraper library
-  require_once('../../simple_html_dom.php');
-
   // Gather the params
   $startLocation = $_GET["sloc"];
   $endLocation = $_GET["eloc"];
@@ -19,6 +16,7 @@
   $min = $_GET["price_min"];
   $max = $_GET["price_max"];
   $roomType = $_GET["room_type"];
+  $idtype = $_GET["idtype"];
 
   // Convert to int
   $min = 0 + $min;
@@ -36,7 +34,7 @@
 
   // Define the city only
   $city = explode(',', $endLocation);
-  $city = $city[0];
+  $city = urlencode($city[0]);
 
   // Encode this since it may have spaces and wierd chars
   $endLocation = urlencode($endLocation);
@@ -76,126 +74,125 @@
         break;
     }
   }
+
   // Declare the globar array for us to feed on
   $output = array();
 
-  // Instantiate a new DOM Scrapping object
-  $rooms = new simple_html_dom();
+  switch ($idtype) {
+    case 'nflats':
+      $url = "https://api.9flats.com/api/v4/places";
+      $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate_dash}&search[end_date]={$endDate_dash}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=21&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
+      $url = $url.$qry_str;
+      $html = file_get_contents($url);
+      $nflatsjson = json_decode($html);
+      if (isset($nflatsjson->places)) {
+        foreach($nflatsjson->places as $aRoom) {
+          $room['id'] = str_replace("-", "", filter_var($aRoom->place->place_details->slug, FILTER_SANITIZE_NUMBER_INT));
+          $room['uri'] = $room['id'];
+          $room['idtype'] = "nflats";
+          $room['roomImg'] =  $aRoom->place->place_details->featured_photo->medium;
+          $room['profileImg'] = "img/noprofile.jpg";
+          $room['profileName'] = $aRoom->place->place_details->host->name;
+          $room['price'] = round($aRoom->place->pricing->price);
+          $room['desc'] = str_replace("'", "", $aRoom->place->place_details->name);
+          $room['link'] = "http://www.9flats.com/places/".$aRoom->place->place_details->slug;
+          $room['infoWindowIcon'] = "img/9flats.png";
+          $room['latLng'] = array($aRoom->place->place_details->lat, $aRoom->place->place_details->lng);
+          $room['type'] = $aRoom->place->place_details->place_type;
+          $room['origin'] = $aRoom->place->place_details->city;
 
-  // Start Airbnb
-  $url = "https://www.airbnb.com/s";
-  $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}&price_min={$min}&price_max={$max}&page={$page}{$airRoomType}";
-  $url = $url.$qry_str;
-  $html = file_get_contents($url);
-  $rooms->load($html);
-  foreach($rooms->find('.search_result') as $aRoom) {
-    $room['id'] = $aRoom->getAttribute("data-hosting-id");
-    $room['uri'] = $aRoom->getAttribute("data-hosting-id");
-    $room['idtype'] = "airbnb";
-    $room['roomImg'] = str_replace('x_small', 'small', $aRoom->find('img', 0)->getAttribute("data-original"));
-    $room['profileImg'] = str_replace('tiny', 'small', $aRoom->find('img', 1)->getAttribute("data-original"));
-    $room['profileName'] = $aRoom->find('img', 1)->alt;
-    $room['desc'] = str_replace("'", "", $aRoom->find('.name', 0)->plaintext);
-    $room['profileLink'] = "https://airbnb.com".$aRoom->find('a', 1)->href;
-    $room['price'] = 0 + filter_var(trim($aRoom->find('.price', 0)->plaintext), FILTER_SANITIZE_NUMBER_INT);
-    $room['link'] = "https://airbnb.com".$aRoom->find('.name', 0)->href;
-    $room['moreinfo'] = "https://api.airbnb.com/v1/listings/{$room['id']}?key=d306zoyjsyarp7ifhu67rjxn52tv0t20";
-    $room['iconPath'] = "img/airbnb.ico";
-    $room['infoWindowIcon'] = "img/airbnb.png";
-    $var = trim($aRoom->find('.descriptor', 0)->plaintext);
-    $mixed = explode("&mdash;", $var);
-    $room['type'] = trim($mixed[0]);
-    $room['neigh'] = trim(str_replace('>', '', $mixed[1]));
-    $room['neigh'] = $room['neigh'] == "Quebec" ? "Quebec city" : $room['neigh'];
-    $room['origin'] = $room['neigh'];
-
-    $output[] = $room;
-  }
-
-   // Starting 9flats
-  $url = "https://api.9flats.com/api/v4/places";
-  $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate_dash}&search[end_date]={$endDate_dash}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=21&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
-  $url = $url.$qry_str;
-  $html = file_get_contents($url);
-  $nflatsjson = json_decode($html);
-  if ($nflatsjson->places) {
-    foreach($nflatsjson->places as $aRoom) {
-      $room['id'] = str_replace("-", "", filter_var($aRoom->place->place_details->slug, FILTER_SANITIZE_NUMBER_INT));
-      $room['uri'] = $room['id'];
-      $room['idtype'] = "nflats";
-      $room['roomImg'] =  $aRoom->place->place_details->featured_photo->medium;
-      $room['profileImg'] = "img/noprofile.jpg";
-      $room['profileName'] = $aRoom->place->place_details->host->name;
-      $room['price'] = round($aRoom->place->pricing->price);
-      $room['desc'] = str_replace("'", "", $aRoom->place->place_details->name);
-      $room['link'] = "http://www.9flats.com/places/".$aRoom->place->place_details->slug;
-      $room['iconPath'] = "img/9flats.ico";
-      $room['infoWindowIcon'] = "img/9flats.png";
-      $room['moreinfo'] = $aRoom->place->place_details->links[0]->href."?&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
-      $room['latLng'] = array($aRoom->place->place_details->lat, $aRoom->place->place_details->lng);
-      $room['type'] = $aRoom->place->place_details->place_type;
-      $room['neigh'] = $aRoom->place->place_details->city;
-      $room['origin'] = $room['neigh'];
-
-      $output[] = $room;
-    }
-  }
-
-  // Starting Roomorama
-  // Roomorama date validation
-  if (!$startDate_dash || !$endDate_dash) {
-    $startDate_dash = '';
-    $endDate_dash = '';
-  }
-  $city = urlencode($city);
-  $url = "https://api.roomorama.com/v1.0/rooms.json";
-  $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
-  $url = $url . $qry_str;
-  $html = file_get_contents($url);
-  $roomoramajson = json_decode($html);
-  if (isset($roomoramajson->result)) {
-    foreach($roomoramajson->result as $aRoom) {
-      $room['type'] = $aRoom->type; // could be subtype or type
-      switch ($room['type']) {
-        case 'room':
-          $roomTypeRoo = "room";
-          break;
-        default:
-          $roomTypeRoo = "other";
-          break;
+          $output[] = $room;
+        }
       }
+      break;
+    case 'airbnb':
+      $url = "https://www.airbnb.com/s";
+      $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}&price_min={$min}&price_max={$max}&page={$page}{$airRoomType}";
+      $url = $url.$qry_str;
+      $html = file_get_contents($url);
 
-      if ($roomTypeRoo == "room" && $roomaramaRoomtype == "other") {
-        continue;
+      // Request DOM Scraper library
+      require_once('../../simple_html_dom.php');
+
+      // Instantiate a new DOM Scrapping object
+      $rooms = new simple_html_dom();
+      $rooms->load($html);
+
+      foreach($rooms->find('.search_result') as $aRoom) {
+        $room['id'] = $aRoom->getAttribute("data-hosting-id");
+        $room['uri'] = $aRoom->getAttribute("data-hosting-id");
+        $room['idtype'] = "airbnb";
+        $room['roomImg'] = str_replace('x_small', 'small', $aRoom->find('img', 0)->getAttribute("data-original"));
+        $room['profileImg'] = str_replace('tiny', 'small', $aRoom->find('img', 1)->getAttribute("data-original"));
+        $room['profileName'] = $aRoom->find('img', 1)->alt;
+        $room['desc'] = str_replace("'", "", $aRoom->find('.name', 0)->plaintext);
+        $room['profileLink'] = "https://airbnb.com".$aRoom->find('a', 1)->href;
+        $room['price'] = 0 + filter_var(trim($aRoom->find('.price', 0)->plaintext), FILTER_SANITIZE_NUMBER_INT);
+        $room['link'] = "https://airbnb.com".$aRoom->find('.name', 0)->href;
+        $room['infoWindowIcon'] = "img/airbnb.png";
+        $room['latLng'] = "";
+        $var = trim($aRoom->find('.descriptor', 0)->plaintext);
+        $mixed = explode("&mdash;", $var);
+        $room['type'] = trim($mixed[0]);
+        $room['origin'] = trim(str_replace('>', '', $mixed[1]));
+        $room['origin'] = $room['origin'] == "Quebec" ? "Quebec city" : $room['origin'];
+
+        $output[] = $room;
       }
-
-
-      if ($roomTypeRoo == "other" && ($roomaramaRoomtype == "room" || $roomaramaRoomtype == "roomroom")) {
-        continue;
+      break;
+    case 'roomorama':
+      if (!$startDate_dash || !$endDate_dash) {
+        $startDate_dash = '';
+        $endDate_dash = '';
       }
+      $url = "https://api.roomorama.com/v1.0/rooms.json";
+      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
+      $url = $url . $qry_str;
+      $html = file_get_contents($url);
+      $roomoramajson = json_decode($html);
+      if (isset($roomoramajson->result)) {
+        foreach($roomoramajson->result as $aRoom) {
+          $room['type'] = $aRoom->type;
+          switch ($room['type']) {
+            case 'room':
+              $roomTypeRoo = "room";
+              break;
+            default:
+              $roomTypeRoo = "other";
+              break;
+          }
+
+          if ($roomTypeRoo == "room" && $roomaramaRoomtype == "other") {
+            continue;
+          }
 
 
-      $room['id'] = $aRoom->id;
-      $room['uri'] = $room['id'];
-      $room['idtype'] = "roomorama";
-      $room['roomImg'] = $aRoom->thumbnail;
-      $room['profileImg'] = "img/noprofile.jpg";
-      $room['profileName'] = $aRoom->host->display;
-      $room['price'] = $aRoom->price;
-      $room['price2'] = $aRoom->price;
-      $room['desc'] = str_replace("'", "", $aRoom->title);
-      $room['link'] = $aRoom->url;
-      $room['iconPath'] = "img/roomorama.ico";
-      $room['infoWindowIcon'] = "img/roomorama.png";
-      //$room['moreinfo'] = ;
-      $room['latLng'] = array($aRoom->lat, $aRoom->lng);
-      $room['neigh'] = $aRoom->city;
-      $room['origin'] = $room['neigh'];
+          if ($roomTypeRoo == "other" && ($roomaramaRoomtype == "room" || $roomaramaRoomtype == "roomroom")) {
+            continue;
+          }
 
-      $output[] = $room;
-    }
+
+          $room['id'] = $aRoom->id;
+          $room['uri'] = $room['id'];
+          $room['idtype'] = "roomorama";
+          $room['roomImg'] = $aRoom->thumbnail;
+          $room['profileImg'] = "img/noprofile.jpg";
+          $room['profileName'] = $aRoom->host->display;
+          $room['price'] = $aRoom->price;
+          $room['desc'] = str_replace("'", "", $aRoom->title);
+          $room['link'] = $aRoom->url;
+          $room['infoWindowIcon'] = "img/roomorama.png";
+          $room['latLng'] = array($aRoom->lat, $aRoom->lng);
+          if (isset($aRoom->subtype) && $room['type'] !== $aRoom->subtype) {
+            $room['type'] = $room['type'] . ' - ' . $aRoom->subtype;
+          }
+          $room['origin'] = $aRoom->city;
+
+          $output[] = $room;
+        }
+      }
+      break;
   }
 
   echo $_GET['callback'] . '('.json_encode($output).')';
-
 ?>

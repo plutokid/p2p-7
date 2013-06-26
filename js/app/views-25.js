@@ -194,89 +194,6 @@
     }),
 
     // =======================================================
-    // Listview - Page
-    // =======================================================
-    listPage: Parse.View.extend({
-      el: "#pg-listview",
-      template: Outpost.helpers.renderTemplate,
-
-      initialize: function() {
-        this.render();
-      },
-
-      events: {
-        "submit #lp-refineSearch": "refineSearch",
-        "shown .lp-aTab": "initLazyLoad"
-      },
-
-      initLazyLoad: function(e) {
-        var target = $(e.target).attr("href");
-        $.waypoints('destroy');
-        switch(target) {
-          case "#lp-ridesharing":
-            Outpost.mvc.views.aListRid.infiniteScroll();
-            break;
-          case "#lp-spacerentals":
-            Outpost.mvc.views.aListHou.infiniteScroll();
-            break;
-          case "#lp-localguides":
-            Outpost.mvc.views.aListTou.infiniteScroll();
-            break;
-        }
-      },
-
-      refineSearch: function(e) {
-        e.preventDefault();
-        var validatedValues = this.validate();
-        var origCity = validatedValues.origCity;
-        var destCity = validatedValues.destCity;
-        var queryString = {
-          origCity: "",
-          destCity: Outpost.helpers.enbarURI(destCity),
-          sdate: $('#ref-ren-sdate').val(),
-          edate: $('#ref-ren-edate').val(),
-          guests: $('#ref-ren-guest').val()
-        };
-        queryString = $.param(queryString);
-        this.navigateToListView(queryString);
-      },
-
-      navigateToListView: function(queryString) {
-        var path = "!/search/?" + queryString;
-        Outpost.mvc.router.navigate(path, true);
-      },
-
-      validate: function() {
-        var origCity = $("#refine-orig-location").val();
-        var destCity = $("#refine-dest-location").val();
-        var hasCommaOrig = origCity.indexOf(",");
-        var hasCommaDest = destCity.indexOf(",");
-        var $pcOrig = $('.pac-container:eq(0)');
-        var $pcDest = $('.pac-container:eq(1)');
-        var firstOrig = $pcOrig.find(".pac-item:first").text();
-        var firstDest = $pcDest.find(".pac-item:first").text();
-        origCity = hasCommaOrig === -1 ? firstOrig : origCity;
-        destCity = hasCommaDest === -1 ? firstDest : destCity;
-        return {
-          origCity: origCity,
-          destCity: destCity
-        };
-      },
-
-      render: function() {
-        var _this = this;
-        this.$el.off().empty();
-        $('.pg-page').empty();
-        _this.template('listview', {}).done(function(tmpl) {
-          _this.$el.html(tmpl);
-          Outpost.mvc.views.aListRid = new Outpost.views.aListRid();
-          Outpost.mvc.views.aListHou = new Outpost.views.aListHou();
-          Outpost.mvc.views.aListTou = new Outpost.views.aListTou();
-        });
-      }
-    }),
-
-    // =======================================================
     // SingleView - Page (@SPV)
     // =======================================================
     singlePage: Parse.View.extend({
@@ -307,8 +224,8 @@
     // =======================================================
     // ListView - Page (@LVP)
     // =======================================================
-    listPage2: Parse.View.extend({
-      el: "#pg-listview2",
+    listPage: Parse.View.extend({
+      el: "#pg-listview",
 
       initialize: function() {
         this.render();
@@ -335,11 +252,12 @@
     // rentals list view - listings (@RENLP)
     // =======================================================
     ren_listPage: Parse.View.extend({
-      el: "#pg-listview2",
+      el: "#pg-listview",
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
       templateCarousel: _.template($('#tmpl-carousel').html()),
+      idtypes: ["nflats", "airbnb", "roomorama"],
       collection: [],
       sortedCollection: [],
       state: {
@@ -359,7 +277,7 @@
         _this.template('ren_listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           _this.resetState();
-          _this.fetchRentals();
+          _this.initfetchRentals();
           _this.initSliderGUI();
         });
       },
@@ -394,6 +312,7 @@
             $.waypoints('destroy');
             _this.state.min = ui.values[0];
             _this.state.max = ui.values[1];
+            $('.fil-num').empty();
             _this.resetListings();
             _this.fetchRentals();
           }
@@ -422,14 +341,48 @@
         $('#lp-hou-list').empty();
       },
 
-      fetchRentals: function() {
+      initfetchRentals: function() {
         var _this = this;
+        var len = _this.idtypes.length;
+        var parseHTML = function(data) {
+          _this.collection = _this.collection.concat(data);
+          _this.sortedCollection = _(_this.collection).clone();
+          Outpost.helpers.sortLowToHigh(_this.sortedCollection);
+          _this.sortedRender();
+          _this.updateHeading();
+          _this.updateProviders();
+          _this.filterProviders();
+          _this.toggleLoading();
+          $('#lp-hou-sortby').val("low2high");
+        };
+
         _this.toggleLoading();
-        Outpost.helpers.fetchRentals(this.state).done(function(data) {
+
+        for (var i = 0; i < len; i++) {
+          Outpost.helpers.fetchRentals(
+            _this.state,
+            _this.idtypes[i]
+          ).done(parseHTML);
+        }
+      },
+
+      fetchRentals: function() {
+        var parseHTML = function(data) {
           _this.collection = _this.collection.concat(data);
           _this.render();
           _this.toggleLoading();
-        });
+        };
+
+        var _this = this;
+        var len = this.idtypes.length;
+        _this.toggleLoading();
+
+        for (var i = 0; i < len; i++) {
+          Outpost.helpers.fetchRentals(
+            this.state,
+            this.idtypes[i]
+          ).done(parseHTML);
+        }
       },
 
       toggleLoading: function() {
@@ -644,6 +597,7 @@
           });
         }
 
+        $('.fil-num').empty();
         this.resetListings();
         this.fetchRentals();
       },
@@ -698,10 +652,11 @@
     // rides list view - listings (@RIDLP)
     // =======================================================
     rid_listPage: Parse.View.extend({
-      el: "#pg-listview2",
+      el: "#pg-listview",
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-rid-aList').html()),
       templateWell: _.template($('#tmpl-rid-well').html()),
+      idtypes: ["blablacar", "kangaride", "ridejoy", "zimride"],
       collection: [],
       sortedCollection: [],
       state: {
@@ -714,7 +669,7 @@
         _this.template('rid_listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           _this.resetState();
-          _this.fetchRides();
+          _this.initfetchRides();
         });
       },
 
@@ -733,14 +688,48 @@
         };
       },
 
+      initfetchRides: function() {
+        var _this = this;
+        var len = this.idtypes.length;
+        var parseHTML = function(data) {
+          _this.collection = _this.collection.concat(data);
+          _this.sortedCollection = _(_this.collection).clone();
+          Outpost.helpers.sortDate(_this.sortedCollection);
+          _this.sortedRender();
+          _this.updateHeading();
+          _this.updateProviders();
+          _this.filterProviders();
+          _this.toggleLoading();
+          $('#lp-rid-sortby').val("date");
+        };
+
+        _this.toggleLoading();
+
+        for (var i = 0; i < len; i++) {
+          Outpost.helpers.fetchRideShares(
+            this.state,
+            this.idtypes[i]
+          ).done(parseHTML);
+        }
+      },
+
       fetchRides: function() {
         var _this = this;
-        _this.toggleLoading();
-        Outpost.helpers.fetchRideShares(this.state).done(function(data) {
+        var len = this.idtypes.length;
+        var parseHTML = function(data) {
           _this.collection = _this.collection.concat(data);
           _this.render();
           _this.toggleLoading();
-        });
+        };
+
+        _this.toggleLoading();
+
+        for (var i = 0; i < len; i++) {
+          Outpost.helpers.fetchRideShares(
+            this.state,
+            this.idtypes[i]
+          ).done(parseHTML);
+        }
       },
 
       toggleLoading: function() {
