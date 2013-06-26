@@ -312,6 +312,7 @@
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
       templateCarousel: _.template($('#tmpl-carousel').html()),
+      idtypes: ["airbnb", "nflats", "roomorama"],
       collection: [],
       sortedCollection: [],
       state: {
@@ -331,7 +332,7 @@
         _this.template('ren_listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           _this.resetState();
-          _this.fetchRentals();
+          _this.initfetchRentals();
           _this.initSliderGUI();
         });
       },
@@ -366,6 +367,7 @@
             $.waypoints('destroy');
             _this.state.min = ui.values[0];
             _this.state.max = ui.values[1];
+            $('.fil-num').empty();
             _this.resetListings();
             _this.fetchRentals();
           }
@@ -394,14 +396,48 @@
         $('#lp-hou-list').empty();
       },
 
-      fetchRentals: function() {
+      initfetchRentals: function() {
         var _this = this;
+        var len = _this.idtypes.length;
+        var parseHTML = function(data) {
+          _this.collection = _this.collection.concat(data);
+          _this.sortedCollection = _(_this.collection).clone();
+          Outpost.helpers.sortLowToHigh(_this.sortedCollection);
+          _this.sortedRender();
+          _this.updateHeading();
+          _this.updateProviders();
+          _this.filterProviders();
+          _this.toggleLoading();
+          $('#lp-hou-sortby').val("low2high");
+        };
+
         _this.toggleLoading();
-        Outpost.helpers.fetchRentals(this.state).done(function(data) {
+
+        for (var i = 0; i < len; i++) {
+          Outpost.helpers.fetchRentals(
+            _this.state,
+            _this.idtypes[i]
+          ).done(parseHTML);
+        }
+      },
+
+      fetchRentals: function() {
+        var parseHTML = function(data) {
           _this.collection = _this.collection.concat(data);
           _this.render();
           _this.toggleLoading();
-        });
+        };
+
+        var _this = this;
+        var len = this.idtypes.length;
+        _this.toggleLoading();
+
+        for (var i = 0; i < len; i++) {
+          Outpost.helpers.fetchRentals(
+            this.state,
+            this.idtypes[i]
+          ).done(parseHTML);
+        }
       },
 
       toggleLoading: function() {
@@ -616,6 +652,7 @@
           });
         }
 
+        $('.fil-num').empty();
         this.resetListings();
         this.fetchRentals();
       },

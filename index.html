@@ -124,21 +124,9 @@
           </a>
           <div class="css-mainmenu js-mainmenu" id="js-mainmenu">
             <ul class="css-nav">
-              <li><a class="navbar-btn what-around-btn" id="js-whataround" href="#!/search/">
-                <div class="inner-button-contents">
-                  <i class="icon-location-arrow"></i>
-                  <span>&nbsp;What&rsquo;s around me ?</span>
-                </div>
-              </a></li>
               <% if (!name) { %>
                 <li><button class="navbar-btn sign-up-btn" data-toggle="modal" href="#js-signup-modal">Sign up</button></li>
               <% } else { %>
-                <li><a class="navbar-btn stash-btn" id="js-stash" href="javascript:void(0)">
-                  <div class="inner-button-contents">
-                    <i class="icon-briefcase"></i>
-                    <span>&nbsp;Stash</span>
-                  </div>
-                </a></li>
                 <li><a class="btn-nav"><%= name %></a></li>
                 <li><a class="btn-nav js-logout" href="javascript:void(0)">Logout</a></li>
               <% } %>
@@ -332,7 +320,7 @@
             </li>
             <li>
               <span class="icon-map-marker css-green tfpx"></span>
-              <span class="lp-list-location"><%= item.neigh %></span>
+              <span class="lp-list-location"><%= item.origin %></span>
             </li>
           </ul>
           <div class="lp-hou-pricewrap">
@@ -341,7 +329,7 @@
           </div>
         </div>
         <span class="lp-left-group">
-          <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
+          <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>">Details &nbsp;<i class="icon-play"></i></a>
           <a class="out-btn btn-hou btn-hou-bookit" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-hou btn-hou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
         </span>
