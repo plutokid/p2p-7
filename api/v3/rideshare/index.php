@@ -52,173 +52,177 @@
 
   switch ($idtype) {
     case 'blablacar':
-      $url = "http://www.blablacar.com/search-car-sharing-result";
-      $startDate2 = '';
-      if ($startDate) {
-        $startDate2 = urldecode($startDate);
-        $startDate2 = explode("/", $startDate2);
-        $startDate2 = $startDate2[1]."/".$startDate2[0]."/".$startDate2[2];
-        $startDate2 = urlencode($startDate2);
-      }
-      $qry_str = "?db={$startDate2}&fn={$startLocation}&tn={$endLocation}&sort=trip_date&order=asc&page={$page}";
-      $url = $url.$qry_str;
-      $html = file_get_contents($url);
-      $poolList->load($html);
-      foreach($poolList->find('.trip') as $aRide) {
-        $price_full = $aRide->find('.price', 0)->plaintext;
-        $price = 0 + filter_var($price_full, FILTER_SANITIZE_NUMBER_INT);
-
-        $seat = $aRide->find('.availability strong', 0)->plaintext;
-        if ($seat) {
-          $seat = 0 + $seat;
-          if ($guests  > $seat) {
-            continue;
-          }
-          $ride['seat'] = $seat;
-        } else {
-          continue;
-        }
-        $ride['img'] = $aRide->find('img', 0)->src;
-        $ride['link'] = "http://www.blablacar.com".$aRide->find('a', 0)->href;
-        $ride['uri'] = str_replace('http://www.blablacar.com/', '', $ride['link']);
-        $ride['id'] = filter_var($ride["uri"], FILTER_SANITIZE_NUMBER_INT);
-        $ride['idtype'] = "blablacar";
-        $datetime = explode("-", $aRide->find('.time', 0)->plaintext);
-        $ride['date'] = trim($datetime[0]);
-        $ride['time'] =  trim($datetime[1]);
-        $ride['timestamp'] = strtotime($ride['date']. " ".  $ride['time']);
-        if (!$ride['timestamp'])
-          $ride['timestamp'] = strtotime($ride['date']. " 2013 ".  $ride['time']);
-        if (!$ride['timestamp'])
-          $ride['timestamp'] = strtotime($ride['date']);
-        $ride['username'] = $aRide->find('.username', 0)->plaintext;
-        $ride['iconPath'] = "img/blablacar.ico";
-        $ride['infoWindowIcon'] = "img/blablacar.png";
-        $origin = str_replace("'", "", $aRide->find('.geo-from .tip', 0)->plaintext);
-        $origin = explode(",", $origin);
-        $ride['origin'] = $origin[0];
-
-        $destination = $aRide->find('.geo-to .tip', 0)->plaintext;
-        $destination = explode(",", $destination);
-        $ride['destination'] = $destination[0];
-        $ride['desc'] = $aRide->find('.fromto', 0)->plaintext;
-        $ride['price'] = $price;
-        $output[] = $ride;
-      }
-      break;
-
-    case 'kangaride':
-      $state1 = $state1 ? $state1."/" : '';
-      $state2 = $state2 ? $state2."/" : '';
-      $city1 = $city1 == "Quebec City" ? "Quebec" : $city1;
-      $city2 = $city2 == "Quebec City" ? "Quebec" : $city2;
-      if ($city1 && $city2) {
-        $city1 = str_replace(' ', '_', $city1);
-        $city2 = str_replace(' ', '_', $city2);
-        $uri = "rideshares_from_{$city1}_to_{$city2}.html";
-      } elseif ($city1) {
-        $city1 = str_replace(' ', '_', $city1);
-        $uri = "rideshares_from_{$city1}.html";
-      } elseif ($city2) {
-        $city2 = str_replace(' ', '_', $city2);
-        $uri = "rideshares_to_{$city2}.html";
-      }
-
-      $startDate2 = '';
-      if ($startDate) {
-        $startDate2 = urldecode($startDate);
-        $startDate2 = explode("/", $startDate2);
-        $startDate2 = $startDate2[2]."-".$startDate2[0]."-".$startDate2[1];
-        $startDate2 = '?startDate='.$startDate2; // startDate=2013-05-12
-      }
-
-      $endDate2 = '';
-      if ($endDate) {
-        $endDate2 = urldecode($endDate);
-        $endDate2 = explode("/", $endDate2);
-        $endDate2 = $endDate2[2]."-".$endDate2[0]."-".$endDate2[1];
+      if ($country == "world") {
+        $url = "http://www.blablacar.com/search-car-sharing-result";
+        $startDate2 = '';
         if ($startDate) {
-          $endDate2 = '&endDate='.$endDate2; // startDate=2013-05-12
-        } else {
-          $endDate2 = '?endDate='.$endDate2;
+          $startDate2 = urldecode($startDate);
+          $startDate2 = explode("/", $startDate2);
+          $startDate2 = $startDate2[1]."/".$startDate2[0]."/".$startDate2[2];
+          $startDate2 = urlencode($startDate2);
         }
-      }
+        $qry_str = "?db={$startDate2}&fn={$startLocation}&tn={$endLocation}&sort=trip_date&order=asc&page={$page}";
+        $url = $url.$qry_str;
+        $html = file_get_contents($url);
+        $poolList->load($html);
+        foreach($poolList->find('.trip') as $aRide) {
+          $price_full = $aRide->find('.price', 0)->plaintext;
+          $price = 0 + filter_var($price_full, FILTER_SANITIZE_NUMBER_INT);
 
-      if (!$startDate2 && !$endDate2) {
-        $kangaPage = "?&p={$page}";
-      } else {
-        $kangaPage = "&p={$page}";
-      }
-      $qry_str = $state1.$state2.$uri.$startDate2.$endDate2.$kangaPage;
-      $opts = array(
-        'http'=>array(
-          'method'=>"GET",
-          'header'=>"Accept-language: en\r\n" .
-                    "Cookie: foo=bar\r\n" .
-                    "Content-Type: text/html; charset=utf-8\r\n" .
-                    "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/19.0.597.107 Safari/534.13\r\n"
-        )
-      );
-      $context = stream_context_create($opts);
-      $url = "http://www.kangaride.com/itinerarySearch/";
-      $url = $url.$qry_str;
-      $html = file_get_contents($url, false, $context);
-      $html = mb_convert_encoding($html, 'UTF-8', mb_detect_encoding($html, 'UTF-8, ISO-8859-1', true));
-      $poolList->load($html);
-      $crap = array();
-      $crap[] = "window.location.href=";
-      $crap[] = "'";
-
-      $vroom = $poolList->find('table');
-      if (isset($vroom[4])) {
-        $lastDate = $vroom[4]->find('tr', 0)->plaintext;
-        foreach($vroom[4]->find('tr') as $aRide) {
-          $seat = 0;
-          foreach ($aRide->find('img[alt="White Man"]') as $guy) {
-            $seat++;
-          }
-
+          $seat = $aRide->find('.availability strong', 0)->plaintext;
           if ($seat) {
-            if ($guests > $seat) {
+            $seat = 0 + $seat;
+            if ($guests  > $seat) {
               continue;
             }
             $ride['seat'] = $seat;
           } else {
             continue;
           }
+          $ride['img'] = $aRide->find('img', 0)->src;
+          $ride['link'] = "http://www.blablacar.com".$aRide->find('a', 0)->href;
+          $ride['uri'] = str_replace('http://www.blablacar.com/', '', $ride['link']);
+          $ride['id'] = filter_var($ride["uri"], FILTER_SANITIZE_NUMBER_INT);
+          $ride['idtype'] = "blablacar";
+          $datetime = explode("-", $aRide->find('.time', 0)->plaintext);
+          $ride['date'] = trim($datetime[0]);
+          $ride['time'] =  trim($datetime[1]);
+          $ride['timestamp'] = strtotime($ride['date']. " ".  $ride['time']);
+          if (!$ride['timestamp'])
+            $ride['timestamp'] = strtotime($ride['date']. " 2013 ".  $ride['time']);
+          if (!$ride['timestamp'])
+            $ride['timestamp'] = strtotime($ride['date']);
+          $ride['username'] = $aRide->find('.username', 0)->plaintext;
+          $ride['iconPath'] = "img/blablacar.ico";
+          $ride['infoWindowIcon'] = "img/blablacar.png";
+          $origin = str_replace("'", "", $aRide->find('.geo-from .tip', 0)->plaintext);
+          $origin = explode(",", $origin);
+          $ride['origin'] = $origin[0];
 
-          if (!$aRide->prev_sibling()->hasAttribute('class')) {
-            $lastDate = $aRide->prev_sibling()->plaintext;
-          }
-
-          $price_full = $aRide->find('.itineraryPrice', 0)->plaintext;
-          $price = 0 + $price_full;
-          $link = $aRide->getAttribute('onclick');
-          $ride['link'] = str_replace($crap, '', $link);
-          $cleanLink = str_replace("http://www.kangaride.com/", '', $ride['link']);
-          $ride['id'] = explode("/", $cleanLink);
-          $ride['id'] = $ride['id'][1];
-          $ride['uri'] = $ride['id'];
-          $ride['idtype'] = "kangaride";
-          $ride['date'] =  $lastDate; //poollist find
-          $ride['time'] = str_replace("Noon", "12", trim($aRide->find('.datetime', 0)->plaintext));
-          $ride['timestamp'] =  strtotime($lastDate . " " . $ride['time']);
-          if (!$ride['timestamp']) {
-            $ride['timestamp'] =  strtotime($lastDate);
-          }
-          $ride['username'] = "n/a";
-          $ride['origin'] = $aRide->find('strong', 0)->plaintext;
-          $ride['origin'] = $ride['origin'] == "Québec" ? "Quebec city" : $ride['origin'];
-          $ride['destination'] = $aRide->find('strong', 1)->plaintext;
-          $ride['destination'] = $ride['destination'] == "Québec" ? "Quebec city" : $ride['destination'];
-          $ride['desc'] = "";
-          $ride['location1'] = str_replace("'", "", $aRide->find('.pickupDetails', 0)->plaintext);
-          $ride['location2'] = str_replace("'", "", $aRide->find('.pickupDetails', 1)->plaintext);
+          $destination = $aRide->find('.geo-to .tip', 0)->plaintext;
+          $destination = explode(",", $destination);
+          $ride['destination'] = $destination[0];
+          $ride['desc'] = $aRide->find('.fromto', 0)->plaintext;
           $ride['price'] = $price;
-          $ride['img'] = "img/noprofile.jpg";
-          $ride['iconPath'] = "img/kangaride.ico";
-          $ride['infoWindowIcon'] = "img/kangaride.png";
           $output[] = $ride;
+        }
+      }
+      break;
+
+    case 'kangaride':
+      if ($country == "NA" && ($country1 == "CA" || $country2 == "CA")) {
+        $state1 = $state1 ? $state1."/" : '';
+        $state2 = $state2 ? $state2."/" : '';
+        $city1 = $city1 == "Quebec City" ? "Quebec" : $city1;
+        $city2 = $city2 == "Quebec City" ? "Quebec" : $city2;
+        if ($city1 && $city2) {
+          $city1 = str_replace(' ', '_', $city1);
+          $city2 = str_replace(' ', '_', $city2);
+          $uri = "rideshares_from_{$city1}_to_{$city2}.html";
+        } elseif ($city1) {
+          $city1 = str_replace(' ', '_', $city1);
+          $uri = "rideshares_from_{$city1}.html";
+        } elseif ($city2) {
+          $city2 = str_replace(' ', '_', $city2);
+          $uri = "rideshares_to_{$city2}.html";
+        }
+
+        $startDate2 = '';
+        if ($startDate) {
+          $startDate2 = urldecode($startDate);
+          $startDate2 = explode("/", $startDate2);
+          $startDate2 = $startDate2[2]."-".$startDate2[0]."-".$startDate2[1];
+          $startDate2 = '?startDate='.$startDate2; // startDate=2013-05-12
+        }
+
+        $endDate2 = '';
+        if ($endDate) {
+          $endDate2 = urldecode($endDate);
+          $endDate2 = explode("/", $endDate2);
+          $endDate2 = $endDate2[2]."-".$endDate2[0]."-".$endDate2[1];
+          if ($startDate) {
+            $endDate2 = '&endDate='.$endDate2; // startDate=2013-05-12
+          } else {
+            $endDate2 = '?endDate='.$endDate2;
+          }
+        }
+
+        if (!$startDate2 && !$endDate2) {
+          $kangaPage = "?&p={$page}";
+        } else {
+          $kangaPage = "&p={$page}";
+        }
+        $qry_str = $state1.$state2.$uri.$startDate2.$endDate2.$kangaPage;
+        $opts = array(
+          'http'=>array(
+            'method'=>"GET",
+            'header'=>"Accept-language: en\r\n" .
+                      "Cookie: foo=bar\r\n" .
+                      "Content-Type: text/html; charset=utf-8\r\n" .
+                      "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/19.0.597.107 Safari/534.13\r\n"
+          )
+        );
+        $context = stream_context_create($opts);
+        $url = "http://www.kangaride.com/itinerarySearch/";
+        $url = $url.$qry_str;
+        $html = file_get_contents($url, false, $context);
+        $html = mb_convert_encoding($html, 'UTF-8', mb_detect_encoding($html, 'UTF-8, ISO-8859-1', true));
+        $poolList->load($html);
+        $crap = array();
+        $crap[] = "window.location.href=";
+        $crap[] = "'";
+
+        $vroom = $poolList->find('table');
+        if (isset($vroom[4])) {
+          $lastDate = $vroom[4]->find('tr', 0)->plaintext;
+          foreach($vroom[4]->find('tr') as $aRide) {
+            $seat = 0;
+            foreach ($aRide->find('img[alt="White Man"]') as $guy) {
+              $seat++;
+            }
+
+            if ($seat) {
+              if ($guests > $seat) {
+                continue;
+              }
+              $ride['seat'] = $seat;
+            } else {
+              continue;
+            }
+
+            if (!$aRide->prev_sibling()->hasAttribute('class')) {
+              $lastDate = $aRide->prev_sibling()->plaintext;
+            }
+
+            $price_full = $aRide->find('.itineraryPrice', 0)->plaintext;
+            $price = 0 + $price_full;
+            $link = $aRide->getAttribute('onclick');
+            $ride['link'] = str_replace($crap, '', $link);
+            $cleanLink = str_replace("http://www.kangaride.com/", '', $ride['link']);
+            $ride['id'] = explode("/", $cleanLink);
+            $ride['id'] = $ride['id'][1];
+            $ride['uri'] = $ride['id'];
+            $ride['idtype'] = "kangaride";
+            $ride['date'] =  $lastDate; //poollist find
+            $ride['time'] = str_replace("Noon", "12", trim($aRide->find('.datetime', 0)->plaintext));
+            $ride['timestamp'] =  strtotime($lastDate . " " . $ride['time']);
+            if (!$ride['timestamp']) {
+              $ride['timestamp'] =  strtotime($lastDate);
+            }
+            $ride['username'] = "n/a";
+            $ride['origin'] = $aRide->find('strong', 0)->plaintext;
+            $ride['origin'] = $ride['origin'] == "Québec" ? "Quebec city" : $ride['origin'];
+            $ride['destination'] = $aRide->find('strong', 1)->plaintext;
+            $ride['destination'] = $ride['destination'] == "Québec" ? "Quebec city" : $ride['destination'];
+            $ride['desc'] = "";
+            $ride['location1'] = str_replace("'", "", $aRide->find('.pickupDetails', 0)->plaintext);
+            $ride['location2'] = str_replace("'", "", $aRide->find('.pickupDetails', 1)->plaintext);
+            $ride['price'] = $price;
+            $ride['img'] = "img/noprofile.jpg";
+            $ride['iconPath'] = "img/kangaride.ico";
+            $ride['infoWindowIcon'] = "img/kangaride.png";
+            $output[] = $ride;
+          }
         }
       }
       break;
