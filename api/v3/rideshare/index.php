@@ -224,139 +224,143 @@
       break;
 
     case 'ridejoy':
-      $url = "http://ridejoy.com/rides/search";
-      $qry_str = "?type=ride_request&origin={$startLocation}&origin_latitude={$origLat}&origin_longitude={$origLon}&destination={$endLocation}&destination_latitude={$destLat}&destination_longitude={$destLon}&date={$startDate}";
-      $url = $url.$qry_str;
-      $html = file_get_contents($url);
+      if ($page == 1) {
+        $url = "http://ridejoy.com/rides/search";
+        $qry_str = "?type=ride_request&origin={$startLocation}&origin_latitude={$origLat}&origin_longitude={$origLon}&destination={$endLocation}&destination_latitude={$destLat}&destination_longitude={$destLon}&date={$startDate}";
+        $url = $url.$qry_str;
+        $html = file_get_contents($url);
 
-      $poolList->load($html);
+        $poolList->load($html);
 
-      foreach($poolList->find('.date') as $aBlock) {
-        $date = $aBlock->find('.date_header', 0)->plaintext;
-        foreach($aBlock->find('.result') as $aRide) {
-          $ride['id'] = $aRide->getAttribute("data-ride-id");
-          if (in_array($ride['id'], $idarr)) {
-            continue;
+        foreach($poolList->find('.date') as $aBlock) {
+          $date = $aBlock->find('.date_header', 0)->plaintext;
+          foreach($aBlock->find('.result') as $aRide) {
+            $ride['id'] = $aRide->getAttribute("data-ride-id");
+            if (in_array($ride['id'], $idarr)) {
+              continue;
+            }
+            $idarr[] = $ride['id'];
+
+            $price_full = trim($aRide->find('.seats_container', 0)->plaintext);
+            $price = 0 + substr($price_full, 1);
+            $ride['idtype'] = "ridejoy";
+            $ride['date'] = $date;
+            $ride['img'] = $aRide->find('img', 0)->src;
+            $ride['origin'] = $aRide->find('.origin', 0)->plaintext;
+            $ride['destination'] = $aRide->find('.destination', 0)->plaintext;
+            $ride['desc'] = str_replace(array("'", "&#x27;", "&quot;"), "", $aRide->find('.extra_info', 0)->plaintext);
+            $ride['price'] = $price;
+            $ride['iconPath'] = "img/ridejoy.ico";
+            $ride['infoWindowIcon'] = "img/ridejoy.png";
+            $ride['link'] = $aRide->find('.view_details', 0)->href;
+            $ride['uri'] = $ride['id'];
+            $ride['seat'] = "1-4";
+            // im actually lieing here since  ridejoy isnt giving it on the go
+            $ride['time'] = "Anytime";
+            $ride['timestamp'] = strtotime($date. "12:00");
+            $output[] = $ride;
           }
-          $idarr[] = $ride['id'];
-
-          $price_full = trim($aRide->find('.seats_container', 0)->plaintext);
-          $price = 0 + substr($price_full, 1);
-          $ride['idtype'] = "ridejoy";
-          $ride['date'] = $date;
-          $ride['img'] = $aRide->find('img', 0)->src;
-          $ride['origin'] = $aRide->find('.origin', 0)->plaintext;
-          $ride['destination'] = $aRide->find('.destination', 0)->plaintext;
-          $ride['desc'] = str_replace(array("'", "&#x27;", "&quot;"), "", $aRide->find('.extra_info', 0)->plaintext);
-          $ride['price'] = $price;
-          $ride['iconPath'] = "img/ridejoy.ico";
-          $ride['infoWindowIcon'] = "img/ridejoy.png";
-          $ride['link'] = $aRide->find('.view_details', 0)->href;
-          $ride['uri'] = $ride['id'];
-          $ride['seat'] = "1-4";
-          // im actually lieing here since  ridejoy isnt giving it on the go
-          $ride['time'] = "Anytime";
-          $ride['timestamp'] = strtotime($date. "12:00");
-          $output[] = $ride;
         }
       }
       break;
 
     case 'zimride':
-      $url = "http://www.zimride.com/search";
-      $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer&pageID={$page}";
-      $url = $url.$qry_str;
-      $html = file_get_contents($url);
+      if ($page == 1) {
+        $url = "http://www.zimride.com/search";
+        $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer&pageID={$page}";
+        $url = $url.$qry_str;
+        $html = file_get_contents($url);
 
-      $poolList->load($html);
+        $poolList->load($html);
 
-      if ($lastDate = $poolList->find('h3.headline span', 0)) {
-        $lastDate = $lastDate->plaintext;
-        $lastDate = explode("&mdash;", $lastDate);
-        if ($lastDate[1])
-          $lastDate = $lastDate[1];
-        else
-          $lastDate = substr($lastDate[0], 10);
-      }
+        if ($lastDate = $poolList->find('h3.headline span', 0)) {
+          $lastDate = $lastDate->plaintext;
+          $lastDate = explode("&mdash;", $lastDate);
+          if ($lastDate[1])
+            $lastDate = $lastDate[1];
+          else
+            $lastDate = substr($lastDate[0], 10);
+        }
 
-      foreach($poolList->find('.ride_list a') as $aRide) {
-       if ($aRide->find('img', 0)) {
-         $ride['img'] = $aRide->find('img', 0)->src;
-         if ($seat = $aRide->find('.count', 0)) {
-           $seat = $seat->plaintext;
-           $seat = 0 + $seat;
-           if ($guests  > $seat) {
+        foreach($poolList->find('.ride_list a') as $aRide) {
+         if ($aRide->find('img', 0)) {
+           $ride['img'] = $aRide->find('img', 0)->src;
+           if ($seat = $aRide->find('.count', 0)) {
+             $seat = $seat->plaintext;
+             $seat = 0 + $seat;
+             if ($guests  > $seat) {
+               continue;
+             }
+             $ride['seat'] = $seat;
+           } else {
              continue;
            }
-           $ride['seat'] = $seat;
-         } else {
-           continue;
-         }
-         if ($aRide->prev_sibling()->hasAttribute('class')) {
-           $lastDate = $aRide->prev_sibling()->plaintext;
-           $lastDate = explode("&mdash;", $lastDate);
-           if (isset($lastDate[1]))
-             $lastDate = $lastDate[1];
-           else
-             $lastDate = substr($lastDate[0], 10);
-         }
-         $price_full = $aRide->find('.price_box p', 0)->plaintext;
-         $price = 0 + substr($price_full, 1);
-         $ride['link'] = $aRide->href;
-         $ride['link'] = str_replace('&searchPageID=1', '', $ride['link']);
-         $ride['id'] = filter_var($ride['link'], FILTER_SANITIZE_NUMBER_INT);
-         $ride['uri'] = $ride['id'];
-         $ride['idtype'] = "zimride";
-         $ride['date'] =  $lastDate; //poollist find
-         $ride['username'] = $aRide->find('.username', 0)->plaintext;
-         $originfull = $aRide->find('.inner', 0)->innertext;
-         $origin = explode('<span class="trip_type one_way"></span>', $originfull);
+           if ($aRide->prev_sibling()->hasAttribute('class')) {
+             $lastDate = $aRide->prev_sibling()->plaintext;
+             $lastDate = explode("&mdash;", $lastDate);
+             if (isset($lastDate[1]))
+               $lastDate = $lastDate[1];
+             else
+               $lastDate = substr($lastDate[0], 10);
+           }
+           $price_full = $aRide->find('.price_box p', 0)->plaintext;
+           $price = 0 + substr($price_full, 1);
+           $ride['link'] = $aRide->href;
+           $ride['link'] = str_replace('&searchPageID=1', '', $ride['link']);
+           $ride['id'] = filter_var($ride['link'], FILTER_SANITIZE_NUMBER_INT);
+           $ride['uri'] = $ride['id'];
+           $ride['idtype'] = "zimride";
+           $ride['date'] =  $lastDate; //poollist find
+           $ride['username'] = $aRide->find('.username', 0)->plaintext;
+           $originfull = $aRide->find('.inner', 0)->innertext;
+           $origin = explode('<span class="trip_type one_way"></span>', $originfull);
 
-         if (!isset($origin[1])) {
-           $origin = explode('<span class="trip_type round_trip"></span>', $originfull);
-         }
+           if (!isset($origin[1])) {
+             $origin = explode('<span class="trip_type round_trip"></span>', $originfull);
+           }
 
-         $ride['iconPath'] = "img/zimride.ico";
-         $ride['infoWindowIcon'] = "img/zimride.png";
-         $ride['origin'] = $origin[0];
-         $ride['destination'] = $origin[1];
-         $desc = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
-         $desc = explode('/', $desc);
-         if (isset($desc[2])) {
-           $ride['time'] = str_replace("Departs", "", $desc[2]);
-           $ride['desc'] = $desc[0].$desc[1];
-         } else {
-           $ride['time'] = str_replace("Departs", "", $desc[1]);
-           $ride['desc'] = $desc[0];
-         }
-         $ride['timestamp'] = false;
-         $ride['time'] = preg_replace("/\s|&nbsp;/",'',$ride['time']);
-         switch ($ride['time']) {
-           case 'Morning':
-             $ride['timestamp'] = strtotime($lastDate . "9:00");
-             break;
-           case 'Anytime':
-             $ride['timestamp'] = strtotime($lastDate. "12:00");
-             break;
-           case 'Afternoon':
-             $ride['timestamp'] = strtotime($lastDate. "15:00");
-             break;
-           case 'Evening':
-             $ride['timestamp'] = strtotime($lastDate . "18:00");
-             break;
-           case 'Night':
-             $ride['timestamp'] = strtotime($lastDate . "21:00");
-             break;
-           default:
-             $ride['timestamp'] =  strtotime($lastDate . $ride['time']);
-             break;
-         }
-         if (!$ride['timestamp']) {
-           $ride['timestamp'] = strtotime($lastDate);
-         }
-         $ride['price'] = $price;
+           $ride['iconPath'] = "img/zimride.ico";
+           $ride['infoWindowIcon'] = "img/zimride.png";
+           $ride['origin'] = $origin[0];
+           $ride['destination'] = $origin[1];
+           $desc = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
+           $desc = explode('/', $desc);
+           if (isset($desc[2])) {
+             $ride['time'] = str_replace("Departs", "", $desc[2]);
+             $ride['desc'] = $desc[0].$desc[1];
+           } else {
+             $ride['time'] = str_replace("Departs", "", $desc[1]);
+             $ride['desc'] = $desc[0];
+           }
+           $ride['timestamp'] = false;
+           $ride['time'] = preg_replace("/\s|&nbsp;/",'',$ride['time']);
+           switch ($ride['time']) {
+             case 'Morning':
+               $ride['timestamp'] = strtotime($lastDate . "9:00");
+               break;
+             case 'Anytime':
+               $ride['timestamp'] = strtotime($lastDate. "12:00");
+               break;
+             case 'Afternoon':
+               $ride['timestamp'] = strtotime($lastDate. "15:00");
+               break;
+             case 'Evening':
+               $ride['timestamp'] = strtotime($lastDate . "18:00");
+               break;
+             case 'Night':
+               $ride['timestamp'] = strtotime($lastDate . "21:00");
+               break;
+             default:
+               $ride['timestamp'] =  strtotime($lastDate . $ride['time']);
+               break;
+           }
+           if (!$ride['timestamp']) {
+             $ride['timestamp'] = strtotime($lastDate);
+           }
+           $ride['price'] = $price;
 
-         $output[] = $ride;
+           $output[] = $ride;
+          }
         }
       }
       break;
