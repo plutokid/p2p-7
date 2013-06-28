@@ -84,10 +84,6 @@
                         <input class="input-small sl-rid-from-date" id="sl-rid-sdate-input" autocomplete="off" placeholder="Departure" type="text">
                       </div>
                       <div class="input-wrapper">
-                        <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
-                        <input class="input-small sl-rid-to-date" autocomplete="off" placeholder="Return" id="sl-rid-edate-input" type="text">
-                      </div>
-                      <div class="input-wrapper">
                         <select class="sl-rid-guest-input" id="sl-rid-guest-input">
                           <option value="1">1 seat</option>
                           <option value="2">2 seats</option>
@@ -248,7 +244,6 @@
     var $hou_sdate = $('#sl-hou-sdate-input');
     var $hou_edate = $('#sl-hou-edate-input');
     var $rid_sdate = $('#sl-rid-sdate-input');
-    var $rid_edate = $('#sl-rid-edate-input');
 
     $hou_sdate.datepicker({
       minDate: 0,
@@ -273,18 +268,10 @@
       inline: true,
       numberOfMonths: 2,
       onClose: function(selectedDate) {
-        $rid_edate.focus();
-      }
-    });
-
-    $rid_edate.datepicker({
-      inline: true,
-      numberOfMonths: 2,
-      beforeShow: customRange,
-      onClose: function() {
         $('#sl-rid-guest-input').focus();
       }
     });
+
 
     google.maps.event.addListener(houDestTA, 'place_changed', function() {
       $hou_sdate.focus();

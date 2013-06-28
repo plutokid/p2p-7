@@ -113,10 +113,14 @@
 
           if (searchQuery.sdate) {
             searchQuery.sdateObj = moment(searchQuery.sdate, "MM/DD/YYYY");
+          } else {
+            searchQuery.sdateObj = "";
           }
 
           if (searchQuery.edate) {
             searchQuery.edateObj = moment(searchQuery.edate, "MM/DD/YYYY");
+          } else {
+            searchQuery.edateObj = "";
           }
 
           if (Outpost.mvc.views.listPage) {

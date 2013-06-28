@@ -7,8 +7,12 @@
   header("Access-Control-Allow-Origin: *");
 
   // Gather the params
+  // eloc=Montreal%2C+QC%2C+Canada&destlat=45.513575277797784&destlon=-73.55735711472185&destState=QC&destCountry=CA&sloc=&origlat=&origlon=&origState=&origCountry=
+  // &sdate=&edate=&guests=1&price_min=10&price_max=300&room_type%5B%5D=entire_home&room_type%5B%5D=private_room&room_type%5B%5D=shared_room&page=1&_=1372448131844
   $startLocation = $_GET["sloc"];
   $endLocation = $_GET["eloc"];
+  $endLat = $_GET["destlat"];
+  $endLon = $_GET["destlon"];
   $startDate = $_GET["sdate"];
   $endDate = $_GET["edate"];
   $guests = $_GET["guests"];
@@ -113,6 +117,44 @@
           $output[] = $room;
         }
       }
+      break;
+    case 'craigslist':
+      $max = $max == 10000 ? 300 : $max;
+      $page = 0 + $page - 1;
+      // eloc=Montreal%2C+QC%2C+Canada&destlat=45.513575277797784&destlon=-73.55735711472185&destState=QC&destCountry=CA&sloc=&origlat=&origlon=&origState=&origCountry=
+      // &sdate=&edate=&guests=1&price_min=10&price_max=300&room_type%5B%5D=entire_home&room_type%5B%5D=private_room&room_type%5B%5D=shared_room&page=1&_=1372448131844
+      $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39";
+      $qry_str = "&category=RVAC&lat={$endLat}&long={$endLon}&radius=7mi&price={$min}..{$max}&sort=price&has_image=1&page={$page}";
+      $extra = "&rpp=100&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
+      $url = $url.$qry_str.$extra;
+      $html = file_get_contents($url);
+      $json = json_decode($html);
+      $dups = array();
+      foreach ($json->postings as $key => $aRoom) {
+        $room['origin'] = isset($aRoom->annotations->source_neighborhood) ? $aRoom->annotations->source_neighborhood : $aRoom->annotations->source_loc;
+        $room['price'] = 0 + $aRoom->price;
+        $room['sanitize'] = $room['price'].preg_replace("/[^A-Z]+/", "", $room['origin']);
+        if (isset($aRoom->location->state)) {
+          if (in_array($room['sanitize'], $dups)) {
+            continue;
+          }
+          $dups[] = $room['sanitize'];
+          $room['id'] = $aRoom->id;
+          $room['uri'] = $aRoom->id;
+          $room['currency'] = $aRoom->currency;
+          $room['idtype'] = "craigslist";
+          $room['roomImg'] = $aRoom->images[0]->full;
+          $room['profileImg'] = "img/noprofile.jpg";
+          $room['link'] = $aRoom->external_url;
+          $room['infoWindowIcon'] = "img/craigslist.png";
+          $room['latLng'] = array($aRoom->location->lat, $aRoom->location->long);
+          $room['desc'] = $aRoom->heading;
+          $room['type'] = "Entire Home/Apt";
+
+          $output[] = $room;
+        }
+      }
+
       break;
     case 'airbnb':
       $url = "https://www.airbnb.com/s";

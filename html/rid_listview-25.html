@@ -5,14 +5,12 @@
         <form class="lp-refineSearchForm" id="ref-rid-form">
           <%
             var guests = Outpost.searchQuery.guests;
-            var origCity = Outpost.searchQuery.origLocation || "Anywhere";
-            var destCity = Outpost.searchQuery.destLocation || "Anywhere";
           %>
           <div class="input-wrapper">
             <input id="ref-rid-orig-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.origLocation %>" placeholder="Departure city">
           </div>
           <div class="input-wrapper">
-            <i class="icon-long-arrow-right hp-arrow"></i>
+            <i class="icon-long-arrow-right hp-arrow ret-arrow" id="ret-arrow" data-toggle="tooltip" title="Swap Departure and Destination cities"></i>
           </div>
           <div class="input-wrapper">
             <input id="ref-rid-dest-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Destination city">
@@ -20,10 +18,6 @@
           <div class="input-wrapper">
             <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
             <input class="input-small sl-rid-from-date" id="ref-rid-sdate" placeholder="Departure" autocomplete="off" value="<%= Outpost.searchQuery.sdate %>" type="text">
-          </div>
-          <div class="input-wrapper">
-            <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
-            <input class="input-small sl-rid-to-date" id="ref-rid-edate" placeholder="Return" autocomplete="off" value="<%= Outpost.searchQuery.edate %>" type="text">
           </div>
           <div class="input-wrapper">
             <select class="sl-rid-guest-input" id="ref-rid-guest">
@@ -41,12 +35,6 @@
       </div>
     </div>
     <div class="span12">
-      <div class="lp-tab-section">
-        <ul class="nav nav-pills rid-tab">
-          <li class="active"><a class="lp-rid-aTab" href="#lp-ridesharing" data-toggle="tab">Departure: <b><%= origCity %> → <%= destCity %></b></a></li>
-          <li><a class="lp-rid-aTab" href="#lp-ridesharing-ret" data-toggle="tab">Return: <b><%= destCity %> → <%= origCity %></b></a></li>
-        </ul>
-      </div>
       <div class="tab-content">
         <div class="tab-pane active" id="lp-ridesharing">
           <div class="span3">
@@ -103,61 +91,6 @@
             </div>
           </div>
         </div>
-        <div class="tab-pane" id="lp-ridesharing-ret">
-          <div class="span3">
-            <div class="accordion lp-sidebar">
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle">
-                    Sort by
-                  </a>
-                </div>
-                <div class="accordion-body in collapse">
-                  <div class="accordion-inner">
-                    <select class="lp-sortfilter" id="lp-rid-sortby-ret">
-                      <option value="relevance">Relevance</option>
-                      <option value="date">Date</option>
-                      <option value="low2high">Price: Low to high</option>
-                      <option value="high2low">Price: High to low</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle">
-                    Providers
-                  </a>
-                </div>
-                <div class="accordion-body in collapse">
-                  <div class="accordion-inner">
-                    <label class="checkbox">
-                      <input class="lp-rid-providers-ret" type="checkbox" value="blablacar">BlaBlaCar <span class="fil-num" id="fil-num-bbc-ret"></span>
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-rid-providers-ret" type="checkbox" value="kangaride">Kangaride <span class="fil-num" id="fil-num-kan-ret"></span>
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-rid-providers-ret" type="checkbox" value="ridejoy">Ridejoy <span class="fil-num" id="fil-num-rid-ret"></span>
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-rid-providers-ret" type="checkbox" value="zimride">Zimride <span class="fil-num" id="fil-num-zim-ret"></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="span9 pull-right margin0">
-            <div class="well" id="lp-rid-well-ret">
-              Searching for rideshares going from or towards <b><%= Outpost.searchQuery.origLocation || Outpost.searchQuery.origLocation %></b>...
-            </div>
-            <div class="lp-lists" id="lp-rid-list-ret"></div>
-            <div class="lp-spinner css-red lp-hidden" id="lp-rid-ls-ret" style="display: none;">
-              <div class="icon-spinner icon-spin icon-4x"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -166,11 +99,10 @@
   (function() {
     $('.pac-container').remove();
     $('.lp-sidebar').affix({
-      offset: 165
+      offset: 125
     });
 
     var $sdate = $('#ref-rid-sdate');
-    var $edate = $("#ref-rid-edate");
 
     // REFINE SEARCH INIT
     var options = {
@@ -185,38 +117,15 @@
       $sdate.focus();
     });
 
-    var customRange = function customRange(input) {
-      var minDate;
-      var startDateVal = $sdate.val();
-      if (input.id === 'ref-rid-edate') {
-        if (startDateVal) {
-          minDate = new Date(startDateVal);
-          minDate.setDate(minDate.getDate() + 1);
-          return {
-            minDate: minDate
-          };
-        } else {
-          return {
-            minDate: 1
-          };
-        }
-      }
-    };
 
     $sdate.datepicker({
       minDate: 0,
       inline: true,
       onClose: function(selectedDate) {
-        $edate.focus();
-      }
-    });
-
-    $edate.datepicker({
-      inline: true,
-      beforeShow: customRange,
-      onClose: function() {
         $('#ref-rid-guest').focus();
       }
     });
+
+    $('#ret-arrow').tooltip();
   })();
 </script>

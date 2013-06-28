@@ -819,8 +819,8 @@ line-height: 1.2;
   font-weight: bold;
   text-align: center;
   background: white;
-margin-left: 5px;
-padding-top: 5px;
+  margin-left: 5px;
+  padding-top: 5px;
 }
 
 .hiw-first, .hiw-fourth {
@@ -861,12 +861,8 @@ padding-top: 5px;
 
  /*END HOW IT WORKS*/
 
-.top {
-  color: #d8d8d8;
-  background: rgba(12, 13, 14, 0.66);
-  width: 825px;
-  border-radius: 3px;
-  margin: 90px auto 0 auto;
+.tooltip {
+  width: 125px;
 }
 
 .around-me:hover {
@@ -951,6 +947,20 @@ background-color: #2284A1;
   margin-top: 7px;
 }
 
+.ret-arrow {
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.ret-arrow:hover {
+  color: #ecf0f1;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
 #sl-hou-sdate-input, #sl-hou-edate-input, #sl-hou-guest-input,
 #sl-rid-sdate-input, #sl-rid-edate-input, #sl-rid-guest-input,
 #ref-ren-sdate, #ref-ren-edate, #ref-ren-guest,
@@ -988,7 +998,7 @@ background-color: #2284A1;
 }
 
 #ref-rid-orig-loc, #ref-rid-dest-loc {
-  width: 180px;
+  width: 245px;
 }
 
 #sl-hou-dest-location-input, #sl-rid-dest-location-input,
@@ -1020,7 +1030,7 @@ background-color: #2284A1;
 
 #sl-rid-dest-location-input,
 #sl-rid-orig-location-input {
-  width: 200px;
+  width: 271px;
 }
 
 #hou-searchIt, #rid-searchIt, #exp-searchIt,
@@ -1542,6 +1552,10 @@ color: white;
 }
 .lpl-nflats {
   background:url("../img/9flats.png") no-repeat #24b0cf 621px 3px;
+}
+
+.lpl-craigslist {
+  background:url("../img/craigslist.png") no-repeat #24b0cf 603px 4px;
 }
 
 .lpl-roomorama {

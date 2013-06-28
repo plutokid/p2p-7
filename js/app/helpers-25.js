@@ -451,59 +451,6 @@
       return dff.promise();
     },
 
-    fetchRideSharesRet: function(state, idtype) {
-      var dff = $.Deferred();
-      var options = Outpost.searchQuery;
-      var query = "";
-      this.ridRequestsRet = this.ridRequestsRet || [];
-      var data = {
-        idtype: idtype,
-        sloc: options.destLocation,
-        origlat: options.destLocationLat,
-        origlon: options.destLocationLng,
-        origState: options.destState,
-        origCountry: options.destCountry,
-
-        eloc: options.origLocation,
-        destlat: options.origLocationLat,
-        destlon: options.origLocationLng,
-        destState: options.origState,
-        destCountry: options.origCountry,
-
-        edate: "",
-        sdate: options.edate,
-
-        guests: options.guests,
-
-        page: state.page
-      };
-
-      query = Outpost.helpers.genSearchQuery([
-        data.idtype,
-        data.sloc,
-        data.eloc,
-        data.sdate,
-        data.edate,
-        data.guests,
-        data.page,
-        "swapped"
-      ]);
-
-      if (!this.ridRequestsRet[query]) {
-        this.ridRequestsRet[query] = $.ajax({
-          url: '/api/v3/rideshare/',
-          type: 'GET',
-          dataType: 'jsonp',
-          data: data
-        });
-      }
-
-      this.ridRequestsRet[query].done(function(data) {
-        dff.resolve(data);
-      });
-
-      return dff.promise();
-    },
 
     fetchRentals: function(state, idtype) {
       var dff = $.Deferred();
