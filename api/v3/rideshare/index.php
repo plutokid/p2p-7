@@ -4,36 +4,51 @@
   header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
 
+  // "ridejoy", "kangaride", "craiglist" ..
   $idtype = $_GET["idtype"];
 
+  // "Montreal, QC, Canada"
   $startLocation = urlencode($_GET["sloc"]);
   $endLocation = urlencode($_GET["eloc"]);
 
+  // "06/27/2013"
   $startDate = urlencode($_GET["sdate"]);
   $endDate = urlencode($_GET["edate"]);
 
+  // 45.50770
   $origLat = $_GET["origlat"];
   $origLon = $_GET["origlon"];
+
+  // -73.55417808195186
   $destLat = $_GET["destlat"];
   $destLon = $_GET["destlon"];
 
-  $state1 = isset($_GET["origState"]) ? $_GET["origState"] : '';
-  $state2 = isset($_GET["destState"]) ? $_GET["destState"] : '';
-  $city1 = explode(',', urldecode($startLocation));
-  $city1 = str_replace(array("é", "è"), "e", $city1[0]);
-  $city2 = explode(',', urldecode($endLocation));
-  $city2 = str_replace(array("é", "è"), "e", $city2[0]);
+  // "QC"
+  $origState = isset($_GET["origState"]) ? $_GET["origState"] : '';
+  $destState = isset($_GET["destState"]) ? $_GET["destState"] : '';
 
-  $country1 = $_GET["origCountry"];
-  $country2 = $_GET["destCountry"];
+  // "Quebec City", "Toronto", "Montreal"
+  $origCity = explode(',', urldecode($startLocation));
+  $origCity = str_replace(array("é", "è"), "e", $origCity[0]);
+  $destCity = explode(',', urldecode($endLocation));
+  $destCity = str_replace(array("é", "è"), "e", $destCity[0]);
 
-  $country = $country1 ? $country1 : $country2;
+  // "CA"
+  $origCountry = $_GET["origCountry"];
+  $destCountry = $_GET["destCountry"];
 
+  // Just want one of them - i.e: As long as one of the cities is in US/CA
+  $country = $origCountry ? $origCountry : $destCountry;
+
+  // 1
   $page = $_GET["page"];
   if (!$page) {
     $page = 1;
   }
 
+  // Telling the crawler what to load because some feeds don't support all
+  // countries, thus saving performance for the end user by not doing
+  // unecessary HTTP requests.
   if (!$country) {
     $country = "world";
   } elseif ($country == "CA" || $country == "US") {
@@ -42,14 +57,15 @@
     $country = "world";
   }
 
+  // "3"
   $guests = $_GET["guests"];
   $guests = 0 + $guests;
 
   $output = array();
-  $idarr = array();
 
   $poolList = new simple_html_dom();
 
+  // Start the crawling
   switch ($idtype) {
     case 'blablacar':
       if ($country == "world") {
@@ -110,21 +126,21 @@
       break;
 
     case 'kangaride':
-      if ($country == "NA" && ($country1 == "CA" || $country2 == "CA")) {
-        $state1 = $state1 ? $state1."/" : '';
-        $state2 = $state2 ? $state2."/" : '';
-        $city1 = $city1 == "Quebec City" ? "Quebec" : $city1;
-        $city2 = $city2 == "Quebec City" ? "Quebec" : $city2;
-        if ($city1 && $city2) {
-          $city1 = str_replace(' ', '_', $city1);
-          $city2 = str_replace(' ', '_', $city2);
-          $uri = "rideshares_from_{$city1}_to_{$city2}.html";
-        } elseif ($city1) {
-          $city1 = str_replace(' ', '_', $city1);
-          $uri = "rideshares_from_{$city1}.html";
-        } elseif ($city2) {
-          $city2 = str_replace(' ', '_', $city2);
-          $uri = "rideshares_to_{$city2}.html";
+      if ($country == "NA" && ($origCountry == "CA" || $destCountry == "CA")) {
+        $origState = $origState ? $origState."/" : '';
+        $destState = $destState ? $destState."/" : '';
+        $origCity = $origCity == "Quebec City" ? "Quebec" : $origCity;
+        $destCity = $destCity == "Quebec City" ? "Quebec" : $destCity;
+        if ($origCity && $destCity) {
+          $origCity = str_replace(' ', '_', $origCity);
+          $destCity = str_replace(' ', '_', $destCity);
+          $uri = "rideshares_from_{$origCity}_to_{$destCity}.html";
+        } elseif ($origCity) {
+          $origCity = str_replace(' ', '_', $origCity);
+          $uri = "rideshares_from_{$origCity}.html";
+        } elseif ($destCity) {
+          $destCity = str_replace(' ', '_', $destCity);
+          $uri = "rideshares_to_{$destCity}.html";
         }
 
         $startDate2 = '';
@@ -152,7 +168,7 @@
         } else {
           $kangaPage = "&p={$page}";
         }
-        $qry_str = $state1.$state2.$uri.$startDate2.$endDate2.$kangaPage;
+        $qry_str = $origState.$destState.$uri.$startDate2.$endDate2.$kangaPage;
         $opts = array(
           'http'=>array(
             'method'=>"GET",
@@ -235,6 +251,7 @@
         $html = file_get_contents($url);
 
         $poolList->load($html);
+        $idarr = array();
 
         foreach($poolList->find('.date') as $aBlock) {
           $date = $aBlock->find('.date_header', 0)->plaintext;

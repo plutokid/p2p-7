@@ -1,5 +1,5 @@
 <?php
-  // Comment out the next line when developing to report every type of error
+  // Comment the next line when developing to report every type of error
   // error_reporting(0);
 
   // For JSONP convinience
@@ -50,7 +50,15 @@
     $endDate_dash = date('Y-m-d', strtotime($endDate));
   }
 
-  // Setting up the room_type filter for each provider
+  /*
+    Setting up the room_type filter for each provider
+    $roomType is an array which holds all or some of these
+    data: ["entire_home", "shared_room", "private_room"]
+    The roomType array will NEVER be empty
+    Depending on the API, everyone has different ways of appending
+    the roomTypes in the GET URI. Looping over each one and doing a switch
+    statement to make sure everything is right for every case.
+  */
   $airRoomType = '';
   $nflatsroomtype = '';
   $roomaramaRoomtype = '';
@@ -78,6 +86,7 @@
   // Declare the globar array for us to feed on
   $output = array();
 
+  // Start crawling
   switch ($idtype) {
     case 'nflats':
       $url = "https://api.9flats.com/api/v4/places";
