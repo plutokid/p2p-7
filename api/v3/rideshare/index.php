@@ -13,7 +13,6 @@
 
   // "06/27/2013"
   $startDate = urlencode($_GET["sdate"]);
-  $endDate = urlencode($_GET["edate"]);
 
   // 45.50770
   $origLat = $_GET["origlat"];
@@ -149,7 +148,7 @@
         }
 
         $endDate2 = '';
-        if ($endDate) {
+        if (isset($endDate)) {
           $endDate2 = urldecode($endDate);
           $endDate2 = explode("/", $endDate2);
           $endDate2 = $endDate2[2]."-".$endDate2[0]."-".$endDate2[1];

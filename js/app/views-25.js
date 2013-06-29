@@ -274,6 +274,7 @@
       templateWell: _.template($('#tmpl-hou-well').html()),
       templateCarousel: _.template($('#tmpl-carousel').html()),
       idtypes: ["nflats", "airbnb", "craigslist", "roomorama"],
+      numOfLoaded: 0,
       collection: [],
       sortedCollection: [],
       state: {
@@ -293,7 +294,7 @@
         _this.template('ren_listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           _this.resetState();
-          _this.initfetchRentals();
+          _this.fetchRentals();
           _this.initSliderGUI();
         });
       },

@@ -94,7 +94,7 @@
   switch ($idtype) {
     case 'nflats':
       $url = "https://api.9flats.com/api/v4/places";
-      $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate_dash}&search[end_date]={$endDate_dash}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=21&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
+      $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate_dash}&search[end_date]={$endDate_dash}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=11&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
       $url = $url.$qry_str;
       $html = file_get_contents($url);
       $nflatsjson = json_decode($html);
@@ -125,7 +125,7 @@
       // &sdate=&edate=&guests=1&price_min=10&price_max=300&room_type%5B%5D=entire_home&room_type%5B%5D=private_room&room_type%5B%5D=shared_room&page=1&_=1372448131844
       $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39";
       $qry_str = "&category=RVAC&lat={$endLat}&long={$endLon}&radius=7mi&price={$min}..{$max}&sort=price&has_image=1&page={$page}";
-      $extra = "&rpp=100&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
+      $extra = "&rpp=21&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
       $url = $url.$qry_str.$extra;
       $html = file_get_contents($url);
       $json = json_decode($html);
@@ -197,7 +197,7 @@
         $endDate_dash = '';
       }
       $url = "https://api.roomorama.com/v1.0/rooms.json";
-      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=21";
+      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=11";
       $url = $url . $qry_str;
       $html = file_get_contents($url);
       $roomoramajson = json_decode($html);
