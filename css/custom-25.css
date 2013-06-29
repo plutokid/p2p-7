@@ -390,7 +390,7 @@ line-height: 1.2;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.20);
 }
 
-.stash-btn {
+.logged-btn {
   height: 28px;
   color: #333;
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
@@ -399,16 +399,34 @@ line-height: 1.2;
   background-image: linear-gradient(to bottom,#fcfcfc 0,#f8f8f8 100%);
 }
 
-.stash-btn:hover {
+.logged-btn:hover {
   border-color: #c6c6c6;
   background-image: linear-gradient(to bottom,#f8f8f8 0,#eee 100%);
 }
 
-.stash-btn:active {
+.logged-btn:active {
   border-color: #c6c6c6;
   background-color: #e9e9e9;
   background-image: none;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.20);
+}
+
+.logged-upmenu .logged-submenu {
+  display: none;
+}
+
+.logged-upmenu:hover .logged-submenu {
+  display: block;
+}
+
+.btn-subnav {
+  width: 100px;
+  text-align: right;
+  background: #bdc3c7;
+}
+
+.logged-submenu li {
+  list-style-type: none;
 }
 
 .btn-facebook {

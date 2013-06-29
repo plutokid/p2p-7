@@ -143,7 +143,6 @@
         var hasComma = destCity.indexOf(",");
         destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
         var queryString = {
-          origCity: "",
           destCity: Outpost.helpers.enbarURI(destCity),
           sdate: $('#sl-hou-sdate-input').val(),
           edate: $('#sl-hou-edate-input').val(),
@@ -173,7 +172,6 @@
           origCity: Outpost.helpers.enbarURI(origCity),
           destCity: Outpost.helpers.enbarURI(destCity),
           sdate: $('#sl-rid-sdate-input').val(),
-          edate: "",
           guests: $('#sl-rid-guest-input').val()
         };
         queryString = $.param(queryString);
@@ -528,7 +526,6 @@
         var validatedValues = this.validate();
         var destCity = validatedValues.destCity;
         var queryString = {
-          origCity: "",
           destCity: Outpost.helpers.enbarURI(destCity),
           sdate: $('#ref-ren-sdate').val(),
           edate: $('#ref-ren-edate').val(),
@@ -984,7 +981,6 @@
           origCity: Outpost.helpers.enbarURI(origCity),
           destCity: Outpost.helpers.enbarURI(destCity),
           sdate: $('#ref-rid-sdate').val(),
-          edate: "",
           guests: $('#ref-rid-guest').val()
         };
         queryString = "!/rides?" + $.param(queryString);
