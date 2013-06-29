@@ -510,13 +510,14 @@
       return dff.promise();
     },
 
-    fetchGuides: function(state) {
+    fetchGuides: function(state, idtype) {
       var dff = $.Deferred();
       var options = Outpost.searchQuery;
       var query = "";
       this.touRequests = this.touRequests || [];
 
       var data = {
+        idtype: idtype,
         eloc: options.destLocation,
         destlat: options.destLocationLat,
         destlon: options.destLocationLng,
@@ -538,6 +539,7 @@
       };
 
       query = Outpost.helpers.genSearchQuery([
+        data.idtype,
         data.sloc,
         data.eloc,
         data.sdate,

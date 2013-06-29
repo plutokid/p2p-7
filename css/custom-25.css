@@ -997,13 +997,11 @@ background-color: #2284A1;
   width: 100px;
 }
 
-#ref-rid-orig-loc, #ref-rid-dest-loc {
-  width: 245px;
-}
 
 #sl-hou-dest-location-input, #sl-rid-dest-location-input,
 #sl-rid-orig-location-input, #sl-exp-dest-location-input,
-#ref-ren-dest-loc, #ref-rid-orig-loc, #ref-rid-dest-loc {
+#ref-ren-dest-loc, #ref-rid-orig-loc, #ref-rid-dest-loc,
+#ref-exp-dest-loc {
   color: #5a5a5a;
   height: 23px;
   margin: 0;
@@ -1015,6 +1013,15 @@ background-color: #2284A1;
   border-radius: 3px;
   transition: border linear 0.2s,box-shadow linear 0.2s;
 }
+
+#ref-rid-orig-loc, #ref-rid-dest-loc {
+  width: 245px;
+}
+
+#ref-exp-dest-loc {
+  width: 772px;
+}
+
 
 #ref-ren-dest-loc {
   width: 355px;
@@ -1030,11 +1037,11 @@ background-color: #2284A1;
 
 #sl-rid-dest-location-input,
 #sl-rid-orig-location-input {
-  width: 271px;
+  width: 270px;
 }
 
 #hou-searchIt, #rid-searchIt, #exp-searchIt,
-#ref-ren-search, #ref-rid-search {
+#ref-ren-search, #ref-rid-search, #ref-exp-search {
   float: left;
   height: 41px;
   line-height: normal;

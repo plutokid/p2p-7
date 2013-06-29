@@ -1123,7 +1123,7 @@
         _this.toggleLoading();
 
         for (var i = 0; i < len; i++) {
-          Outpost.helpers.fetchRideShares(
+          Outpost.helpers.fetchGuides(
             this.state,
             this.idtypes[i]
           ).done(parseHTML);

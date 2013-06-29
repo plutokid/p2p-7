@@ -12,6 +12,7 @@
 
         "!/help/*hook": "helppage",
         "!/help/*hook/": "helppage",
+        "!/help": "helppage",
 
         "!/:type": "listview",
         "!/:type/": "listview",

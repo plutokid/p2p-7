@@ -42,9 +42,6 @@
 
   // 1
   $page = $_GET["page"];
-  if (!$page) {
-    $page = 1;
-  }
 
   // Telling the crawler what to load because some feeds don't support all
   // countries, thus saving performance for the end user by not doing
