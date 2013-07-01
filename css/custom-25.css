@@ -411,23 +411,6 @@ line-height: 1.2;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.20);
 }
 
-.logged-upmenu .logged-submenu {
-  display: none;
-}
-
-.logged-upmenu:hover .logged-submenu {
-  display: block;
-}
-
-.btn-subnav {
-  width: 100px;
-  text-align: right;
-  background: #bdc3c7;
-}
-
-.logged-submenu li {
-  list-style-type: none;
-}
 
 .btn-facebook {
   width: 250px;
@@ -2012,6 +1995,10 @@ color: white;
   width: 110px;
 }
 
+.provider-craigslist {
+  width: 110px;
+}
+
 .provider-blablacar {
   width: 120px;
 }
@@ -2412,4 +2399,11 @@ td.details-td {
   margin-left: 480px;
   position: absolute;
   margin-top: -50px;
+}
+
+.well {
+  font-weight: normal;
+  margin: 0 0 20px 0;
+  font-size: 14px;
+  line-height: 18px;
 }

@@ -1,3 +1,10 @@
+<%
+  Outpost.helpers.alternateSEO({
+    title: title + " in " + city,
+    description: property_type + " " + room_type + " for " + price +
+    " per night (" + currency + ")."
+  });
+%>
 <div class="container" id="singleViewPage">
   <div class="row">
     <div class="span12">
@@ -6,7 +13,7 @@
           <h2 class="panel-title"><%= title %></h2>
         </div>
         <div class="item-content row">
-          <h4 class="panel-subtitle-hou"><%= property_type %> - <%= room_type %> · <span class="text-yellow"><%= address %></span></h4>
+          <h4 class="panel-subtitle-hou"><%= property_type %> <%= room_type %> · <span class="text-yellow"><%= address %></span></h4>
           <div class="span8">
             <div class="left-col-content">
               <div class="tabbable">
@@ -96,6 +103,8 @@
                 <% if (numOfBedrooms) { %>
                   <strong class="item-beds"><%= numOfBedrooms %></strong>
                   <span class="item-seat-left"><%= numOfBedrooms <= 1 ? "bedroom" : "bedrooms" %></span>
+                <% } %>
+                <% if (numOfBedrooms && numOfBeds) { %>
                   <span>&amp;</span>
                 <% } %>
                 <% if (numOfBeds) { %>

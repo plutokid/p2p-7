@@ -27,9 +27,9 @@
                 <div class="accordion-body in collapse">
                   <div class="accordion-inner">
                     <select class="lp-sortfilter" id="lp-tou-sortby">
-                      <option value="relevance">Relevance</option>
                       <option value="low2high">Price: Low to high</option>
                       <option value="high2low">Price: High to low</option>
+                      <option value="provider">Provider</option>
                     </select>
                   </div>
                 </div>
@@ -51,9 +51,9 @@
             </div>
           </div>
           <div class="span9 pull-right margin0">
-            <div class="well" id="lp-tou-well">
+            <h1 class="well" id="lp-tou-well">
               Searching for guides near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
-            </div>
+            </h1>
             <div class="lp-lists" id="lp-tou-list"></div>
             <div class="lp-spinner css-green lp-hidden" id="lp-tou-ls" style="display: none;">
               <div class="icon-spinner icon-spin icon-4x"></div>

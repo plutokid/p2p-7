@@ -32,15 +32,9 @@
       home: function(actions, params) {
         var geoPromise;
         switch (actions) {
-          case "!/search":
-            this.listview();
-            break;
-          case "!/help":
-            this.helppage();
-            break;
           default:
             this.$title.text(
-              "Outpost - Lookup peer to peer listings all in one place"
+              "Outpost - Compare thousands of unique, cheap and affordable ways of traveling"
             );
             if (Outpost.mvc.views.indexPage) {
               Outpost.mvc.views.indexPage.render();
@@ -51,6 +45,14 @@
       },
 
       tabRentals: function() {
+        Outpost.helpers.alternateSEO({
+          title: "Outpost - Cheap Vacation Rentals - " +
+                 "Short Term Spaces and Rooms - " +
+                 "Compare many P2P Travel Websites",
+          description: "Find great vacation rental deals with Outpost Place " +
+          "Rentals. Search for rates for cheap location rentals. " +
+          "Compare prices, and reserve with confidence!"
+        });
         Outpost.list.type = "rentals";
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();
@@ -60,6 +62,14 @@
       },
 
       tabRides: function() {
+        Outpost.helpers.alternateSEO({
+          title: "Outpost - Rideshares and Carpools - " +
+          "Long Distance, Commuter, Local, Private Groups - " +
+          "Search from many P2P Travel Websites",
+          description: "Find rideshares in any city on Outpost, book direct " +
+          "with carpooling companies that you trust. Outpost searches many sites, you find the best ride." +
+          "Compare prices, and reserve with confidence!"
+        });
         Outpost.list.type = "rides";
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();
@@ -69,6 +79,13 @@
       },
 
       tabExperiences: function() {
+        Outpost.helpers.alternateSEO({
+          title: "Outpost - Experiences and Activities - " +
+          "Find the rarest and best locations from locals - " +
+          "P2P Travel Aggregator Websites",
+          description: "Find and discover, unique travel experiences, " +
+          "including tours, activities and extended with Outpost."
+        });
         Outpost.list.type = "experiences";
         if (Outpost.mvc.views.indexPage) {
           Outpost.mvc.views.indexPage.render();

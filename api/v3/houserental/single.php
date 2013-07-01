@@ -13,6 +13,9 @@
     case 'nflats':
       $json = nflats($url);
       break;
+    case 'craigslist':
+      $json = craigslist($url);
+      break;
     case 'roomorama':
       $json = roomorama($url);
       break;
@@ -42,7 +45,7 @@
     $json["amenities"] = $single->amenities;
 
     $json["city"] = $single->city;
-    $json["property_type"] = $single->property_type;
+    $json["property_type"] = $single->property_type." -";
     $json["room_type"] = $single->room_type;
     $json["address"] = $single->address;
 
@@ -63,42 +66,58 @@
       "Instant Bookable:",
       yesno($single->instant_bookable)
     );
-    $json["smallInfo"][] = array(
-      "Accommodates:",
-      $single->person_capacity
-    );
-    $json["smallInfo"][] = array(
-      "Cancellation:",
-      $single->cancel_policy_short_str
-    );
-    $json["smallInfo"][] = array(
-      "Bed Type:",
-      $single->bed_type
-    );
-    $json["smallInfo"][] = array(
-      "Bathrooms:",
-      $single->bathrooms
-    );
-    $json["smallInfo"][] = array(
-      "Minimum Stay:",
-      $single->min_nights
-    );
+    if (isset($single->person_capacity)) {
+      $json["smallInfo"][] = array(
+        "Accommodates:",
+        $single->person_capacity
+      );
+    }
+    if (isset($single->cancel_policy_short_str)) {
+      $json["smallInfo"][] = array(
+        "Cancellation:",
+        $single->cancel_policy_short_str
+      );
+    }
+    if (isset($single->bed_type)) {
+      $json["smallInfo"][] = array(
+        "Bed Type:",
+        $single->bed_type
+      );
+    }
+    if (isset($single->bathrooms)) {
+      $json["smallInfo"][] = array(
+        "Bathrooms:",
+        $single->bathrooms
+      );
+    }
+    if (isset($single->min_nights)) {
+      $json["smallInfo"][] = array(
+        "Minimum Stay:",
+        $single->min_nights
+      );
+    }
     $json["smallInfo"][] = array(
       "Extra People:",
       '$'."{$single->price_for_extra_person_native} {$json['currency']} / night after {$single->guests_included} guests"
     );
-    $json["smallInfo"][] = array(
-      "Security Deposit:",
-      '$'.$single->security_deposit_native
-    );
-    $json["smallInfo"][] = array(
-      "Check In:",
-      $single->check_in_time.":00"
-    );
-    $json["smallInfo"][] = array(
-      "Check Out:",
-      $single->check_out_time.":00"
-    );
+    if (isset($single->security_deposit_native)) {
+      $json["smallInfo"][] = array(
+        "Security Deposit:",
+        '$'.$single->security_deposit_native
+      );
+    }
+    if (isset($single->check_in_time)) {
+      $json["smallInfo"][] = array(
+        "Check In:",
+        $single->check_in_time.":00"
+      );
+    }
+    if (isset($single->check_out_time)) {
+      $json["smallInfo"][] = array(
+        "Check Out:",
+        $single->check_out_time.":00"
+      );
+    }
 
     if ($single->reviews_count) {
       $json["review"] = array(
@@ -137,7 +156,7 @@
     $json["city"] = $single->place_details->city;
     $json["zipcode"] = $single->place_details->zipcode;
     $json["country"] = $single->place_details->country;
-    $json["property_type"] = $single->place_details->category;
+    $json["property_type"] = $single->place_details->category." -";
     $json["room_type"] = $single->place_details->place_type;
     $json["address"] = "{$json['city']}, {$json['zipcode']}, {$json['country']}";
 
@@ -167,30 +186,126 @@
       "Instant Bookable:",
       yesno($single->place_details->instant_bookable)
     );
-    $json["smallInfo"][] = array(
-      "Accommodates:",
-      $single->place_details->charge_per_extra_person_limit
-    );
-    $json["smallInfo"][] = array(
-      "Cancellation:",
-      $single->place_details->cancellation_rules->type
-    );
-    $json["smallInfo"][] = array(
-      "Bed Type:",
-      $single->place_details->bed_type
-    );
-    $json["smallInfo"][] = array(
-      "Bathrooms:",
-      $single->place_details->number_of_bathrooms
-    );
-    $json["smallInfo"][] = array(
-      "Minimum Stay:",
-      $single->place_details->minimum_nights
-    );
+    if ($single->place_details->charge_per_extra_person_limit) {
+      $json["smallInfo"][] = array(
+        "Accommodates:",
+        $single->place_details->charge_per_extra_person_limit
+      );
+    }
+    if ($single->place_details->cancellation_rules->type) {
+      $json["smallInfo"][] = array(
+        "Cancellation:",
+        $single->place_details->cancellation_rules->type
+      );
+    }
+    if ($single->place_details->number_of_bathrooms) {
+      $json["smallInfo"][] = array(
+        "Bathrooms:",
+        $single->place_details->number_of_bathrooms
+      );
+    }
+    if ($single->place_details->minimum_nights) {
+      $json["smallInfo"][] = array(
+        "Minimum Stay:",
+        $single->place_details->minimum_nights
+      );
+    }
     $json["smallInfo"][] = array(
       "Extra People:",
       '$'."{$single->pricing->charge_per_extra_person} {$json['currency']} / night after {$single->place_details->charge_per_extra_person_limit} guests"
     );
+
+    $json["review"] = false;
+
+    return json_encode($json);
+  }
+
+  function craigslist($id) {
+    global $idtype;
+    $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39&id={$id}";
+    $extra = "&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
+    $url = $url.$extra;
+    $html = file_get_contents($url);
+    $single = json_decode($html);
+
+    $single = $single->postings[0];
+
+    $json["title"] = $single->heading;
+    $json["price"] = "$".$single->price;
+    $json["currency"] = $single->currency;
+    $json["numOfBeds"] = $single->beds; // non existent
+    $json["numOfBedrooms"] = 0 + $single->annotations->bedrooms;
+    $json["house_rules"] = "";
+    $json["link"] = $single->external_url;
+
+    $json["picture_url"] = "img/rsz_noavatar.png";
+    $json["name"] = "";
+    $json["response_time"] = "&nbsp;";
+
+    if (isset($single->annotations->phone)) {
+      $json["amenities"] = [
+        $single->annotations->source_account,
+        $single->annotations->phone
+      ];
+    } else {
+      $json["amenities"] = [
+        $single->annotations->source_account
+      ];
+    }
+
+    $json["room_type"] = "Entire Home/Apt";
+    $json["property_type"] = "";
+    $json["city"] = $single->annotations->source_loc;
+    $json["address"] = isset($single->annotations->source_neighborhood) ? $single->annotations->source_neighborhood : $single->annotations->source_loc;
+
+    $json["logopath"] = "img/craigslist_hp.png";
+    $json["idtype"] = $idtype;
+    $json["logodesc"] = "Craigslist has thousands of vacation rentals classifieds.";
+
+    $gallery = $single->images;
+    $imgArr = array();
+    $captions = array();
+    for ($i = 0; $i < count($gallery); $i++) {
+      $imgArr[] = $gallery[$i]->full;
+      $captions[] = "";
+    }
+    $json["imgs"] = $imgArr;
+    $json["captions"] = $captions;
+
+    $json["lat"] = $single->location->lat;
+    $json["lng"] = $single->location->long;
+
+    $json["desc"] = $single->body;
+
+    $json["smallInfo"] = array();
+    $json["smallInfo"][] = array(
+      "Instant Bookable:",
+      "No"
+    );
+    if (isset($single->annotations->sqft)) {
+      $json["smallInfo"][] = array(
+        "Sqaure FT:",
+        $single->annotations->sqft
+      );
+    }
+    if (isset($single->annotations->cats)) {
+      $json["smallInfo"][] = array(
+        "Allow Cats:",
+        $single->annotations->cats === "YES" ? "Yes" : "No"
+      );
+    }
+    if (isset($single->annotations->dogs)) {
+      $json["smallInfo"][] = array(
+        "Allow Dogs:",
+        $single->annotations->dogs === "YES" ? "Yes" : "No"
+      );
+    }
+    if (isset($single->annotations->year)) {
+      $json["smallInfo"][] = array(
+        "Year Model:",
+        $single->annotations->year
+      );
+    }
 
     $json["review"] = false;
 
@@ -221,7 +336,7 @@
     $json["city"] = $single->city;
     $json["zipcode"] = "";
     $json["country"] = $single->country_code;
-    $json["property_type"] = $single->type;
+    $json["property_type"] = $single->type." -";
     $json["room_type"] = $single->subtype;
     $json["address"] = "{$json['city']}, {$json['country']}";
 
@@ -244,48 +359,58 @@
     $json["desc"] = $single->description;
 
     $json["smallInfo"] = array();
-    $json["smallInfo"][] = array(
-      "Accommodates:",
-      $single->max_guests
-    );
+    if ($single->max_guests) {
+      $json["smallInfo"][] = array(
+        "Accommodates:",
+        $single->max_guests
+      );
+    }
     $json["smallInfo"][] = array(
       "Cancellation:",
       $single->cancellation_policy ? "Strict" : "None"
     );
-    if ($single->num_double_beds) {
+    if (isset($single->num_double_beds)) {
       $json["smallInfo"][] = array(
         "Double beds",
         $single->num_double_beds
       );
     }
-    if ($single->num_single_beds) {
+    if (isset($single->num_single_beds)) {
       $json["smallInfo"][] = array(
         "Single beds",
         $single->num_single_beds
       );
     }
-    if ($single->num_sofa_beds) {
+    if (isset($single->num_sofa_beds)) {
       $json["smallInfo"][] = array(
         "Sofa beds",
         $single->num_sofa_beds
       );
     }
-    $json["smallInfo"][] = array(
-      "Bathrooms:",
-      $single->num_bathrooms
-    );
-    $json["smallInfo"][] = array(
-      "Minimum Stay:",
-      $single->min_stay
-    );
-    $json["smallInfo"][] = array(
-      "Check In:",
-      $single->check_in_time
-    );
-    $json["smallInfo"][] = array(
-      "Check Out:",
-      $single->check_out_time
-    );
+    if ($single->num_bathrooms) {
+      $json["smallInfo"][] = array(
+        "Bathrooms:",
+        $single->num_bathrooms
+      );
+    }
+    if ($single->min_stay) {
+      $json["smallInfo"][] = array(
+        "Minimum Stay:",
+        $single->min_stay
+      );
+    }
+    if ($single->check_in_time) {
+      $json["smallInfo"][] = array(
+        "Check In:",
+        $single->check_in_time
+      );
+    }
+    if ($single->check_out_time) {
+      $json["smallInfo"][] = array(
+        "Check Out:",
+        $single->check_out_time
+      );
+    }
     $json["review"] = false;
 
     return json_encode($json);

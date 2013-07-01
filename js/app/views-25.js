@@ -4,9 +4,9 @@
   var Outpost = window.Outpost;
 
   Outpost.views = {
-    // =======================================================
+    // ========================================================================
     // Main App View
-    // =======================================================
+    // ========================================================================
     main: Parse.View.extend({
       initialize: function() {
         // Initialize the navBar
@@ -18,15 +18,16 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // Navbar View
-    // =======================================================
+    // ========================================================================
     navBar: Parse.View.extend({
       el: '#js-navbar',
       template: _.template($('#tmpl-navbar').html()),
 
       events: {
-        "click .js-logout": "logoutUser"
+        "click .js-logout": "logoutUser",
+        "click #sign-up-btn": "focusInput"
       },
 
       initialize: function() {
@@ -40,6 +41,12 @@
         this.render(data);
       },
 
+      focusInput: function() {
+        setTimeout(function () {
+          $('#js-su-first_name').focus();
+        }, 600);
+      },
+
       logoutUser: function() {
         Parse.User.logOut();
         this.render({});
@@ -50,9 +57,9 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // Home - Page
-    // =======================================================
+    // ========================================================================
     indexPage: Parse.View.extend({
       el: "#pg-home",
       template: Outpost.helpers.renderTemplate,
@@ -83,11 +90,6 @@
         $('.ui-datepicker').hide();
         switch (tab) {
           case "rentals":
-            $title.text(
-              "Outpost - Cheap Vacation Rentals - " +
-              "Short Term Spaces and Rooms - " +
-              "Compare many P2P Travel Websites"
-            );
             $('#sl-hou-dest-location-input').focus();
             $("#main-head").css({
               backgroundImage: "url(../img/rentalsbg.jpg)"
@@ -97,12 +99,6 @@
             }, 500);
             break;
           case "rides":
-            $title.text(
-              "Outpost - Rideshares and Carpools - " +
-              "Long Distance, Commuter, Local, Private Groups - " +
-              "Search from many P2P Travel Websites"
-            );
-
             if ($ridOrig.val()) {
               $ridDest.focus();
             } else {
@@ -117,11 +113,6 @@
             }, 500);
             break;
           case "experiences":
-            $title.text(
-              "Outpost - Experiences and Activities - " +
-              "Find the rarest and best locations from locals - " +
-              "P2P Travel Aggregator Websites"
-            );
             $('#sl-exp-dest-location-input').focus();
             $("#main-head").css({
               backgroundImage: "url(../img/expbg.jpg)"
@@ -209,9 +200,9 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // SingleView - Page (@SPV)
-    // =======================================================
+    // ========================================================================
     singlePage: Parse.View.extend({
       el: "#pg-singleview",
       template: _.template($('#tmpl-single').html()),
@@ -237,9 +228,9 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // ListView - Page (@LVP)
-    // =======================================================
+    // ========================================================================
     listPage: Parse.View.extend({
       el: "#pg-listview",
 
@@ -248,25 +239,53 @@
       },
 
       render: function() {
+        var cities = Outpost.helpers.cutCities();
+        var orig = cities.origcity;
+        var dest = cities.destcity;
+        var to = "";
+        if (orig && dest) {
+          to = " to ";
+        }
         this.$el.off().empty();
         $('.pg-page').empty();
         switch (Outpost.list.type) {
-          case "rides":
-            new Outpost.views.rid_listPage();
-            break;
           case "rentals":
+            Outpost.helpers.alternateSEO({
+              title: dest +
+                " Vacation Rentals, Location and Place rentals, " +
+                "including short term and long term rentals and Private and Shared " +
+                "Rooms for Rent - Outpost",
+              description: "Find great vacation rental deals in " + dest +
+              " with Outpost Place " +
+              "Rentals. Search for rates for cheap location rentals. " +
+              "Compare prices, and reserve with confidence!"
+            });
             new Outpost.views.ren_listPage();
             break;
+          case "rides":
+            Outpost.helpers.alternateSEO({
+              title: orig + to + dest + " - Outpost, find rideshares and carpooling " +
+                "from all over the world",
+              description: "Find rides from " + orig + to + dest + " - Outpost " +
+                "aggregates from many carpooling websites and shoves them into one place!"
+            });
+            new Outpost.views.rid_listPage();
+            break;
           case "experiences":
+            Outpost.helpers.alternateSEO({
+              title: "Unique Travel Experiences, Things to do in " + dest + " - Outpost",
+              description: "Find and discover, unique travel experiences, in " + dest +
+                ", including tours, activities and extended with Outpost."
+            });
             new Outpost.views.exp_listPage();
             break;
         }
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // rentals list view - listings (@RENLP)
-    // =======================================================
+    // ========================================================================
     ren_listPage: Parse.View.extend({
       el: "#pg-listview",
       template: Outpost.helpers.renderTemplate,
@@ -337,6 +356,7 @@
       },
 
       resetState: function() {
+        this.numOfLoaded = 0;
         this.state = {
           prevSize: 0,
           page: 1,
@@ -358,40 +378,18 @@
         $('#lp-hou-list').empty();
       },
 
-      initfetchRentals: function() {
-        var _this = this;
-        var len = _this.idtypes.length;
-        var parseHTML = function(data) {
-          _this.collection = _this.collection.concat(data);
-          _this.sortedCollection = _(_this.collection).clone();
-          Outpost.helpers.sortLowToHigh(_this.sortedCollection);
-          _this.sortedRender();
-          _this.updateHeading();
-          _this.updateProviders();
-          _this.filterProviders();
-          _this.toggleLoading();
-          $('#lp-hou-sortby').val("low2high");
-        };
-
-        _this.toggleLoading();
-
-        for (var i = 0; i < len; i++) {
-          Outpost.helpers.fetchRentals(
-            _this.state,
-            _this.idtypes[i]
-          ).done(parseHTML);
-        }
-      },
-
       fetchRentals: function() {
+        var _this = this;
+        var len = this.idtypes.length;
         var parseHTML = function(data) {
           _this.collection = _this.collection.concat(data);
           _this.render();
-          _this.toggleLoading();
+          _this.numOfLoaded++;
+          if (_this.numOfLoaded % len === 0) {
+            _this.toggleLoading();
+          }
         };
 
-        var _this = this;
-        var len = this.idtypes.length;
         _this.toggleLoading();
 
         for (var i = 0; i < len; i++) {
@@ -559,15 +557,11 @@
         }
       },
 
-      sortListings: function(e) {
-        var sortby = $(e.currentTarget).val();
+      sortListings: function(e, value) {
+        var sortby = value ? value : $(e.currentTarget).val();
         this.sortedCollection = _(this.collection).clone();
         switch (sortby) {
-          case "relevance":
-            this.sortedRender();
-            break;
-          case "date":
-            Outpost.helpers.sortDate(this.sortedCollection);
+          case "provider":
             this.sortedRender();
             break;
           case "low2high":
@@ -658,26 +652,25 @@
           items: this.collection
         });
         $('#lp-hou-list').html(html);
-        $('#lp-hou-sortby').val("relevance");
+        this.sortListings("", $('#lp-hou-sortby').val());
         this.updateHeading();
         this.updateProviders();
         this.filterProviders();
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // rides list view - listings (@RIDLP)
-    // =======================================================
+    // ========================================================================
     rid_listPage: Parse.View.extend({
       el: "#pg-listview",
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-rid-aList').html()),
       templateWell: _.template($('#tmpl-rid-well').html()),
       idtypes: ["blablacar", "kangaride", "ridejoy", "zimride"],
+      numOfLoaded: 0,
       collection: [],
       sortedCollection: [],
-      numOfLoadedBefore: 0,
-      numOfLoadedAfter: 0,
       state: {
         prevSize: 0,
         page: 1
@@ -688,7 +681,7 @@
         _this.template('rid_listview', {}).done(function(tmpl)  {
           _this.$el.html(tmpl);
           _this.resetState();
-          _this.initfetchRides();
+          _this.fetchRides();
         });
       },
 
@@ -702,72 +695,25 @@
       },
 
       resetState: function() {
-        this.numOfLoadedBefore = 0;
-        this.numOfLoadedAfter = 0;
+        this.numOfLoaded = 0;
         this.state = {
           prevSize: 0,
           page: 1
         };
       },
 
-      initfetchRides: function() {
-        var _this = this;
-        var len = this.idtypes.length;
-        var parseHTML = function(data) {
-          isDone();
-          _this.collection = _this.collection.concat(data);
-          _this.sortedCollection = _(_this.collection).clone();
-          Outpost.helpers.sortDate(_this.sortedCollection);
-          _this.sortedRender();
-          _this.updateHeading();
-          _this.updateProviders();
-          _this.filterProviders();
-          $('#lp-rid-sortby').val("date");
-        };
-
-        var isDone = function() {
-          _this.numOfLoadedBefore++;
-          if (_this.numOfLoadedBefore && _this.numOfLoadedBefore % len === 0) {
-            _this.toggleLoading();
-          }
-        };
-
-        _this.toggleLoading();
-
-        for (var i = 0; i < len; i++) {
-          Outpost.helpers.fetchRideShares(
-            this.state,
-            this.idtypes[i]
-          ).done(parseHTML);
-        }
-      },
-
       fetchRides: function() {
         var _this = this;
         var len = this.idtypes.length;
-
         var parseHTML = function(data) {
-          isDone();
           _this.collection = _this.collection.concat(data);
-          if (_this.numOfLoadedAfter <= (len * 2)) {
-            _this.sortedCollection = _(_this.collection).clone();
-            Outpost.helpers.sortDate(_this.sortedCollection);
-            _this.sortedRender();
-            _this.updateHeading();
-            _this.updateProviders();
-            _this.filterProviders();
-            $('#lp-rid-sortby').val("date");
-          } else {
-            _this.render();
-          }
-        };
-
-        var isDone = function() {
-          _this.numOfLoadedAfter++;
-          if (_this.numOfLoadedAfter && _this.numOfLoadedAfter % len === 0) {
+          _this.render();
+          _this.numOfLoaded++;
+          if (_this.numOfLoaded % len === 0) {
             _this.toggleLoading();
           }
         };
+
 
         _this.toggleLoading();
 
@@ -896,11 +842,11 @@
         }
       },
 
-      sortListings: function(e) {
-        var sortby = $(e.currentTarget).val();
+      sortListings: function(e, value) {
+        var sortby = value ? value : $(e.currentTarget).val();
         this.sortedCollection = _(this.collection).clone();
         switch (sortby) {
-          case "relevance":
+          case "provider":
             this.sortedRender();
             break;
           case "date":
@@ -1018,26 +964,26 @@
           items: this.collection
         });
         $('#lp-rid-list').html(html);
-        $('#lp-rid-sortby').val("relevance");
+        this.sortListings("", $('#lp-rid-sortby').val());
         this.updateHeading();
         this.updateProviders();
         this.filterProviders();
       }
     }),
 
-    // =======================================================
+
+    // ========================================================================
     // experiences list view - listings (@EXPLP)
-    // =======================================================
+    // ========================================================================
     exp_listPage: Parse.View.extend({
       el: "#pg-listview",
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-tou-aList').html()),
       templateWell: _.template($('#tmpl-tou-well').html()),
       idtypes: ["vayable"],
+      numOfLoaded: 0,
       collection: [],
       sortedCollection: [],
-      numOfLoadedBefore: 0,
-      numOfLoadedAfter: 0,
       state: {
         prevSize: 0,
         page: 1
@@ -1048,7 +994,7 @@
         _this.template('exp_listview', {}).done(function(tmpl)  {
           _this.$el.html(tmpl);
           _this.resetState();
-          _this.initFetchGuides();
+          _this.fetchGuides();
         });
 
       },
@@ -1062,57 +1008,21 @@
       },
 
       resetState: function() {
-        this.numOfLoadedBefore = 0;
-        this.numOfLoadedAfter = 0;
+        this.numOfLoaded = 0;
         this.state = {
           prevSize: 0,
           page: 1
         };
       },
 
-      initFetchGuides: function() {
-        var _this = this;
-        var len = this.idtypes.length;
-        var parseHTML = function(data) {
-          isDone();
-          _this.collection = _this.collection.concat(data);
-          _this.render();
-        };
-
-        var isDone = function() {
-          _this.numOfLoadedBefore++;
-          if (_this.numOfLoadedBefore && _this.numOfLoadedBefore % len === 0) {
-            _this.toggleLoading();
-          }
-        };
-
-        _this.toggleLoading();
-
-        for (var i = 0; i < len; i++) {
-          Outpost.helpers.fetchGuides(
-            this.state,
-            this.idtypes[i]
-          ).done(parseHTML);
-        }
-      },
-
       fetchGuides: function() {
         var _this = this;
         var len = this.idtypes.length;
-
         var parseHTML = function(data) {
-          isDone();
           _this.collection = _this.collection.concat(data);
-          if (_this.numOfLoadedAfter <= (len * 2)) {
-            _this.render();
-          } else {
-            _this.render();
-          }
-        };
-
-        var isDone = function() {
-          _this.numOfLoadedAfter++;
-          if (_this.numOfLoadedAfter && _this.numOfLoadedAfter % len === 0) {
+          _this.render();
+          _this.numOfLoaded++;
+          if (_this.numOfLoaded % len === 0) {
             _this.toggleLoading();
           }
         };
@@ -1231,15 +1141,11 @@
         }
       },
 
-      sortListings: function(e) {
-        var sortby = $(e.currentTarget).val();
+      sortListings: function(e, value) {
+        var sortby = value ? value : $(e.currentTarget).val();
         this.sortedCollection = _(this.collection).clone();
         switch (sortby) {
-          case "relevance":
-            this.sortedRender();
-            break;
-          case "date":
-            Outpost.helpers.sortDate(this.sortedCollection);
+          case "provider":
             this.sortedRender();
             break;
           case "low2high":
@@ -1315,16 +1221,16 @@
           items: this.collection
         });
         $('#lp-tou-list').html(html);
-        $('#lp-tou-sortby').val("relevance");
+        this.sortListings("", $('#lp-tou-sortby').val());
         this.updateHeading();
         this.updateProviders();
         this.filterProviders();
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // Rideshare - Single Page View
-    // =======================================================
+    // ========================================================================
     singleRid: Parse.View.extend({
       el: "#pg-singleview",
       template: Outpost.helpers.renderTemplate,
@@ -1396,9 +1302,9 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // Houseretntals - Single Page View
-    // =======================================================
+    // ========================================================================
     singleHou: Parse.View.extend({
       el: "#pg-singleview",
       template: Outpost.helpers.renderTemplate,
@@ -1494,9 +1400,9 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // Tourism - Single Page View
-    // =======================================================
+    // ========================================================================
     singleTou: Parse.View.extend({
       el: "#pg-singleview",
       template: Outpost.helpers.renderTemplate,
@@ -1568,14 +1474,13 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // Signup - Modal
-    // =======================================================
+    // ========================================================================
     signupModal: Parse.View.extend({
       el: '#js-signup-modal',
 
       initialize: function() {
-        this.render();
       },
 
       events: {
@@ -1592,12 +1497,16 @@
         if ($signup.is(":visible")) {
           $header.text("Log in to Outpost");
           $signup.slideUp(function(){
-            $login.slideDown();
+            $login.slideDown(function() {
+              $('#js-lo-email').focus();
+            });
           });
         } else {
           $header.text("Sign up for Outpost");
           $login.slideUp(function(){
-            $signup.slideDown();
+            $signup.slideDown(function() {
+              $('#js-su-first_name').focus();
+            });
           });
         }
       },
@@ -1699,9 +1608,9 @@
       }
     }),
 
-    // =======================================================
+    // ========================================================================
     // Help - Page
-    // =======================================================
+    // ========================================================================
     helpPage: Parse.View.extend({
       el: "#pg-help",
       template: Outpost.helpers.renderTemplate,

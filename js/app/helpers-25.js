@@ -228,19 +228,7 @@
         case "ridejoy":
           uri = "rides/" + data.id;
           break;
-        case "blablacar":
-          uri = data.id;
-          break;
-        case "airbnb":
-          uri = data.id;
-          break;
-        case "nflats":
-          uri = data.id;
-          break;
-        case "vayable":
-          uri = data.id;
-          break;
-        case "roomorama":
+        default:
           uri = data.id;
           break;
       }
@@ -366,7 +354,7 @@
           destcity = destcity.substring(0, index);
         }
       } else {
-        destcity = "Any city";
+        destcity = "";
       }
       if (origcity) {
         index = origcity.indexOf(",");
@@ -374,7 +362,7 @@
           origcity = origcity.substring(0, index);
         }
       } else {
-        origcity = "Any city";
+        origcity = "";
       }
 
       return {
@@ -570,6 +558,11 @@
 
     debarURI: function(uri) {
       return (decodeURIComponent(uri)).replace(/_/g, ", ");
+    },
+
+    alternateSEO: function(data) {
+      if (data.title) $('#title').text(data.title);
+      if (data.description) $('#description').attr("content", data.description);
     }
   };
 
