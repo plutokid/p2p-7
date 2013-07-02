@@ -1,5 +1,6 @@
 <?php
   error_reporting(0);
+
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   header('Access-Control-Allow-Credentials: true' );
@@ -234,8 +235,8 @@
     $json["title"] = $single->heading;
     $json["price"] = "$".$single->price;
     $json["currency"] = $single->currency;
-    $json["numOfBeds"] = $single->beds; // non existent
-    $json["numOfBedrooms"] = 0 + $single->annotations->bedrooms;
+    $json["numOfBeds"] = "";
+    $json["numOfBedrooms"] = property_exists($single->annotations, "bedrooms") ? 0 + $single->annotations->bedrooms : "";
     $json["house_rules"] = "";
     $json["link"] = $single->external_url;
 
@@ -244,14 +245,14 @@
     $json["response_time"] = "&nbsp;";
 
     if (isset($single->annotations->phone)) {
-      $json["amenities"] = [
+      $json["amenities"] = array(
         $single->annotations->source_account,
         $single->annotations->phone
-      ];
+      );
     } else {
-      $json["amenities"] = [
+      $json["amenities"] = array(
         $single->annotations->source_account
-      ];
+      );
     }
 
     $json["room_type"] = "Entire Home/Apt";
@@ -276,7 +277,7 @@
     $json["lat"] = $single->location->lat;
     $json["lng"] = $single->location->long;
 
-    $json["desc"] = $single->body;
+    $json["desc"] = property_exists($single, "body") ? $single->body : "";
 
     $json["smallInfo"] = array();
     $json["smallInfo"][] = array(

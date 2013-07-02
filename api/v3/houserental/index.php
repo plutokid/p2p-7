@@ -1,6 +1,5 @@
 <?php
-  // Comment the next line when developing to report every type of error
-  // error_reporting(0);
+  error_reporting(0);
 
   // For JSONP convinience
   header('Content-Type: application/javascript');

@@ -2,7 +2,7 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-  Outpost.rev = "-25";
+  Outpost.rev = "-26";
   // Used for ajax caching
   Outpost.cache = {};
   Outpost.HTMLcache = {};

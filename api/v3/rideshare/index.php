@@ -1,5 +1,6 @@
 <?php
-  // error_reporting(0);
+  error_reporting(0);
+
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
@@ -468,7 +469,8 @@ function filterPrice($text) {
   $text = strtolower($text);
   $megabus = strpos($text, 'megabus');
   $bus = strpos($text, 'ticket');
-  if ($megabus || $bus) return false;
+  $mbg = strpos($text, 'mega bus');
+  if ($megabus || $bus || $mbg) return false;
   $pos = strpos($text, '$');
 
   if ($pos === 0 || $pos) {

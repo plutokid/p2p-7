@@ -1,5 +1,6 @@
 <?php
   error_reporting(0);
+
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   header('Access-Control-Allow-Credentials: true' );
@@ -67,12 +68,28 @@
       $json["destination"] = "Quebec City";
     }
 
-    $json["description"] = trim(str_replace(array("«", "»"), "", $single->find('em', 0)->plaintext));
+    $desc = $single->find('em', 0);
+    if (isset($desc)) {
+      $json["description"] = trim(str_replace(array("«", "»"), "", $desc->plaintext));
+    } else {
+      $json["description"] = "";
+    }
     $json["numOfSeats"] = count($single->find('option'));
 
     $cc = $single->find('#content .info', 0);
-    $json["f_meeting_loc"] = str_replace($filter, '', trim($cc->find('small', 0)->plaintext));
-    $json["f_drop_loc"] = str_replace($filter, '', trim($single->find('#content .info', 1)->find('small', 0)->plaintext));
+    $cc2 = $single->find('#content .info', 1);
+    $f_meeting_loc = $cc->find('small', 0);
+    $f_drop_loc = $cc2->find('small', 0);
+    if (isset($f_meeting_loc)) {
+      $json["f_meeting_loc"] = str_replace($filter, '', trim($f_meeting_loc->plaintext));
+    } else {
+      $json["f_meeting_loc"] = "";
+    }
+    if (isset($f_drop_loc)) {
+      $json["f_drop_loc"] = str_replace($filter, '', trim($f_drop_loc->plaintext));
+    } else {
+      $json["f_drop_loc"] = "";
+    }
 
     $json["s_meeting_loc"] = trim($single->find('#content .info', 0)->find('p', 0)->plaintext);
     $json["s_drop_loc"] = trim($single->find('#content .info', 1)->find('p', 0)->plaintext);
@@ -209,29 +226,44 @@
     $json = array();
 
     $filter_list = array(
-      ' to ', ' / ', ' - ', '-', ' -> ', ' > ', ' → ', ' -', '- ', ' from ', '.'
+      ' to ', ' / ', '--gt;', ' - ', '-', ' -> ', ' > ', ' → ', ' -', '- ', ' from ', '.'
     );
 
     $heading = strtolower($single->heading);
     $source_loc = strtolower($single->annotations->source_loc);
     $explodedLoc = explode($source_loc, $heading);
-    if (!$explodedLoc[1]) {
-      $address = $explodedLoc[0];
-    } else {
-      $address = $explodedLoc[1];
-    }
-    $length = strlen($address);
-    for ($i=0; $i < count($filter_list); $i++) {
-      $newDest = explode($filter_list[$i], $address);
-      if (isset($newDest[1]) && strlen($newDest[1]) !== $length) {
-        break;
+    if (isset($explodedLoc[1])) {
+      if (!empty($explodedLoc[0])) {
+        $newDest = urlencode(preg_replace("/[^A-Za-z]/", '', $explodedLoc[0]));
+        $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$newDest}&sensor=false";
+        $geocode = file_get_contents($geourl);
+        $geocode = json_decode($geocode);
+        if ($geocode->status === "ZERO_RESULTS") {
+          $json["destination"] = null;
+        } else {
+          $json["destination"] = $geocode->results[0]->formatted_address;
+        }
       }
+      $address = $explodedLoc[1];
+    } else {
+      $address = $explodedLoc[0];
     }
-    $newDest = urlencode($newDest[1]);
-    $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$newDest}&sensor=false";
-    $geocode = file_get_contents($geourl);
-    $geocode = json_decode($geocode);
-    $json["destination"] = $geocode->results[0]->formatted_address;
+
+    if (!isset($json["destination"])) {
+      $length = strlen($address);
+      for ($i=0; $i < count($filter_list); $i++) {
+        $newDest = explode($filter_list[$i], $address);
+        if (isset($newDest[1]) && strlen($newDest[1]) !== $length) {
+          break;
+        }
+      }
+      $newDest = urlencode($newDest[1]);
+      $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$newDest}&sensor=false";
+      $geocode = file_get_contents($geourl);
+      $geocode = json_decode($geocode);
+      $json["destination"] = $geocode->results[0]->formatted_address;
+    }
+
     $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$source_loc}&sensor=false";
     $geocode = file_get_contents($geourl);
     $geocode = json_decode($geocode);
