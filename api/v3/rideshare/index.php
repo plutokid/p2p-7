@@ -124,8 +124,8 @@
     case 'craigslist':
       if (!empty($startLocation) && !empty($endLocation) && $country === "NA") {
         $page = 0 + $page - 1;
-        $timestamp = empty($startDate) ? strtotime("now") : strtotime(urldecode($startDate));
-        $date = date("F jS", $timestamp);
+        $timestamp = empty($startDate) ? strtotime("today") : strtotime(urldecode($startDate));
+        $date = empty($startDate) ? date("F", $timestamp) : date("F jS", $timestamp);
         $filter = urlencode("{$destCity} {$date}");
         $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39";
         $qry_str = "&category=CRID&lat={$origLat}&long={$origLon}&radius=20mi&page={$page}&heading={$filter}";
@@ -137,9 +137,7 @@
           $ride['price'] = '';
           if (property_exists($aRide, "heading")) {
             $heading = $aRide->heading;
-            if (empty($ride['price']) && $ride['price'] !== 0) {
-              $ride['price'] = filterPrice($aRide->heading);
-            }
+            $ride['price'] = filterPrice($aRide->heading);
           }
 
           if (property_exists($aRide, "body")) {
@@ -149,7 +147,8 @@
             }
           }
 
-          if ($ride['price']) {
+          $ride['timestamp'] = filterTime($heading, date("F", $timestamp));
+          if ($ride['price'] && $ride['timestamp']) {
             $ride['idtype'] = "craigslist";
             $ride['origin'] = $origCity;
             $ride['destination'] = $destCity;
@@ -157,9 +156,8 @@
             $ride['id'] = $aRide->id;
             $ride['uri'] = $aRide->id;
             $ride['date'] = $heading;
-            $ride['seat'] = "1-4";
+            $ride['seat'] = "1-5";
             $ride['time'] = "";
-            $ride['timestamp'] = $timestamp;
             $ride['img'] = "img/noprofile.jpg";
             $ride['infoWindowIcon'] = "img/craigslist.png";
 
@@ -339,7 +337,7 @@
             $ride['infoWindowIcon'] = "img/ridejoy.png";
             $ride['link'] = $aRide->find('.view_details', 0)->href;
             $ride['uri'] = $ride['id'];
-            $ride['seat'] = "1-4";
+            $ride['seat'] = "1-5";
             // im actually lieing here since  ridejoy isnt giving it on the go
             $ride['time'] = "Anytime";
             $ride['timestamp'] = strtotime($date. "12:00");
@@ -467,6 +465,10 @@
 
 
 function filterPrice($text) {
+  $text = strtolower($text);
+  $megabus = strpos($text, 'megabus');
+  $bus = strpos($text, 'ticket');
+  if ($megabus || $bus) return false;
   $pos = strpos($text, '$');
 
   if ($pos === 0 || $pos) {
@@ -479,4 +481,25 @@ function filterPrice($text) {
   }
 
   return $price;
+}
+
+function filterTime($text, $m) {
+  $text = strtolower($text);
+  $pos = strpos($text, strtolower($m));
+
+  if ($pos === 0 || $pos) {
+    $day = 0 + filter_var(substr($text, $pos + strlen($m), 3), FILTER_SANITIZE_NUMBER_INT);
+    if ($day < 1) {
+      $day = 0 + filter_var(substr($text, $pos - 8, 3), FILTER_SANITIZE_NUMBER_INT);
+    }
+  } else {
+    $day = date("Y");
+  }
+
+  $date = strtotime($m." ".$day);
+  if (strtotime("today") <= $date) {
+    return $date;
+  } else {
+    return false;
+  }
 }

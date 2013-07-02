@@ -29,7 +29,7 @@
   // START THE FUNCTIONS
   function kangaride($url) {
     global $idtype;
-    $filter = array("&amp;#8234;", "&amp;#8235;", "&amp;#8236;");
+    $filter = array("&amp;#8234;", "&amp;#8235;", "&amp;#8236;", "Sortie Crémazie Sud, ");
     $opts = array(
       'http'=>array(
         'method'=>"GET",
@@ -54,9 +54,6 @@
     $title = explode("(", $title);
 
     $json["date"] = $title[0];
-    // $json["date"] = str_replace("at", "", $json["date"]);
-    // $json['timestamp'] =  strtotime($json["date"]);
-
     $json["origin"] = explode(")", $title[1]);
     $json["origin"] = trim($json["origin"][1]);
 
@@ -192,6 +189,7 @@
     $json["idtype"] = $idtype;
     $json["logodesc"] = "Ridejoy is a community marketplace for sharing rides. If you're going on a trip, you can list extra seat space in your car, and if you need to get somewhere, you can find a ride, using our site. Happy rideshares and carpools!";
 
+    $json["labels"][] = array();
     foreach ($single->find(".addon") as $label) {
       $json["labels"][] = trim($label->plaintext);
     }
@@ -211,7 +209,7 @@
     $json = array();
 
     $filter_list = array(
-      ' to ', ' / ', ' - ', ' -> ', ' > ', ' → ', ' -', '- '
+      ' to ', ' / ', ' - ', '-', ' -> ', ' > ', ' → ', ' -', '- ', ' from ', '.'
     );
 
     $heading = strtolower($single->heading);
@@ -249,9 +247,10 @@
       }
     }
 
+    $json['price'] = '$'.$json['price'];
     $json["date"] = $heading;
 
-    $json["numOfSeats"] = "1-4";
+    $json["numOfSeats"] = "1-5";
 
     $json["link"] = $single->external_url;
     $json["id"] = $single->id;
