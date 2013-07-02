@@ -1566,6 +1566,10 @@ color: white;
   background:url("../img/craigslist.png") no-repeat #24b0cf 603px 4px;
 }
 
+.lp-aList-rid .lpl-craigslist {
+  background:url("../img/craigslist.png") no-repeat #ec5f41 603px 4px;
+}
+
 .lpl-roomorama {
   background:url("../img/roomorama_small.png") no-repeat #24b0cf 621px 3px;
 }
@@ -1801,6 +1805,8 @@ color: white;
   width: 490px;
   clear: both;
   padding: 0 5px;
+  overflow: hidden;
+  height: 55px;
 }
 
 .fil-num {

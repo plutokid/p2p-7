@@ -249,7 +249,7 @@
     <div class="lp-aList lp-aList-rid <%= idtype %> <%= id %>" data-item='<%= json_item %>'>
       <div class="lp-list-head lpl-<%= item.idtype %>">
         <img class="lp-list-pp" src="<%= item.img %>">
-        <h4 class="lp-list-title"><a href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.date + " - " + item.time %></a></h4>
+        <h4 class="lp-list-title"><a href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.date %> <%= item.time ? " - " + item.time : '' %></a></h4>
       </div>
       <div class="lp-list-body">
         <div class="lp-rid-wrap">

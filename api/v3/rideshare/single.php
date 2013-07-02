@@ -20,6 +20,9 @@
     case 'blablacar':
       $json = blablacar($url);
       break;
+    case 'craigslist':
+      $json = craigslist($url);
+      break;
   }
   echo $_GET['callback'] . '('.$json.')';
 
@@ -196,6 +199,84 @@
     return json_encode($json);
   }
 
+  function craigslist($id) {
+    global $idtype;
+    $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39&id={$id}";
+    $extra = "&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
+    $url = $url.$extra;
+    $html = file_get_contents($url);
+    $single = json_decode($html);
+
+    $single = $single->postings[0];
+    $json = array();
+
+    $filter_list = array(
+      ' to ', ' / ', ' - ', ' -> ', ' > ', ' → ', ' -', '- '
+    );
+
+    $heading = strtolower($single->heading);
+    $source_loc = strtolower($single->annotations->source_loc);
+    $explodedLoc = explode($source_loc, $heading);
+    if (!$explodedLoc[1]) {
+      $address = $explodedLoc[0];
+    } else {
+      $address = $explodedLoc[1];
+    }
+    $length = strlen($address);
+    for ($i=0; $i < count($filter_list); $i++) {
+      $newDest = explode($filter_list[$i], $address);
+      if (isset($newDest[1]) && strlen($newDest[1]) !== $length) {
+        break;
+      }
+    }
+    $newDest = urlencode($newDest[1]);
+    $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$newDest}&sensor=false";
+    $geocode = file_get_contents($geourl);
+    $geocode = json_decode($geocode);
+    $json["destination"] = $geocode->results[0]->formatted_address;
+    $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$source_loc}&sensor=false";
+    $geocode = file_get_contents($geourl);
+    $geocode = json_decode($geocode);
+    $json["origin"] = $geocode->results[0]->formatted_address;
+
+    $json["price"] = "";
+    $json['price'] = filterPrice($heading);
+
+    if (property_exists($single, "body")) {
+      $json['description'] = $single->body;
+      if (!$json['price']) {
+        $json['price'] = filterPrice($single->body);
+      }
+    }
+
+    $json["date"] = $heading;
+
+    $json["numOfSeats"] = "1-4";
+
+    $json["link"] = $single->external_url;
+    $json["id"] = $single->id;
+
+    $json["profile_pic"] = "img/rsz_noavatar.png";
+    $json["name"] = "";
+    $json["age"] = "&nbsp;";
+    $json["logopath"] = "img/craigslist_hp.png";
+    $json["idtype"] = $idtype;
+    $json["logodesc"] = "Craigslist has thousands of classifieds not limited to vacation rentals and rideshares.";
+
+    if (isset($single->annotations->phone)) {
+      $json["labels"] = array(
+        $single->annotations->source_account,
+        $single->annotations->phone
+      );
+    } else {
+      $json["labels"] = array(
+        $single->annotations->source_account
+      );
+    }
+
+    return json_encode($json);
+  }
+
   function blablacar($url) {
     global $idtype;
     $url = "http://www.blablacar.com/".$url;
@@ -234,4 +315,18 @@
 
     return json_encode($json);
   }
-?>
+
+function filterPrice($text) {
+  $pos = strpos($text, '$');
+
+  if ($pos === 0 || $pos) {
+    $price = 0 + filter_var(substr($text,  $pos, 4), FILTER_SANITIZE_NUMBER_INT);
+    if ($price <= 1) {
+      $price = 0 + filter_var(substr($text,  $pos - 4, 4), FILTER_SANITIZE_NUMBER_INT);
+    }
+  } else {
+    $price = false;
+  }
+
+  return $price;
+}

@@ -121,6 +121,54 @@
       }
       break;
 
+    case 'craigslist':
+      if (!empty($startLocation) && !empty($endLocation) && $country === "NA") {
+        $page = 0 + $page - 1;
+        $timestamp = empty($startDate) ? strtotime("now") : strtotime(urldecode($startDate));
+        $date = date("F jS", $timestamp);
+        $filter = urlencode("{$destCity} {$date}");
+        $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39";
+        $qry_str = "&category=CRID&lat={$origLat}&long={$origLon}&radius=20mi&page={$page}&heading={$filter}";
+        $extra = "&rpp=100&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
+        $url = $url.$extra.$qry_str;
+        $html = file_get_contents($url);
+        $json = json_decode($html);
+        foreach ($json->postings as $key => $aRide) {
+          $ride['price'] = '';
+          if (property_exists($aRide, "heading")) {
+            $heading = $aRide->heading;
+            if (empty($ride['price']) && $ride['price'] !== 0) {
+              $ride['price'] = filterPrice($aRide->heading);
+            }
+          }
+
+          if (property_exists($aRide, "body")) {
+            $ride['desc'] = $aRide->body;
+            if (!$ride['price']) {
+              $ride['price'] = filterPrice($aRide->body);
+            }
+          }
+
+          if ($ride['price']) {
+            $ride['idtype'] = "craigslist";
+            $ride['origin'] = $origCity;
+            $ride['destination'] = $destCity;
+            $ride['link'] = $aRide->external_url;
+            $ride['id'] = $aRide->id;
+            $ride['uri'] = $aRide->id;
+            $ride['date'] = $heading;
+            $ride['seat'] = "1-4";
+            $ride['time'] = "";
+            $ride['timestamp'] = $timestamp;
+            $ride['img'] = "img/noprofile.jpg";
+            $ride['infoWindowIcon'] = "img/craigslist.png";
+
+            $output[] = $ride;
+          }
+        }
+      }
+      break;
+
     case 'kangaride':
       if ($country == "NA" && ($origCountry == "CA" || $destCountry == "CA")) {
         $origState = $origState ? $origState."/" : '';
@@ -185,7 +233,18 @@
         $crap[] = "'";
 
         $vroom = $poolList->find('table');
-        if (isset($vroom[4])) {
+        $notif = $poolList->find('#notificationText', 0);
+        $valid = true;
+        if (empty($notif)) {
+          $valid = true;
+        } else {
+          if ($notif->next_sibling()->getAttribute('id') === "sorryNoResults") {
+            $valid = false;
+          } else {
+            $valid = true;
+          }
+        }
+        if (isset($vroom[4]) && $valid) {
           $lastDate = $vroom[4]->find('tr', 0)->plaintext;
           foreach($vroom[4]->find('tr') as $aRide) {
             $seat = 0;
@@ -258,13 +317,22 @@
             }
             $idarr[] = $ride['id'];
 
+            $ride['origin'] = trim($aRide->find('.origin', 0)->plaintext);
+            $ride['destination'] = trim($aRide->find('.destination', 0)->plaintext);
+            if (isset($origCity) && isset($destCity)) {
+              if ($ride['origin'] === $origCity) {
+
+              } else if ($ride['destination'] === $destCity) {
+
+              } else {
+                continue;
+              }
+            }
             $price_full = trim($aRide->find('.seats_container', 0)->plaintext);
             $price = 0 + substr($price_full, 1);
             $ride['idtype'] = "ridejoy";
             $ride['date'] = $date;
             $ride['img'] = $aRide->find('img', 0)->src;
-            $ride['origin'] = $aRide->find('.origin', 0)->plaintext;
-            $ride['destination'] = $aRide->find('.destination', 0)->plaintext;
             $ride['desc'] = str_replace(array("'", "&#x27;", "&quot;"), "", $aRide->find('.extra_info', 0)->plaintext);
             $ride['price'] = $price;
             $ride['iconPath'] = "img/ridejoy.ico";
@@ -312,6 +380,28 @@
            } else {
              continue;
            }
+
+           $originfull = $aRide->find('.inner', 0)->innertext;
+           $origin = explode('<span class="trip_type one_way"></span>', $originfull);
+
+           if (!isset($origin[1])) {
+             $origin = explode('<span class="trip_type round_trip"></span>', $originfull);
+           }
+
+           $ride['iconPath'] = "img/zimride.ico";
+           $ride['infoWindowIcon'] = "img/zimride.png";
+           $ride['origin'] = trim($origin[0]);
+           $ride['destination'] = trim($origin[1]);
+           if (isset($origCity) && isset($destCity)) {
+             if ($ride['origin'] === $origCity) {
+
+             } else if ($ride['destination'] === $destCity) {
+
+             } else {
+               continue;
+             }
+           }
+
            if ($aRide->prev_sibling()->hasAttribute('class')) {
              $lastDate = $aRide->prev_sibling()->plaintext;
              $lastDate = explode("&mdash;", $lastDate);
@@ -329,17 +419,7 @@
            $ride['idtype'] = "zimride";
            $ride['date'] =  $lastDate; //poollist find
            $ride['username'] = $aRide->find('.username', 0)->plaintext;
-           $originfull = $aRide->find('.inner', 0)->innertext;
-           $origin = explode('<span class="trip_type one_way"></span>', $originfull);
 
-           if (!isset($origin[1])) {
-             $origin = explode('<span class="trip_type round_trip"></span>', $originfull);
-           }
-
-           $ride['iconPath'] = "img/zimride.ico";
-           $ride['infoWindowIcon'] = "img/zimride.png";
-           $ride['origin'] = $origin[0];
-           $ride['destination'] = $origin[1];
            $desc = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
            $desc = explode('/', $desc);
            if (isset($desc[2])) {
@@ -384,3 +464,19 @@
   }
 
   echo $_GET['callback'] . '('.json_encode($output).')';
+
+
+function filterPrice($text) {
+  $pos = strpos($text, '$');
+
+  if ($pos === 0 || $pos) {
+    $price = 0 + filter_var(substr($text,  $pos, 4), FILTER_SANITIZE_NUMBER_INT);
+    if ($price <= 1) {
+      $price = 0 + filter_var(substr($text,  $pos - 4, 4), FILTER_SANITIZE_NUMBER_INT);
+    }
+  } else {
+    $price = false;
+  }
+
+  return $price;
+}

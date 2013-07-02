@@ -230,6 +230,7 @@
 
     $single = $single->postings[0];
 
+    $json = array();
     $json["title"] = $single->heading;
     $json["price"] = "$".$single->price;
     $json["currency"] = $single->currency;
@@ -260,7 +261,7 @@
 
     $json["logopath"] = "img/craigslist_hp.png";
     $json["idtype"] = $idtype;
-    $json["logodesc"] = "Craigslist has thousands of vacation rentals classifieds.";
+    $json["logodesc"] = "Craigslist has thousands of classifieds not limited to vacation rentals and rideshares.";
 
     $gallery = $single->images;
     $imgArr = array();
