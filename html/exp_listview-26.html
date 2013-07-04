@@ -1,0 +1,84 @@
+<div class="container">
+  <div class="row">
+    <div class="span12">
+      <div class="lp-refineSearch">
+        <form class="lp-refineSearchForm" id="ref-exp-form">
+          <% var guests = Outpost.searchQuery.guests; %>
+          <div class="input-wrapper">
+            <input id="ref-exp-dest-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Find something to do in..">
+          </div>
+          <button class="css-searchit" id="ref-exp-search" type="submit">
+            <span class="icon-search css-searchicon"></span>&nbsp;Search
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="span12">
+      <div class="tab-content">
+        <div class="tab-pane active" id="lp-localguides">
+          <div class="span3">
+            <div class="accordion lp-sidebar">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Sort by
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <select class="lp-sortfilter" id="lp-tou-sortby">
+                      <option value="low2high">Price: Low to high</option>
+                      <option value="high2low">Price: High to low</option>
+                      <option value="provider">Provider</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Providers
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <label class="checkbox">
+                      <input class="lp-tou-providers" type="checkbox" value="vayable">Vayable <span class="fil-num" id="fil-num-vay"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="span9 pull-right margin0">
+            <h1 class="well" id="lp-tou-well">
+              Searching for guides near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
+            </h1>
+            <div class="lp-lists" id="lp-tou-list"></div>
+            <div class="lp-spinner css-green lp-hidden" id="lp-tou-ls" style="display: none;">
+              <div class="icon-spinner icon-spin icon-4x"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    $('.pac-container').remove();
+    $('.lp-sidebar').affix({
+      offset: 125
+    });
+
+    // REFINE SEARCH INIT
+    var options = {
+      types: ['(cities)']
+    };
+    var expDestTA = new google.maps.places.Autocomplete($('#ref-exp-dest-loc')[0], options);
+    google.maps.event.addListener(expDestTA, 'place_changed', function() {
+      $("#ref-exp-search").focus();
+    });
+
+  })();
+</script>

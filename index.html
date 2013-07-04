@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Outpost - Lookup peer to peer listings all in one place</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="Outpost is the center point of the sharing economy. If you're going on a trip, you can save time and money by booking peer to peer services with Outpost">
-    <meta name="viewport" content="width=device-width">
+  <meta charset="utf-8">
+  <title id="title">Outpost - Compare thousands of unique, cheap and affordable ways of traveling</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta id="description" name="description" content="Outpost is the center point of the sharing economy. If you're going on a trip, you can save time and money by booking peer to peer services with Outpost">
+  <meta name="keywords" content="private rooms, shared rooms, cheap vacation, short term rentals, find rideshares world wide, affordable deals, experiences, travel search,travel search engine, outpost">
+  <meta name="viewport" content="width=device-width">
 
-    <link rel="image_src" href="http://outpost.travel/img/logo194.png">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
-    <link rel="stylesheet" href="css/custom-24.css">
+  <link rel="image_src" href="http://outpost.travel/img/logo194.png">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
+  <link rel="stylesheet" href="css/custom-26.css">
 </head>
 <body>
   <div class="bs-load" id="js-bsload" style="display:none">
@@ -24,13 +25,8 @@
 
   <main class="main-wrapper" id="js-page">
     <section class="pg-page" id="pg-home"></section>
-    <section id="pg-mapview">
-      <aside class="pg-page" id="sidebar"></aside>
-      <aside class="pg-page" id="refine-search"></aside>
-      <article class="pg-page span12 map map-cont" id="map"></article>
-    </section>
-    <section class="pg-page" id="pg-listview"></section>
     <section class="pg-page" id="pg-singleview"></section>
+    <section class="pg-page" id="pg-listview"></section>
     <section class="pg-page" id="pg-help"></section>
     <div class="push-footer"></div>
   </main>
@@ -64,15 +60,6 @@
 
   <div id="js-modals-section">
     <!-- Modals goes here -->
-  </div>
-
-  <div class="alert-box" id="alert-box">
-  </div>
-
-  <div class="slb modal hide fade" id="slb">
-  </div>
-
-  <div id="hou-slb">
   </div>
 
   <!-- Signup Modal -->
@@ -127,121 +114,27 @@
     </div>
   </div>
 
-  <!-- About Modal -->
-  <div id="about" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="about-outpost" aria-hidden="true">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-      <h3 id="about-outpost">About Outpost</h3>
-    </div>
-    <div class="modal-body">
-      <p>Outpost is a search engine that aggregates listings from many peer to peer websites 
-        such as houserental, rideshare, tourism, etc. and lists them into one place. Users can plan 
-        their trip using sharing economy services only and compare prices between the appropriate 
-        networks. The service allows them to book rideshares, places to stay and activities at
-        the most affordable prices available. This new way of travelling is based solely on non-commercial
-        services and allows users to discover unique experiences at their destination that no commercial
-        service can offer. Human hosts, drivers and guides that are eager to show you the secrets of their
-        city make Outpost the new way to travel.
-      </p>
-      <a href="https://twitter.com/Outposttravel" class="twitter-follow-button" data-show-count="false">Follow @Outposttravel</a>
-      <p class="pull-right">
-        Please contact us, we're begging for feedback: <a href="mailto:info@outpost.travel">info@outpost.travel</a> <br>
-      </p>
-    </div>
-  </div>
-
-  <!-- Affiliate Modal -->
-  <div id="affiliate" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="affiliate-outpost" aria-hidden="true">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-      <h3 id="affiliate-outpost">Affiliate with us</h3>
-    </div>
-    <div class="modal-body">
-      <p>
-        We're still early stage and looking for p2p networks to feature in our platform. If you own something that you think should be in Outpost, don't hesitate to email us at <a href="mailto:info@outpost.travel">info@outpost.travel</a>
-      </p>
-      <p>However, if you are a user, you can still suggest us which P2P networks we've missed so we can bring them in Outpost.</p>
-      <p>Thank you for your interest.</p>
-      <a href="https://twitter.com/Outposttravel" class="twitter-follow-button" data-show-count="false">Follow @Outposttravel</a>
-    </div>
-  </div>
-
   <!-- NAVBAR MENU TMPL -->
   <script id="tmpl-navbar" type="text/template">
     <div class="navbar">
       <div class="navbar-outpost">
         <div class="container navbar-container">
-          <a class="header-logo-link" href="/">
+          <a class="header-logo-link" id="logo-img" href="/">
             <img class="logo" src="img/outpost_logo.png" alt="outpost logo">
           </a>
           <div class="css-mainmenu js-mainmenu" id="js-mainmenu">
             <ul class="css-nav">
-              <li><a class="navbar-btn quick-search-btn" id="js-whataround" href="#!/search/">
-                <div class="inner-button-contents">
-                  <i class="icon-location-arrow"></i>
-                  <span>What's around me ?</span>
-                </div>
-              </a></li>
               <% if (!name) { %>
-                <li><button class="navbar-btn sign-up-btn" data-toggle="modal" href="#js-signup-modal">Sign up</button></li>
+                <li><button class="navbar-btn sign-up-btn" id="sign-up-btn" data-toggle="modal" href="#js-signup-modal">Sign up</button></li>
               <% } else { %>
-                <li><a class="navbar-btn stash-btn" id="js-stash" href="javascript:void(0)">
-                  <div class="inner-button-contents">
-                    <i class="icon-cart"></i>
-                    <span>Stash</span>
-                  </div>
-                </a></li>
-                <li><a class="btn-nav"><%= name %></a></li>
-                <li><a class="btn-nav js-logout" href="javascript:void(0)">Logout</a></li>
+                <li class="logged-upmenu">
+                  <button class="navbar-btn logged-btn js-logout" href="javascript:void(0)">Logout <i class="icon-signout"></i></button>
+                </li>
               <% } %>
             </ul>
           </div>
         </div>
       </div>
-    </div>
-  </script>
-
-  <!-- REFINE SEARCH TMPL -->
-  <script id="tmpl-refine-search" type="text/template">
-    <% var guests = Outpost.state.searchFilter.guests; %>
-    <form class="navbar-form" id="js-refineSearch">
-      <input class="filter-origin-location" id="js-orig-location-input" value="<%= Outpost.values.origLocation %>" type="search" placeholder="From location">
-      <strong class="white-arrow">&nbsp;→&nbsp;</strong>
-      <input id="js-search-again" type="search" placeholder="Destination Location">
-      <div class="input-prepend">
-        <span class="add-on"><i class="icon-calendar"></i></span>
-        <input class="input-small" placeholder="Leaving on" value="<%= Outpost.state.searchFilter.sdate %>" id="js-sdate-input" type="search">
-        <input class="input-small" placeholder="Check out" id="js-edate-input" value="<%= Outpost.state.searchFilter.edate %>" type="search">
-      </div>
-      <select class="guestfilter" id="js-guest-input">
-        <option disabled value="1">People</option>
-        <option <%= guests ==="1" ? "selected" : '' %> value="1">1</option>
-        <option <%= guests ==="2" ? "selected" : '' %> value="2">2</option>
-        <option <%= guests ==="3" ? "selected" : '' %> value="3">3</option>
-        <option <%= guests ==="4" ? "selected" : '' %> value="4">4</option>
-        <option <%= guests ==="5" ? "selected" : '' %> value="5">5</option>
-      </select>
-      <button class="btn btn-info refineSearchbtn" id="refineSearchbtn" type="submit">Refine Search</button>
-    </form>
-  </script>
-
-  <!-- RESULT FOuND TMPL -->
-  <script id="tmpl-resultInfo" type="text/template">
-    <span id="js-counter"><%= numOfRes %></span> results found for <%= city %>
-  </script>
-
-  <!-- ALERT BOX TMPL -->
-  <script id="tmpl-alert" type="text/template">
-    <div class="alert <%= type %>">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <%= text %>
-    </div>
-  </script>
-
-  <!-- LIGHT BOX IMG TMPL -->
-  <script id="tmpl-slb" type="text/template">
-    <div class="modal-body">
-      <img src="<%= src %>">
     </div>
   </script>
 
@@ -274,238 +167,6 @@
       <a class="carousel-control left" href="#svhouCarousel" data-slide="prev">&lsaquo;</a>
       <a class="carousel-control right" href="#svhouCarousel" data-slide="next">&rsaquo;</a>
     </div>
-  </script>
-
-  <script id="tmpl-rideshareRow" type="text/template">
-    <% var markers = []; %>
-    <% _.each(items, function(item) {
-      Outpost.state.numOfRes++
-      var id = "rid" + item.id;
-      item.markerid = id;
-      var json_item = JSON.stringify(item);
-      markers.push({
-        latLng: Outpost.helpers.genRdmLLCC(item.origin).latLng,
-        data: item,
-        id: id,
-        tag: "rid"
-      });
-    %>
-      <div class="tr-rideshare tr css-alist <%= id %>" data-item='<%= json_item %>'>
-        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #ec5f41 310px 5px;">
-          <img class="img-circle" width="36px" height="36px" src="<%= item.img %>">
-          <span><%= item.desc %></span>
-        </span>
-        <span class="list-rid-pricewrap">
-          <span class="list-rid-price">$<%= item.price2 %></span>
-          <span class="list-rid-pricedesc">per seat</span>
-        </span>
-        <div class="list-desc">
-          <span class="list-info">
-            <ul>
-              <li>
-                <span class="icon-time css-blue"></span>
-                <span><%= item.dates + " - " + item.time %></span>
-              </li>
-              <li>
-                <span class="icon-map-marker css-green"></span>
-                <span class="list-location-desc"><%= item.origin %> → <%= item.destination %></span>
-              </li>
-              <li>
-                <span class="icon-user css-red"></span>
-                <span><%= item.seat > 1 ? item.seat + " seats" : item.seat + " seat" %> left</span>
-              </li>
-            </ul>
-          </span>
-        </div>
-        <div class="list-foot">
-          <span>
-            <i class='icon-road'></i>&nbsp;Rideshare
-          </span>
-          <div class="rid-button-group pull-right">
-            <a data-orig="<%= item.origin %>" data-dest="<%= item.destination %>" class="btn btn-small routeit">
-              See route&nbsp;<i class="icon-random"></i>
-            </a>
-            <a class="btn btn-small info-book-rid ga-gotovendor" href="<%= item.link %>" target="_blank">
-              Grab a seat&nbsp;<i class="icon-share"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    <% }); %>
-    <% $('#rideshare').attr('data-markers', JSON.stringify(markers)); %>
-  </script>
-
-  <script id="tmpl-rideshareRowReturn" type="text/template">
-    <% var markers = []; %>
-    <% _.each(items, function(item) {
-      Outpost.state.numOfRes++
-      var id = "rid" + item.id;
-      item.markerid = id;
-      var json_item = JSON.stringify(item);
-      markers.push({
-        latLng: Outpost.helpers.genRdmLLCC(item.origin).latLng,
-        data: item,
-        id: id,
-        tag: "rid"
-      });
-    %>
-      <div class="tr-rideshareReturn tr css-alist <%= id %>" data-item='<%= json_item %>'>
-        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #ec5f41 310px 5px;">
-          <img class="img-circle" width="36px" height="36px" src="<%= item.img %>">
-          <span><%= item.desc %></span>
-        </span>
-        <span class="list-rid-pricewrap">
-          <span class="list-rid-price">$<%= item.price2 %></span>
-          <span class="list-rid-pricedesc">per seat</span>
-        </span>
-        <div class="list-desc">
-          <span class="list-info">
-            <ul>
-              <li>
-                <span class="icon-time css-blue"></span>
-                <span><%= item.dates + " - " + item.time %></span>
-              </li>
-              <li>
-                <span class="icon-map-marker css-green"></span>
-                <span class="list-location-desc"><%= item.origin %> → <%= item.destination %></span>
-              </li>
-              <li>
-                <span class="icon-user css-red"></span>
-                <span><%= item.seat > 1 ? item.seat + " seats" : item.seat + " seat" %> left</span>
-              </li>
-            </ul>
-          </span>
-        </div>
-        <div class="list-foot">
-          <span>
-            <i class='icon-road'></i>&nbsp;Rideshare
-          </span>
-          <div class="rid-button-group pull-right">
-            <a data-orig="<%= item.origin %>" data-dest="<%= item.destination %>" class="btn btn-small routeit">
-              See route&nbsp;<i class="icon-random"></i>
-            </a>
-            <a class="btn btn-small info-book-rid ga-gotovendor" href="<%= item.link %>" target="_blank">
-              Grab a seat&nbsp;<i class="icon-share"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    <% }); %>
-    <% $('#rid-tab-return').attr('data-markers', JSON.stringify(markers)); %>
-  </script>
-
-  <script id="tmpl-houserentalRow" type="text/template">
-    <% 
-      var markers = [];
-      _.each(items, function(item) {
-        Outpost.state.numOfRes++
-        var id = "hou" + String(item.id);
-        item.markerid = id;
-        var json_item = JSON.stringify(item);
-        var price = "$" + item.price2 + " USD";
-        markers.push({
-          latLng: item.latLng || Outpost.helpers.genRdmLLCC(item.neigh).latLng,
-          data: item,
-          id: id,
-          tag: "hou"
-        });
-    %>
-      <div class="tr-houserental tr css-alist <%= id %>" data-item='<%= json_item %>'>
-        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #24b0cf 314px 5px;">
-          <img class="img-circle" width="36px" height="36px" src="<%= item.profileImg %>">
-          <span><%= item.desc %></span>
-        </span>
-        <div class="list-desc">
-          <span class="list-roomImg">
-            <img class="img-polaroid list-img hou-listimg" data-id="<%= id %>" src="<%= item.roomImg %>">
-          </span>
-          <span class="list-info">
-            <ul>
-              <li>
-                <span class="icon-home css-blue"></span>
-                <span><%= item.type %></span>
-              </li>
-              <li>
-                <span class="icon-map-marker css-green"></span>
-                <span class="list-origin"><%= item.neigh %></span>
-              </li>
-              <li>
-                <span class="icon-money css-red"></span>
-                <span><b>$<%= item.price2 %></b> per night</span>
-              </li>
-            </ul>
-          </span>
-        </div>
-        <div class="list-foot">
-          <span>
-            <i class='icon-home'></i>&nbsp;House rental
-          </span>
-          <a class="btn btn-small info-book-air ga-gotovendor info-details" data-id="<%= id %>" href="javascript:void(0)">
-            Details&nbsp;<i class="icon-play"></i>
-          </a>
-          <a class="btn btn-small info-book-air ga-gotovendor pull-right mgr5" href="<%= item.link %>" target="_blank">
-            Book It&nbsp;<i class="icon-share"></i>
-          </a>
-        </div>
-      </div>
-    <%
-      });
-      $('#houserental').attr('data-markers', JSON.stringify(markers));
-    %>
-  </script>
-
-  <script id="tmpl-tourismRow" type="text/template">
-    <% var markers = []; %>
-    <% _.each(items, function(item) { %>
-      <% Outpost.state.numOfRes++ %>
-      <%
-        var id = "tou" + item.id;
-        item.markerid = id;
-        var json_item = JSON.stringify(item);
-        markers.push({
-          latLng: Outpost.helpers.genRdmLLCC(item.origin).latLng,
-          data: item,
-          id: id,
-          tag: "tou"
-        });
-      %>
-      <div class="tr-tourism tr css-alist <%= id %>" data-item='<%= json_item %>'>
-        <span class="list-head" style="background:url(<%= item.infoWindowIcon %>) no-repeat #95d17b 306px 5px;">
-          <img class="img-circle" width="36px" height="36px" src="<%= item.profileImg %>">
-          <span><%= item.desc %></span>
-        </span>
-        <div class="list-desc">
-          <span class="list-roomImg">
-            <img class="img-polaroid list-img tou-listimg" src="<%= item.img %>">
-          </span>
-          <span class="list-info">
-            <ul>
-              <li>
-                <span class="icon-user css-blue"></span>
-                <span>City guide</span>
-              </li>
-              <li>
-                <span class="icon-map-marker css-green"></span>
-                <span class="list-origin"><%= item.origin %></span>
-              </li>
-              <li>
-                <span class="icon-money css-red"></span>
-                <span><b>$<%= item.price2 %></b> per person</span>
-              </li>
-            </ul>
-          </span>
-        </div>
-        <div class="list-foot">
-          <span>
-            <i class='icon-user'></i>&nbsp;Tourism
-          </span>
-          <a class="btn btn-small info-book-vay ga-gotovendor pull-right" href="<%= item.link %>" target="_blank">
-            Book It&nbsp;<i class="icon-share"></i>
-          </a>
-        </div>
-      </div>
-    <% }); %>
-    <% $('#tourism').attr('data-markers', JSON.stringify(markers)); %>
   </script>
 
   <script id="tmpl-single" type="text/template">
@@ -588,7 +249,7 @@
     <div class="lp-aList lp-aList-rid <%= idtype %> <%= id %>" data-item='<%= json_item %>'>
       <div class="lp-list-head lpl-<%= item.idtype %>">
         <img class="lp-list-pp" src="<%= item.img %>">
-        <h4 class="lp-list-title"><a href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.date + " - " + item.time %></a></h4>
+        <h4 class="lp-list-title"><a href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.date %> <%= item.time ? " - " + item.time : '' %></a></h4>
       </div>
       <div class="lp-list-body">
         <div class="lp-rid-wrap">
@@ -660,7 +321,7 @@
             </li>
             <li>
               <span class="icon-map-marker css-green tfpx"></span>
-              <span class="lp-list-location"><%= item.neigh %></span>
+              <span class="lp-list-location"><%= item.origin %></span>
             </li>
           </ul>
           <div class="lp-hou-pricewrap">
@@ -735,13 +396,12 @@
   <script src="js/vendor/backbone.queryparams.js"></script>
   <script src="js/vendor/moment.min.js"></script>
   <!-- MVC -->
-  <script src="js/app/helpers-24.js"></script>
-  <script src="js/app/views-24.js"></script>
-  <script src="js/app/router-24.js"></script>
+  <script src="js/app/helpers-26.js"></script>
+  <script src="js/app/views-26.js"></script>
+  <script src="js/app/router-26.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-24.js"></script>
+  <script src="js/main-26.js"></script>
   <!-- FACEBOOK SDK -->
-  <!-- 
   <div id="fb-root"></div>
   <script>
     window.fbAsyncInit = function() {
@@ -789,7 +449,7 @@
   (function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
   </script>
   <noscript><img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=pNdKh1awVK00ay" style="display:none" height="1" width="1" alt="" /></noscript>
- -->
+
   <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-39723359-1']);

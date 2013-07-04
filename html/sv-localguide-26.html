@@ -1,0 +1,71 @@
+<%
+  Outpost.helpers.alternateSEO({
+    title: title + " - Outpost",
+    description: location + ", for " + price + " per person. " +
+      "Feel like a local by exploring rare venues with a local guide."
+  });
+%>
+<div class="container" id="singleViewPage">
+  <div class="row">
+    <div class="span12">
+      <div class="item-wrapper">
+        <div class="panel-header css-bggreen">
+          <h2 class="panel-title"><%= title %></h2>
+        </div>
+        <div class="item-content row">
+          <h4 class="panel-subtitle-hou"><%= amount %> - <%= duration %> · <span class="text-yellow"><%= location %></span></h4>
+          <div class="span8">
+            <div class="left-col-content">
+              <div class="tabbable">
+                <ul class="nav nav-pills ul-panel-grey">
+                  <li class="active"><a href="#sv-carousel" data-toggle="tab">Photos</a></li>
+                  <li><a class="tab-map-view" href="#sv-map-view" data-toggle="tab">Map View</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="sv-carousel">
+                    <div class="tab-pane active" id="tab-gallery">
+                      <img src="<%= image %>" class="w620">
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="sv-map-view">
+                    <div class="single-map" id="single-map"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="css-details-text-tou">
+                <p class="sv-hou-details-text"><%= desc %></p>
+              </div>
+            </div>
+          </div>
+          <div class="span270">
+            <div class="item-info">
+              <div class="item-price-box">
+                <h2 class="item-price"><%= price %></h2>
+                <span class="item-per item-per-seat">per person (USD)</span>
+              </div>
+              <div class="item-seatleft-box">
+                <strong class="item-beds"><%= duration %></strong>
+              </div>
+              <div class="item-contact-box">
+                <a class="out-btn btn-block btn-sv-tou" href="<%= link %>" target="_blank">Book It</a>
+              </div>
+            </div>
+            <div class="item-profile">
+              <div class="item-profile-pic">
+                <img src="<%= picture_url %>" class="img-polaroid img-profile-pic">
+                <h4 class="item-profile-name"><%= name %></h4>
+                <h6 class="item-profile-age">&nbsp;</h6>
+              </div>
+            </div>
+            <div class="provider-profile">
+              <div class="item-provider-logo css-bggreen">
+                <img src="<%= logopath %>" class="provider-<%= idtype %>"></img>
+              </div>
+              <div class="provider-desc"><%= logodesc %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,195 @@
+<div class="container">
+  <div class="row">
+    <div class="span12">
+      <div class="lp-refineSearch">
+        <form class="lp-refineSearchForm" id="ref-ren-form">
+          <% var guests = Outpost.searchQuery.guests; %>
+          <div class="input-wrapper">
+            <input id="ref-ren-dest-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Where do you want to go ?">
+          </div>
+          <div class="input-wrapper">
+            <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+            <input class="input-small sl-hou-from-date" id="ref-ren-sdate" placeholder="Check in" autocomplete="off" value="<%= Outpost.searchQuery.sdate %>" type="text">
+          </div>
+          <div class="input-wrapper">
+            <span class="add-on calendar-prepend"><i class="icon-calendar"></i></span>
+            <input class="input-small sl-hou-to-date" id="ref-ren-edate" placeholder="Check out" autocomplete="off" value="<%= Outpost.searchQuery.edate %>" type="text">
+          </div>
+          <div class="input-wrapper">
+            <select class="sl-hou-guest-input" id="ref-ren-guest">
+              <option <%= guests === "1" ? "selected" : '' %> value="1">1 guest</option>
+              <option <%= guests === "2" ? "selected" : '' %> value="2">2 guests</option>
+              <option <%= guests === "3" ? "selected" : '' %> value="3">3 guests</option>
+              <option <%= guests === "4" ? "selected" : '' %> value="4">4 guests</option>
+              <option <%= guests === "5" ? "selected" : '' %> value="5">5 guests</option>
+              <option <%= guests === "6" ? "selected" : '' %> value="6">6 guests</option>
+              <option <%= guests === "7" ? "selected" : '' %> value="7">7 guests</option>
+              <option <%= guests === "8" ? "selected" : '' %> value="8">8 guests</option>
+              <option <%= guests === "9" ? "selected" : '' %> value="9">9 guests</option>
+              <option <%= guests === "10" ? "selected" : '' %> value="10">10 guests</option>
+              <option <%= guests === "11" ? "selected" : '' %> value="11">11 guests</option>
+              <option <%= guests === "12" ? "selected" : '' %> value="12">12 guests</option>
+              <option <%= guests === "13" ? "selected" : '' %> value="13">13 guests</option>
+              <option <%= guests === "14" ? "selected" : '' %> value="14">14 guests</option>
+              <option <%= guests === "15" ? "selected" : '' %> value="15">15 guests</option>
+              <option <%= guests === "16" ? "selected" : '' %> value="16">16+ guests</option>
+            </select>
+          </div>
+          <button class="css-searchit" id="ref-ren-search" type="submit">
+            <span class="icon-search css-searchicon"></span>&nbsp;Search
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="span12">
+      <div class="tab-content">
+        <div class="tab-pane active" id="lp-spacerentals">
+          <div class="span3">
+            <div class="accordion lp-sidebar">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Room type
+                  </a>
+                </div>
+                <div id="lp-hou-roomType" class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <label class="checkbox">
+                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="entire_home">Entire home/apt
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="private_room">Private room
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="shared_room">Shared room
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Price
+                  </a>
+                </div>
+                <div id="lp-hou-priceFilter" class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <div class="lp-price-filter">
+                      <ul class="slider_values">
+                        <li class="price-value-min minimax">$<span id="lp-price-value-min-hou">10</span> USD</li>
+                        <li class="price-value-max minimax">$<span id="lp-price-value-max-hou">300+</span> USD</li>
+                      </ul>
+                      <div class="input-large" id="lp-price-input-hou"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Sort by
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <select class="lp-sortfilter" id="lp-hou-sortby">
+                      <option value="low2high">Price: Low to high</option>
+                      <option value="high2low">Price: High to low</option>
+                      <option value="provider">Provider</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle">
+                    Providers
+                  </a>
+                </div>
+                <div class="accordion-body in collapse">
+                  <div class="accordion-inner">
+                    <label class="checkbox">
+                      <input class="lp-hou-providers" type="checkbox" value="nflats">9flats <span class="fil-num" id="fil-num-nfl"></span>
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-hou-providers" type="checkbox" value="craigslist">Craigslist <span class="fil-num" id="fil-num-cra"></span>
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-hou-providers" type="checkbox" value="airbnb">Airbnb <span class="fil-num" id="fil-num-air"></span>
+                    </label>
+                    <label class="checkbox">
+                      <input class="lp-hou-providers" type="checkbox" value="roomorama">Roomorama <span class="fil-num" id="fil-num-roo"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="span9 pull-right margin0">
+            <h1 class="well" id="lp-hou-well">
+              Searching for vacation rentals near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
+            </h1>
+            <div class="lp-lists" id="lp-hou-list"></div>
+            <div class="lp-spinner css-blue lp-hidden" id="lp-hou-ls" style="display: none;">
+              <div class="icon-spinner icon-spin icon-4x"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    $('.pac-container').remove();
+    $('.lp-sidebar').affix({
+      offset: 125
+    });
+
+    var $sdate = $('#ref-ren-sdate');
+    var $edate = $("#ref-ren-edate");
+
+    // REFINE SEARCH INIT
+    var options = {
+      types: ['(cities)']
+    };
+    var houDestTA = new google.maps.places.Autocomplete($('#ref-ren-dest-loc')[0], options);
+    google.maps.event.addListener(houDestTA, 'place_changed', function() {
+      $sdate.focus();
+    });
+
+    var customRange = function customRange(input) {
+      var minDate;
+      var startDateVal = $sdate.val();
+      if (input.id === 'ref-ren-edate') {
+        if (startDateVal) {
+          minDate = new Date(startDateVal);
+          minDate.setDate(minDate.getDate() + 1);
+          return {
+            minDate: minDate
+          };
+        } else {
+          return {
+            minDate: 1
+          };
+        }
+      }
+    };
+
+    $sdate.datepicker({
+      minDate: 0,
+      inline: true,
+      onClose: function(selectedDate) {
+        $edate.focus();
+      }
+    });
+
+    $edate.datepicker({
+      inline: true,
+      beforeShow: customRange,
+      onClose: function() {
+        $('#ref-ren-guest').focus();
+      }
+    });
+  })();
+</script>

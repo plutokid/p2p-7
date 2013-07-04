@@ -1,0 +1,108 @@
+<!-- Map and Sidebar -->
+  <div class="sidebar mvwq">
+    <div class="inner" id="js-inner">
+      <!-- Result info -->
+      <p class="resultInfo"></p>
+      <!-- TabNavs -->
+      <ul class="nav nav-tabs">
+        <li class="active"><a class="mv-tab css-red" id="js-ridesharemenu" href="#rideshare" data-toggle="tab" title="rideshare"><img src="../img/hipster-car.png"> Rideshares</a></li>
+        <li><a class="mv-tab" id="js-houserentalmenu" href="#houserental" data-toggle="tab" title="houserental"><img src="../img/hipster-house.png"> Houserentals</a></li>
+        <li><a class="mv-tab" id="js-tourismmenu css-green" href="#tourism" data-toggle="tab" title="tourism"><img src="../img/hipster-guy.png">Localguides</a></li>
+      </ul>
+      <div class="tab-content">
+        <!-- Rideshare -->
+        <%
+          var cities = Outpost.helpers.cutCities();
+          var origcity = cities.origcity;
+          var destcity = cities.destcity;
+        %>
+        <div class="tab-pane active" id="rideshare">
+          <div class="filters" id="filter-rideshare">
+            <div class="price-filter">
+              <ul class="slider_values">
+                <li class="price-value-min minimax">$<span id="price-value-min-rid">10</span> USD</li>
+                <li class="price-value-max minimax">$<span id="price-value-max-rid">300+</span> USD</li>
+              </ul>
+              <div class="input-large" id="js-price-input-rid"></div>
+            </div>
+            <select class="sortfilter" id="js-sortby-input-rid">
+              <option selected disabled value="nothing">Sort by</option>
+              <option value="low2high">Price: Low to high</option>
+              <option value="high2low">Price: High to low</option>
+            </select>
+          </div>
+          <ul class="nav nav-pills rid-submenu">
+            <li class="active"><a class="rid-menu-first" id="rid-menu-first" href="#rid-tab-first" data-toggle="tab"><%= origcity + ' → ' + destcity %></a></li>
+            <li><a class="rid-menu-second" id="rid-menu-second" href="#rid-tab-return" data-toggle="tab"><%= destcity + ' → ' + origcity %></a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="rid-tab-first">
+              <div class="loading" id="rideshare-loading"></div>
+              <div class="lists js-lists" id="rideshare-list">
+                <!-- items are here -->
+              </div>
+              <button class="btn load-more" id="lm-rid" type="button" data-loading-text="Loading...">Load more..</button>
+            </div>
+            <div class="tab-pane" id="rid-tab-return">
+              <div class="loading" id="rideshare-loading-return"></div>
+              <div class="lists js-lists" id="rideshare-list-return">
+                <!-- items are here -->
+              </div>
+              <button class="btn load-more" id="lm-rid-return" type="button" data-loading-text="Loading...">Load more..</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- House rental -->
+        <div class="tab-pane" id="houserental">
+          <div class="filters" id="filter-houserental">
+            <div class="price-filter">
+              <ul class="slider_values">
+                <li class="price-value-min minimax">$<span id="price-value-min-hou">10</span> USD</li>
+                <li class="price-value-max minimax">$<span id="price-value-max-hou">300+</span> USD</li>
+              </ul>
+              <div class="input-large" id="js-price-input-hou"></div>
+            </div>
+            <select class="sortfilter" id="js-sortby-input-hou">
+              <option selected disabled value="nothing">Sort by</option>
+              <option value="low2high">Price: Low to high</option>
+              <option value="high2low">Price: High to low</option>
+            </select>
+            <div class="btn-group room-type-btn" data-toggle="buttons-checkbox">
+              <button type="button" class="btn btn-primary roomtypebtn" data-value="entire_home">Entire home/apt</button>
+              <button type="button" class="btn btn-primary roomtypebtn" data-value="private_room">Private room</button>
+              <button type="button" class="btn btn-primary roomtypebtn" data-value="shared_room">Shared room</button>
+            </div>
+          </div>
+          <div class="loading" id="houserental-loading"></div>
+          <div class="lists js-lists" id="houserental-list">
+            <!-- items are here -->
+          </div>
+          <button class="btn load-more" id="lm-air" type="button" data-loading-text="Loading...">Load more..</button>
+        </div>
+
+        <!-- Tourism -->
+        <div class="tab-pane" id="tourism">
+          <div class="filters" id="filter-tourism">
+            <div class="price-filter">
+              <ul class="slider_values">
+                <li class="price-value-min minimax">$<span id="price-value-min-tou">10</span> USD</li>
+                <li class="price-value-max minimax">$<span id="price-value-max-tou">300+</span> USD</li>
+              </ul>
+              <div class="input-large" id="js-price-input-tou"></div>
+            </div>
+            <select class="sortfilter" id="js-sortby-input-tou">
+              <option selected disabled value="nothing">Sort by</option>
+              <option value="low2high">Price: Low to high</option>
+              <option value="high2low">Price: High to low</option>
+            </select>
+          </div>
+          <div class="loading" id="tourism-loading"></div>
+          <div class="lists js-lists" id="tourism-list">
+            <!-- items are here -->
+          </div>
+          <button class="btn load-more" id="lm-vay" type="button" data-loading-text="Loading...">Load more..</button>
+        </div>
+      </div>
+    </div>
+  </div>
