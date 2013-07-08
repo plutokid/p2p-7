@@ -910,8 +910,7 @@
         var $orig = $("#ref-rid-orig-loc"),
             $dest = $("#ref-rid-dest-loc");
 
-        var temp = "",
-            origCity = $orig.val(),
+        var origCity = $orig.val(),
             destCity = $dest.val();
 
         $orig.val(destCity);
@@ -944,8 +943,8 @@
         var $pcDest = $('.pac-container:eq(1)');
         var firstOrig = $pcOrig.find(".pac-item:first").text();
         var firstDest = $pcDest.find(".pac-item:first").text();
-        origCity = hasCommaOrig === -1 ? firstOrig : origCity;
-        destCity = hasCommaDest === -1 ? firstDest : destCity;
+        origCity = origCity ? hasCommaOrig === -1 ? firstOrig : origCity : '';
+        destCity = destCity ? hasCommaDest === -1 ? firstDest : destCity : '';
         return {
           origCity: origCity,
           destCity: destCity

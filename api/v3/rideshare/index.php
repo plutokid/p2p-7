@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  error_reporting(1);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -467,10 +467,14 @@
 
 function filterPrice($text) {
   $text = strtolower($text);
-  $megabus = strpos($text, 'megabus');
-  $bus = strpos($text, 'ticket');
-  $mbg = strpos($text, 'mega bus');
-  if ($megabus || $bus || $mbg) return false;
+  $keywords = array('megabus', 'ticket', 'mega bus');
+  foreach ($keywords as $value) {
+    $needle = strpos($text, $value);
+    if ($needle || $needle === 0) {
+      return false;
+    }
+  }
+
   $pos = strpos($text, '$');
 
   if ($pos === 0 || $pos) {

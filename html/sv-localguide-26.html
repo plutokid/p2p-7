@@ -1,3 +1,16 @@
+<% if (!title) { %>
+<div class="container" id="singleViewPage">
+  <div class="row">
+    <div class="span12">
+      <div class="item-wrapper">
+        <div class="panel-header css-bggreen">
+          <h2 class="panel-title">Expired offer</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% } else { %>
 <%
   Outpost.helpers.alternateSEO({
     title: title + " - Outpost",
@@ -69,3 +82,4 @@
     </div>
   </div>
 </div>
+<% } %>

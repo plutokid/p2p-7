@@ -3,6 +3,7 @@
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
   Outpost.rev = "-26";
+
   // Used for ajax caching
   Outpost.cache = {};
   Outpost.HTMLcache = {};
@@ -415,8 +416,8 @@
 
       query = Outpost.helpers.genSearchQuery([
         data.idtype,
-        data.sloc,
-        data.eloc,
+        "s" + data.sloc,
+        "e" + data.eloc,
         data.sdate,
         data.edate,
         data.guests,

@@ -196,7 +196,7 @@
   </div>
 </div>
 <script>
-  (function() {
+  $(function() {
     var resizeLanding = function() {
       var bgheight = $(window).height() - 52;
       var centerLanding = Math.round(bgheight / 3) - 50;
@@ -294,6 +294,8 @@
       if (data.city) {
         $(ridOrigInput).val(origLocation);
         $(ridDestInput).focus();
+      } else {
+        $(ridOrigInput).focus();
       }
     });
 
@@ -302,5 +304,5 @@
     });
 
     resizeLanding();
-  })();
+  });
 </script>

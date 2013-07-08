@@ -1,3 +1,16 @@
+<% if (!date) { %>
+<div class="container" id="singleViewPage">
+  <div class="row">
+    <div class="span12">
+      <div class="item-wrapper">
+        <div class="panel-header css-bgred">
+          <h2 class="panel-title">Expired offer</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% } else { %>
 <%
   Outpost.helpers.alternateSEO({
     title: "Ride from " + origin + " to " + destination + " - Outpost",
@@ -65,3 +78,4 @@
     </div>
   </div>
 </div>
+<% } %>

@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  error_reporting(1);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -206,9 +206,14 @@
     $json["idtype"] = $idtype;
     $json["logodesc"] = "Ridejoy is a community marketplace for sharing rides. If you're going on a trip, you can list extra seat space in your car, and if you need to get somewhere, you can find a ride, using our site. Happy rideshares and carpools!";
 
-    $json["labels"][] = array();
+    $json["labels"] = array();
     foreach ($single->find(".addon") as $label) {
-      $json["labels"][] = trim($label->plaintext);
+      $json["labels"][] = $tmp;
+    }
+
+    $tmp = $single->find('.verifications', 0);
+    if (isset($tmp)) {
+      $json["labels"][] = trim($single->find('.verifications', 0)->plaintext);
     }
 
     return json_encode($json);
