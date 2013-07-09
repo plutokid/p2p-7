@@ -244,15 +244,12 @@
     $json["name"] = "";
     $json["response_time"] = "&nbsp;";
 
-    if (isset($single->annotations->phone)) {
-      $json["amenities"] = array(
-        $single->annotations->source_account,
-        $single->annotations->phone
-      );
-    } else {
-      $json["amenities"] = array(
-        $single->annotations->source_account
-      );
+
+    if (property_exists($single->annotations, "phone")) {
+      $json["amenities"][] = $single->annotations->phone;
+    }
+    if (property_exists($single->annotations, "source_account")) {
+      $json["amenities"][] = $single->annotations->source_account;
     }
 
     $json["room_type"] = "Entire Home/Apt";

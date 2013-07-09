@@ -134,13 +134,11 @@
         $url = $url.$extra.$qry_str;
         $html = file_get_contents($url);
         $json = json_decode($html);
+        $dups = array();
         foreach ($json->postings as $key => $aRide) {
-          $ride['price'] = '';
-          if (property_exists($aRide, "heading")) {
-            $heading = $aRide->heading;
-            $ride['price'] = filterPrice($aRide->heading);
-          }
+          $heading = $aRide->heading;
 
+          $ride['price'] = filterPrice($aRide->heading);
           if (property_exists($aRide, "body")) {
             $ride['desc'] = $aRide->body;
             if (!$ride['price']) {
@@ -150,6 +148,25 @@
 
           $ride['timestamp'] = filterTime($heading, date("F", $timestamp));
           if ($ride['price'] && $ride['timestamp']) {
+            if (in_array($heading, $dups)) {
+              continue;
+            }
+            $dups[] = $heading;
+            $ride['sim'] = array();
+            $dupDetected = false;
+            foreach ($dups as $string) {
+              similar_text($heading, $string, $pc);
+              if ($pc >= 75 && $pc != 100) {
+                $ride['sim'][] = $pc;
+                $dupDetected = true;
+                continue;
+              }
+            }
+
+            if ($dupDetected) {
+              continue;
+            }
+
             $ride['idtype'] = "craigslist";
             $ride['origin'] = $origCity;
             $ride['destination'] = $destCity;
