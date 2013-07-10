@@ -1560,24 +1560,26 @@ color: white;
   height: 150px;
 }
 
-.lpl-airbnb {
-  background:url("../img/airbnb.png") no-repeat #24b0cf 621px 3px;
-}
 .lpl-nflats {
   background:url("../img/9flats.png") no-repeat #24b0cf 621px 3px;
 }
-
+.lpl-airbnb {
+  background:url("../img/airbnb.png") no-repeat #24b0cf 621px 3px;
+}
 .lpl-craigslist {
   background:url("../img/craigslist.png") no-repeat #24b0cf 603px 4px;
+}
+.lpl-flipkey {
+  background:url("../img/flipkey_small.png") no-repeat #24b0cf 598px 3px;
+}
+.lpl-roomorama {
+  background:url("../img/roomorama_small.png") no-repeat #24b0cf 621px 3px;
 }
 
 .lp-aList-rid .lpl-craigslist {
   background:url("../img/craigslist.png") no-repeat #ec5f41 603px 4px;
 }
 
-.lpl-roomorama {
-  background:url("../img/roomorama_small.png") no-repeat #24b0cf 621px 3px;
-}
 
 .lpl-kangaride {
   background:url("../img/kangaride.png") no-repeat #ec5f41 622px 4px;

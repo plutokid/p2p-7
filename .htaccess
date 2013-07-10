@@ -539,8 +539,7 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
   php_value session.cookie_httponly true
 </IfModule>
 
-# RewriteEngine On
-# Options +FollowSymLinks
+
 # RewriteCond %{QUERY_STRING}  _escaped_fragment_=  [NC]
 # RewriteRule ^(.*)$ http://api.seo4ajax.com/7d86b35453a08f97192c9310ac8da87b/$1 [P,QSA,L]
 

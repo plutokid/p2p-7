@@ -292,7 +292,7 @@
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
       templateCarousel: _.template($('#tmpl-carousel').html()),
-      idtypes: ["nflats", "airbnb", "craigslist", "roomorama"],
+      idtypes: ["nflats", "airbnb", "craigslist", "flipkey", "roomorama"],
       numOfLoaded: 0,
       collection: [],
       sortedCollection: [],
@@ -629,6 +629,7 @@
         $('#fil-num-nfl').text($('.alist-nflats').length);
         $('#fil-num-air').text($('.alist-airbnb').length);
         $('#fil-num-cra').text($('.alist-craigslist').length);
+        $('#fil-num-fli').text($('.alist-flipkey').length);
         $('#fil-num-roo').text($('.alist-roomorama').length);
       },
 

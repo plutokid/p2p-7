@@ -132,6 +132,7 @@
         $qry_str = "&category=CRID&lat={$origLat}&long={$origLon}&radius=20mi&page={$page}&heading={$filter}";
         $extra = "&rpp=100&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
         $url = $url.$extra.$qry_str;
+        echo "$url";
         $html = file_get_contents($url);
         $json = json_decode($html);
         $dups = array();

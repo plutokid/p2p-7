@@ -8,14 +8,17 @@
   $idtype = $_GET["idtype"];
 
   switch ($idtype) {
-    case 'airbnb':
-      $json = airbnb($url);
-      break;
     case 'nflats':
       $json = nflats($url);
       break;
+    case 'airbnb':
+      $json = airbnb($url);
+      break;
     case 'craigslist':
       $json = craigslist($url);
+      break;
+    case 'flipkey':
+      $json = flipkey($url);
       break;
     case 'roomorama':
       $json = roomorama($url);
@@ -24,6 +27,94 @@
   echo $_GET['callback'] . '('.$json.')';
 
   // START THE MADDNESS
+  function nflats($url) {
+    global $idtype;
+    $uri = $url;
+    $url = "https://api.9flats.com/api/v4/places/" . $url . "?client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
+    $html = file_get_contents($url);
+    $single = json_decode($html);
+    $single = $single->place;
+
+    $json["title"] = $single->place_details->name;
+    $json["price"] = "$".round($single->pricing->price);
+    $json["currency"] = $single->pricing->currency;
+    $json["numOfBeds"] = $single->place_details->number_of_beds;
+    $json["numOfBedrooms"] = $single->place_details->number_of_bedrooms;
+    $json["house_rules"] = $single->place_details->house_rules;
+    $json["link"] = "http://www.9flats.com/places/".$uri;
+
+    $json["picture_url"] = "img/rsz_noavatar.png";
+    $json["name"] = $single->place_details->host->name;
+    $json["response_time"] = "&nbsp;";
+    $json["amenities"] = $single->place_details->amenities_list;
+
+    $json["city"] = $single->place_details->city;
+    $json["zipcode"] = $single->place_details->zipcode;
+    $json["country"] = $single->place_details->country;
+    $json["property_type"] = $single->place_details->category." -";
+    $json["room_type"] = $single->place_details->place_type;
+    $json["address"] = "{$json['city']}, {$json['zipcode']}, {$json['country']}";
+
+    $json["logopath"] = "img/9flats-final.png";
+    $json["idtype"] = $idtype;
+    $json["logodesc"] = "9flats is a new kind of accommodation: private rooms, apartments and holiday houses, owned by friendly locals across the world.";
+
+    $gallery = $single->place_details->additional_photos;
+    $imgArr = array();
+    $captions = array();
+    for ($i = 0; $i < count($gallery); $i++) {
+      $uri = $gallery[$i]->place_photo->url;
+      $aCaption = $gallery[$i]->place_photo->title;
+      $imgArr[] = str_replace("medium", "large", $uri);
+      $captions[] = $aCaption;
+    }
+    $json["imgs"] = $imgArr;
+    $json["captions"] = $captions;
+
+    $json["lat"] = $single->place_details->lat;
+    $json["lng"] = $single->place_details->lng;
+
+    $json["desc"] = $single->place_details->description;
+
+    $json["smallInfo"] = array();
+    $json["smallInfo"][] = array(
+      "Instant Bookable:",
+      yesno($single->place_details->instant_bookable)
+    );
+    if ($single->place_details->charge_per_extra_person_limit) {
+      $json["smallInfo"][] = array(
+        "Accommodates:",
+        $single->place_details->charge_per_extra_person_limit
+      );
+    }
+    if ($single->place_details->cancellation_rules->type) {
+      $json["smallInfo"][] = array(
+        "Cancellation:",
+        $single->place_details->cancellation_rules->type
+      );
+    }
+    if ($single->place_details->number_of_bathrooms) {
+      $json["smallInfo"][] = array(
+        "Bathrooms:",
+        $single->place_details->number_of_bathrooms
+      );
+    }
+    if ($single->place_details->minimum_nights) {
+      $json["smallInfo"][] = array(
+        "Minimum Stay:",
+        $single->place_details->minimum_nights
+      );
+    }
+    $json["smallInfo"][] = array(
+      "Extra People:",
+      '$'."{$single->pricing->charge_per_extra_person} {$json['currency']} / night after {$single->place_details->charge_per_extra_person_limit} guests"
+    );
+
+    $json["review"] = false;
+
+    return json_encode($json);
+  }
+
   function airbnb($url) {
     global $idtype;
     $uri = $url;
@@ -133,94 +224,6 @@
     return json_encode($json);
   }
 
-  function nflats($url) {
-    global $idtype;
-    $uri = $url;
-    $url = "https://api.9flats.com/api/v4/places/" . $url . "?client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
-    $html = file_get_contents($url);
-    $single = json_decode($html);
-    $single = $single->place;
-
-    $json["title"] = $single->place_details->name;
-    $json["price"] = "$".round($single->pricing->price);
-    $json["currency"] = $single->pricing->currency;
-    $json["numOfBeds"] = $single->place_details->number_of_beds;
-    $json["numOfBedrooms"] = $single->place_details->number_of_bedrooms;
-    $json["house_rules"] = $single->place_details->house_rules;
-    $json["link"] = "http://www.9flats.com/places/".$uri;
-
-    $json["picture_url"] = "img/rsz_noavatar.png";
-    $json["name"] = $single->place_details->host->name;
-    $json["response_time"] = "&nbsp;";
-    $json["amenities"] = $single->place_details->amenities_list;
-
-    $json["city"] = $single->place_details->city;
-    $json["zipcode"] = $single->place_details->zipcode;
-    $json["country"] = $single->place_details->country;
-    $json["property_type"] = $single->place_details->category." -";
-    $json["room_type"] = $single->place_details->place_type;
-    $json["address"] = "{$json['city']}, {$json['zipcode']}, {$json['country']}";
-
-    $json["logopath"] = "img/9flats-final.png";
-    $json["idtype"] = $idtype;
-    $json["logodesc"] = "9flats is a new kind of accommodation: private rooms, apartments and holiday houses, owned by friendly locals across the world.";
-
-    $gallery = $single->place_details->additional_photos;
-    $imgArr = array();
-    $captions = array();
-    for ($i = 0; $i < count($gallery); $i++) {
-      $uri = $gallery[$i]->place_photo->url;
-      $aCaption = $gallery[$i]->place_photo->title;
-      $imgArr[] = str_replace("medium", "large", $uri);
-      $captions[] = $aCaption;
-    }
-    $json["imgs"] = $imgArr;
-    $json["captions"] = $captions;
-
-    $json["lat"] = $single->place_details->lat;
-    $json["lng"] = $single->place_details->lng;
-
-    $json["desc"] = $single->place_details->description;
-
-    $json["smallInfo"] = array();
-    $json["smallInfo"][] = array(
-      "Instant Bookable:",
-      yesno($single->place_details->instant_bookable)
-    );
-    if ($single->place_details->charge_per_extra_person_limit) {
-      $json["smallInfo"][] = array(
-        "Accommodates:",
-        $single->place_details->charge_per_extra_person_limit
-      );
-    }
-    if ($single->place_details->cancellation_rules->type) {
-      $json["smallInfo"][] = array(
-        "Cancellation:",
-        $single->place_details->cancellation_rules->type
-      );
-    }
-    if ($single->place_details->number_of_bathrooms) {
-      $json["smallInfo"][] = array(
-        "Bathrooms:",
-        $single->place_details->number_of_bathrooms
-      );
-    }
-    if ($single->place_details->minimum_nights) {
-      $json["smallInfo"][] = array(
-        "Minimum Stay:",
-        $single->place_details->minimum_nights
-      );
-    }
-    $json["smallInfo"][] = array(
-      "Extra People:",
-      '$'."{$single->pricing->charge_per_extra_person} {$json['currency']} / night after {$single->place_details->charge_per_extra_person_limit} guests"
-    );
-
-    $json["review"] = false;
-
-    return json_encode($json);
-  }
-
   function craigslist($id) {
     global $idtype;
     $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39&id={$id}";
@@ -245,6 +248,7 @@
     $json["response_time"] = "&nbsp;";
 
 
+    $json["amenities"] = array();
     if (property_exists($single->annotations, "phone")) {
       $json["amenities"][] = $single->annotations->phone;
     }
@@ -309,6 +313,13 @@
     $json["review"] = false;
 
     return json_encode($json);
+  }
+
+  function flipkey($id) {
+    global $idtype;
+    $url = "http://flipkey.trevorstarick.com:8000/api/v1/houserentals/id={$id}";
+    $html = file_get_contents($url);
+    return $html;
   }
 
   function roomorama($url) {

@@ -112,13 +112,46 @@
           $room['price'] = round($aRoom->place->pricing->price);
           $room['desc'] = str_replace("'", "", $aRoom->place->place_details->name);
           $room['link'] = "http://www.9flats.com/places/".$aRoom->place->place_details->slug;
-          $room['infoWindowIcon'] = "img/9flats.png";
           $room['latLng'] = array($aRoom->place->place_details->lat, $aRoom->place->place_details->lng);
           $room['type'] = $aRoom->place->place_details->place_type;
           $room['origin'] = $aRoom->place->place_details->city;
 
           $output[] = $room;
         }
+      }
+      break;
+    case 'airbnb':
+      $url = "https://www.airbnb.com/s";
+      $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}&price_min={$min}&price_max={$max}&page={$page}{$airRoomType}";
+      $url = $url.$qry_str;
+      $html = file_get_contents($url);
+
+      // Request DOM Scraper library
+      require_once('../../simple_html_dom.php');
+
+      // Instantiate a new DOM Scrapping object
+      $rooms = new simple_html_dom();
+      $rooms->load($html);
+
+      foreach($rooms->find('.search_result') as $aRoom) {
+        $room['id'] = $aRoom->getAttribute("data-hosting-id");
+        $room['uri'] = $aRoom->getAttribute("data-hosting-id");
+        $room['idtype'] = "airbnb";
+        $room['roomImg'] = str_replace('x_small', 'small', $aRoom->find('img', 0)->getAttribute("data-original"));
+        $room['profileImg'] = str_replace('tiny', 'small', $aRoom->find('img', 1)->getAttribute("data-original"));
+        $room['profileName'] = $aRoom->find('img', 1)->alt;
+        $room['desc'] = str_replace("'", "", $aRoom->find('.name', 0)->plaintext);
+        $room['profileLink'] = "https://airbnb.com".$aRoom->find('a', 1)->href;
+        $room['price'] = 0 + filter_var(trim($aRoom->find('.price', 0)->plaintext), FILTER_SANITIZE_NUMBER_INT);
+        $room['link'] = "https://airbnb.com".$aRoom->find('.name', 0)->href;
+        $room['latLng'] = "";
+        $var = trim($aRoom->find('.descriptor', 0)->plaintext);
+        $mixed = explode("&mdash;", $var);
+        $room['type'] = trim($mixed[0]);
+        $room['origin'] = trim(str_replace('>', '', $mixed[1]));
+        $room['origin'] = $room['origin'] == "Quebec" ? "Quebec city" : $room['origin'];
+
+        $output[] = $room;
       }
       break;
     case 'craigslist':
@@ -148,7 +181,6 @@
             $room['roomImg'] = $aRoom->images[0]->full;
             $room['profileImg'] = "img/noprofile.jpg";
             $room['link'] = $aRoom->external_url;
-            $room['infoWindowIcon'] = "img/craigslist.png";
             $room['latLng'] = array($aRoom->location->lat, $aRoom->location->long);
             $room['desc'] = $aRoom->heading;
             $room['type'] = "Entire Home/Apt";
@@ -158,41 +190,13 @@
         }
       }
       break;
-    case 'airbnb':
-      $url = "https://www.airbnb.com/s";
-      $qry_str = "?location={$endLocation}&checkin={$startDate}&checkout={$endDate}&guests={$guests}&price_min={$min}&price_max={$max}&page={$page}{$airRoomType}";
-      $url = $url.$qry_str;
-      $html = file_get_contents($url);
-
-      // Request DOM Scraper library
-      require_once('../../simple_html_dom.php');
-
-      // Instantiate a new DOM Scrapping object
-      $rooms = new simple_html_dom();
-      $rooms->load($html);
-
-      foreach($rooms->find('.search_result') as $aRoom) {
-        $room['id'] = $aRoom->getAttribute("data-hosting-id");
-        $room['uri'] = $aRoom->getAttribute("data-hosting-id");
-        $room['idtype'] = "airbnb";
-        $room['roomImg'] = str_replace('x_small', 'small', $aRoom->find('img', 0)->getAttribute("data-original"));
-        $room['profileImg'] = str_replace('tiny', 'small', $aRoom->find('img', 1)->getAttribute("data-original"));
-        $room['profileName'] = $aRoom->find('img', 1)->alt;
-        $room['desc'] = str_replace("'", "", $aRoom->find('.name', 0)->plaintext);
-        $room['profileLink'] = "https://airbnb.com".$aRoom->find('a', 1)->href;
-        $room['price'] = 0 + filter_var(trim($aRoom->find('.price', 0)->plaintext), FILTER_SANITIZE_NUMBER_INT);
-        $room['link'] = "https://airbnb.com".$aRoom->find('.name', 0)->href;
-        $room['infoWindowIcon'] = "img/airbnb.png";
-        $room['latLng'] = "";
-        $var = trim($aRoom->find('.descriptor', 0)->plaintext);
-        $mixed = explode("&mdash;", $var);
-        $room['type'] = trim($mixed[0]);
-        $room['origin'] = trim(str_replace('>', '', $mixed[1]));
-        $room['origin'] = $room['origin'] == "Quebec" ? "Quebec city" : $room['origin'];
-
-        $output[] = $room;
+    case 'flipkey':
+      if ($page == 1) {
+        $cityLow = strtolower($city);
+        $html = file_get_contents("http://flipkey.trevorstarick.com:8000/api/v1/houserentals/loc={$cityLow}");
+        $output = json_decode($html);
+        break;
       }
-      break;
     case 'roomorama':
       if (!$startDate_dash || !$endDate_dash) {
         $startDate_dash = '';
@@ -234,7 +238,6 @@
           $room['price'] = $aRoom->price;
           $room['desc'] = str_replace("'", "", $aRoom->title);
           $room['link'] = $aRoom->url;
-          $room['infoWindowIcon'] = "img/roomorama.png";
           $room['latLng'] = array($aRoom->lat, $aRoom->lng);
           if (isset($aRoom->subtype) && $room['type'] !== $aRoom->subtype) {
             $room['type'] = $room['type'] . ' - ' . $aRoom->subtype;

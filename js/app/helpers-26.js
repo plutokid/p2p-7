@@ -115,10 +115,6 @@
       return objectData;
     },
 
-    genLatLng: function() {
-
-    },
-
     resetLocations: function(arg) {
       switch (arg) {
         case "orig":
