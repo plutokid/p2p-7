@@ -319,7 +319,8 @@
     global $idtype;
     $url = "http://flipkey.trevorstarick.com:8000/api/v1/houserentals/id={$id}";
     $html = file_get_contents($url);
-    return $html;
+    $json = json_decode($html);
+    return json_encode($json[0]);
   }
 
   function roomorama($url) {
