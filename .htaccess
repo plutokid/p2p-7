@@ -539,19 +539,15 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
   php_value session.cookie_httponly true
 </IfModule>
 
+RewriteCond %{HTTP_HOST} ^outpostp2p\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.outpostp2p\.com$
+RewriteRule ^/?$ "http\:\/\/outpost\.travel\/" [R=301,L]
 
-# RewriteCond %{QUERY_STRING}  _escaped_fragment_=  [NC]
-# RewriteRule ^(.*)$ http://api.seo4ajax.com/7d86b35453a08f97192c9310ac8da87b/$1 [P,QSA,L]
+RewriteCond %{HTTP_HOST} ^outposttravel\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.outposttravel\.com$
+RewriteRule ^/?$ "http\:\/\/outpost\.travel\/" [R=301,L]
 
-# RewriteCond %{HTTP_HOST} ^outpostp2p\.com$ [OR]
-# RewriteCond %{HTTP_HOST} ^www\.outpostp2p\.com$
-# RewriteRule ^/?$ "http\:\/\/outpost\.travel\/" [R=301,L]
-
-# RewriteCond %{HTTP_HOST} ^outposttravel\.com$ [OR]
-# RewriteCond %{HTTP_HOST} ^www\.outposttravel\.com$
-# RewriteRule ^/?$ "http\:\/\/outpost\.travel\/" [R=301,L]
-
-# Header add Access-Control-Allow-Origin "*"
-# Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
-# Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
-# AddType application/x-httpd-php53 .php#
+Header add Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+AddType application/x-httpd-php53 .php
