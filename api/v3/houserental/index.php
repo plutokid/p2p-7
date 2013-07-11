@@ -192,10 +192,12 @@
       break;
     case 'flipkey':
       if ($page == 1) {
-        $cityLow = strtolower($city);
-        $html = file_get_contents("http://flipkey.trevorstarick.com:8000/api/v1/houserentals/loc={$cityLow}");
-        $output = json_decode($html);
-        break;
+        // Uses the same room type rentals as craigslist (entire home only)
+        if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
+          $html = file_get_contents("http://flipkey.trevorstarick.com:8000/api/v1/houserentals/loc={$city}&min={$min}&max={$max}");
+          $output = json_decode($html);
+          break;
+        }
       }
     case 'roomorama':
       if (!$startDate_dash || !$endDate_dash) {
