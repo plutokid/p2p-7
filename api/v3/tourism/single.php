@@ -30,12 +30,25 @@
     $json["amount"] = trim($single->find('.trip-header-prop', 2)->plaintext);
 
     $json["price"] = trim($single->find('.price', 0)->plaintext);
-    $json["name"] = trim($single->find('.name', 0)->plaintext);
+
+    $name = $single->find('.name', 0);
+    if (isset($name)) {
+      $json["name"] = trim($name->plaintext);
+    } else {
+      $json["name"] = "&nbsp;";
+    }
+
     $json["picture_url"] = trim($single->find('.user-picture', 1)->src);
     $json["image"] = trim($single->find('#trip-photos-carousel-0 img', 0)->src);
 
     $json["desc"] = trim($single->find('.trip-description', 0)->plaintext);
-    $json["origin"] = trim($single->find('.text-center strong', 0)->plaintext);
+
+    $origin = $single->find('.text-center strong', 0);
+    if (isset($origin)) {
+      $json["origin"] = trim($single->find('.text-center strong', 0)->plaintext);
+    } else {
+      $json["origin"] = "";
+    }
 
     $json["logopath"] = "img/vayable_logo_edited.png";
     $json["idtype"] = $idtype;

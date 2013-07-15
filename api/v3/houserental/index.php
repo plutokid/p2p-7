@@ -156,6 +156,7 @@
       }
       break;
     case 'craigslist':
+      $regex = '$\b(https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|]$i';
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
         $max = $max == 10000 ? 300 : $max;
         $page = 0 + $page - 1;
@@ -171,6 +172,11 @@
           $room['price'] = 0 + $aRoom->price;
           $room['sanitize'] = $room['price'].preg_replace("/[^A-Z]+/", "", $room['origin']);
           if (isset($aRoom->location->state)) {
+            if (property_exists($aRoom, "body") && hasURL($aRoom->body)) {
+              // nothing
+            } else {
+              continue;
+            }
             if (in_array($room['sanitize'], $dups)) {
               continue;
             }
@@ -254,4 +260,10 @@
   }
 
   echo $_GET['callback'] . '('.json_encode($output).')';
+
+  function hasURL($body) {
+    global $regex;
+    preg_match_all($regex, $body, $result, PREG_PATTERN_ORDER);
+    return isset($result[0][0]) ? false : true;
+  }
 ?>

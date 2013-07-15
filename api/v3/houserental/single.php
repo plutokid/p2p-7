@@ -188,10 +188,12 @@
         $single->min_nights
       );
     }
-    $json["smallInfo"][] = array(
-      "Extra People:",
-      '$'."{$single->price_for_extra_person_native} {$json['currency']} / night after {$single->guests_included} guests"
-    );
+    if (property_exists($single, "price_for_extra_person_native")) {
+      $json["smallInfo"][] = array(
+        "Extra People:",
+        '$'."{$single->price_for_extra_person_native} {$json['currency']} / night after {$single->guests_included} guests"
+      );
+    }
     if (isset($single->security_deposit_native)) {
       $json["smallInfo"][] = array(
         "Security Deposit:",
@@ -334,7 +336,18 @@
     $json["title"] = $single->title;
     $json["price"] = "$".round($single->price);
     $json["currency"] = $single->currency_code;
-    $json["numOfBeds"] = $single->num_double_beds + $single->num_single_beds + $single->num_sofa_beds;
+
+    $json["numOfBeds"] = 0;
+    if (property_exists($single, "num_double_beds")) {
+      $json["numOfBeds"] += $single->num_double_beds;
+    }
+    if (property_exists($single, "num_single_beds")) {
+      $json["numOfBeds"] += $single->num_single_beds;
+    }
+    if (property_exists($single, "num_sofa_beds")) {
+      $json["numOfBeds"] += $single->num_sofa_beds;
+    }
+
     $json["numOfBedrooms"] = $single->num_rooms;
     $json["house_rules"] = $single->cancellation_policy;
     $json["link"] = $single->url;

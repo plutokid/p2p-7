@@ -455,7 +455,6 @@ line-height: 1.2;
   margin-top: 13px;
 }
 
-
 .beta {
   color: #24B0CF;
   font-size: 10px;
@@ -464,6 +463,22 @@ line-height: 1.2;
 }
 
 .header-logo-link {
+  float: left;
+  margin-right: 35px;
+}
+
+.navbar-cat {
+  display: block;
+  color: #163f5e;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 15px;
+  margin-top: 10px;
+}
+
+.navbar-cat:hover {
+  text-decoration: underline;
 }
 
 .map {
