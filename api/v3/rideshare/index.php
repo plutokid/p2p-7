@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  error_reporting(-1);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -228,7 +228,7 @@
         } else {
           $kangaPage = "&p={$page}";
         }
-        $qry_str = $origState.$destState.$uri.$startDate2.$endDate2.$kangaPage;
+        $qry_str = $origState.$destState.$uri.$startDate2.$endDate2.$kangaPage."&seats={$guests}";
         $opts = array(
           'http'=>array(
             'method'=>"GET",
@@ -404,6 +404,15 @@
              $origin = explode('<span class="trip_type round_trip"></span>', $originfull);
            }
 
+           if ($aRide->prev_sibling()->hasAttribute('class')) {
+             $lastDate = $aRide->prev_sibling()->plaintext;
+             $lastDate = explode("&mdash;", $lastDate);
+             if (isset($lastDate[1]))
+               $lastDate = $lastDate[1];
+             else
+               $lastDate = substr($lastDate[0], 10);
+           }
+
            $ride['iconPath'] = "img/zimride.ico";
            $ride['infoWindowIcon'] = "img/zimride.png";
            $ride['origin'] = trim($origin[0]);
@@ -418,14 +427,6 @@
              }
            }
 
-           if ($aRide->prev_sibling()->hasAttribute('class')) {
-             $lastDate = $aRide->prev_sibling()->plaintext;
-             $lastDate = explode("&mdash;", $lastDate);
-             if (isset($lastDate[1]))
-               $lastDate = $lastDate[1];
-             else
-               $lastDate = substr($lastDate[0], 10);
-           }
            $price_full = $aRide->find('.price_box p', 0)->plaintext;
            $price = 0 + substr($price_full, 1);
            $ride['link'] = $aRide->href;

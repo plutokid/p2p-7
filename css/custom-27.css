@@ -23,8 +23,11 @@ a:hover {
 a:focus {
   text-decoration:none;
 }
+
 .pac-container:after {
+  background-image: none;
   content: "" !important;
+  height: 0;
 }
 .pac-container {
   z-index: 1054 !important;

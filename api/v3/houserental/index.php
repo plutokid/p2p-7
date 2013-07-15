@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  error_reporting(-1);
 
   // For JSONP convinience
   header('Content-Type: application/javascript');
@@ -150,6 +150,7 @@
         $room['type'] = trim($mixed[0]);
         $room['origin'] = trim(str_replace('>', '', $mixed[1]));
         $room['origin'] = $room['origin'] == "Quebec" ? "Quebec city" : $room['origin'];
+        $room['origin'] = str_replace("'", "", $room['origin']);
 
         $output[] = $room;
       }
