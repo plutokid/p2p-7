@@ -302,6 +302,10 @@
       }
     });
 
+    $(ridOrigInput).one("click", function(){
+      $(this).val("");
+    });
+
     $(window).resize(function() {
       resizeLanding();
     });
