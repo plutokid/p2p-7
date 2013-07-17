@@ -2025,6 +2025,10 @@ color: white;
 .provider-kangaride {
   width: 110px;
 }
+.provider-flipkey {
+  margin-top: 6px;
+  width: 120px;
+}
 
 .provider-craigslist {
   width: 110px;

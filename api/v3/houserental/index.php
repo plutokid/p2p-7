@@ -201,7 +201,7 @@
       if ($page == 1) {
         // Uses the same room type rentals as craigslist (entire home only)
         if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-          $html = file_get_contents("http://flipkey.trevorstarick.com:8000/api/v1/houserentals/loc={$city}&min={$min}&max={$max}");
+          $html = file_get_contents_curl("http://api.trevorstarick.com:443/flipkey/loc={$city}&min={$min}&max={$max}");
           $output = json_decode($html);
           break;
         }
@@ -265,5 +265,20 @@
     global $regex;
     preg_match_all($regex, $body, $result, PREG_PATTERN_ORDER);
     return isset($result[0][0]) ? false : true;
+  }
+
+  function file_get_contents_curl($url) {
+      $ch = curl_init();
+
+      curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+
+      $data = curl_exec($ch);
+      curl_close($ch);
+
+      return $data;
   }
 ?>

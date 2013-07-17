@@ -119,7 +119,7 @@
 
       listview: function(type, params) {
         Outpost.list.type = type;
-        if (params) {
+        if (params && !params.utm_source) {
           var searchQuery = Outpost.searchQuery;
           var origCity = Outpost.helpers.debarURI(params.origCity);
           var destCity = Outpost.helpers.debarURI(params.destCity);

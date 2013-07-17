@@ -1,5 +1,5 @@
 <?php
-  error_reporting(-1);
+  error_reporting(0);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -319,10 +319,9 @@
 
   function flipkey($id) {
     global $idtype;
-    $url = "http://flipkey.trevorstarick.com:8000/api/v1/houserentals/id={$id}";
+    $url = "http://api.trevorstarick.com:443/flipkey/id={$id}";
     $html = file_get_contents($url);
-    $json = json_decode($html);
-    return json_encode($json[0]);
+    return $html;
   }
 
   function roomorama($url) {
