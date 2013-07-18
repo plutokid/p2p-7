@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  error_reporting(-1);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -128,7 +128,10 @@
     $json["currency"] = $single->native_currency;
     $json["numOfBeds"] = $single->beds;
     $json["numOfBedrooms"] = $single->bedrooms;
-    $json["house_rules"] = $single->house_rules;
+
+    $json["house_rules"] = "";
+    if (property_exists($single, "house_rules"))
+      $json["house_rules"] = $single->house_rules;
     $json["link"] = "https://www.airbnb.com/rooms/".$uri;
 
     $json["picture_url"] = $single->user->user->picture_url;

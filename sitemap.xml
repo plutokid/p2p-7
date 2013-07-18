@@ -14,379 +14,379 @@
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Montreal_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Montreal_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Toronto_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Toronto_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Quebec%2520City_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Quebec%2520City_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Ottawa_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Ottawa_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Vancouver_BC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Vancouver_BC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Calgary_AB_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Calgary_AB_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Waterloo_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Waterloo_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Windsor_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Windsor_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Los%2520Angeles_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Los%2520Angeles_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=San%2520Francisco_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=San%2520Francisco_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Las%2520Vegas_NV</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Las%2520Vegas_NV</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=New%2520York_NY</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=New%2520York_NY</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Washington_DC</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Washington_DC</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Chicago_IL</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Chicago_IL</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Pittsburgh_PA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Pittsburgh_PA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Boston_MA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Boston_MA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Berkeley_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Berkeley_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Oakland_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Oakland_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Dallas_TX</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Dallas_TX</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Austin_TX</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Austin_TX</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Seattle_WA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Seattle_WA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Montreal_QC_Canada&amp;destCity=Quebec%2520City_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Montreal_QC_Canada&amp;destCity=Quebec%2520City_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Montreal_QC_Canada&amp;destCity=Toronto_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Montreal_QC_Canada&amp;destCity=Toronto_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Montreal_QC_Canada&amp;destCity=Ottawa_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Montreal_QC_Canada&amp;destCity=Ottawa_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Ottawa_ON_Canada&amp;destCity=Montreal_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Ottawa_ON_Canada&amp;destCity=Montreal_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Ottawa_ON_Canada&amp;destCity=Toronto_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Ottawa_ON_Canada&amp;destCity=Toronto_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Ottawa_ON_Canada&amp;destCity=Quebec%2520City_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Ottawa_ON_Canada&amp;destCity=Quebec%2520City_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Toronto_ON_Canada&amp;destCity=Quebec%2520City_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Toronto_ON_Canada&amp;destCity=Quebec%2520City_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Toronto_ON_Canada&amp;destCity=Montreal_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Toronto_ON_Canada&amp;destCity=Montreal_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Toronto_ON_Canada&amp;destCity=Buffalo_NY</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Toronto_ON_Canada&amp;destCity=Buffalo_NY</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Buffalo_NY&amp;destCity=New%2520York_NY</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Buffalo_NY&amp;destCity=New%2520York_NY</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Boston_MA&amp;destCity=New%2520York_NY</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Boston_MA&amp;destCity=New%2520York_NY</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=San%2520Francisco_CA&amp;destCity=New%2520York_NY</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=San%2520Francisco_CA&amp;destCity=New%2520York_NY</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=New%2520York_NY&amp;destCity=San%2520Francisco_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=New%2520York_NY&amp;destCity=San%2520Francisco_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Los%2520Angeles_CA&amp;destCity=San%2520Francisco_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Los%2520Angeles_CA&amp;destCity=San%2520Francisco_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=San%2520Francisco_CA&amp;destCity=Los%2520Angeles_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=San%2520Francisco_CA&amp;destCity=Los%2520Angeles_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=San%2520Francisco_CA&amp;destCity=Las%2520Vegas_NV</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=San%2520Francisco_CA&amp;destCity=Las%2520Vegas_NV</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Las%2520Vegas_NV&amp;destCity=San%2520Francisco_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Las%2520Vegas_NV&amp;destCity=San%2520Francisco_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=Seattle_WA&amp;destCity=San%2520Francisco_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=Seattle_WA&amp;destCity=San%2520Francisco_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=London_United%2520Kingdom</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=London_United%2520Kingdom</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Paris_France</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Paris_France</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Venice_Province%2520of%2520Venice_Italy</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Venice_Province%2520of%2520Venice_Italy</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Minneapolis_MN</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Minneapolis_MN</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Minnesota%2520City_MN</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Minnesota%2520City_MN</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rentals?destCity=Nashville_TN</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rentals?destCity=Nashville_TN</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/rides?origCity=New%2520York_NY&amp;destCity=Montreal_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/rides?origCity=New%2520York_NY&amp;destCity=Montreal_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Montreal_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Montreal_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Los%2520Angeles_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Los%2520Angeles_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Madrid_Spain</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Madrid_Spain</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=San%2520Francisco_CA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=San%2520Francisco_CA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Seattle_WA</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Seattle_WA</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Las%2520Vegas_NV</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Las%2520Vegas_NV</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Toronto_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Toronto_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Ottawa_ON_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Ottawa_ON_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/experiences?destCity=Quebec%2520City_QC_Canada</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/experiences?destCity=Quebec%2520City_QC_Canada</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>daily</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/help/about</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/help/about</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/help/jobs</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/help/jobs</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/help/affiliate</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/help/affiliate</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/help/press</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/help/press</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
 
 <url>
-  <loc>http://outpost.travel/#!/help/contact</loc>
+  <loc>http://outpost.travel/?_escaped_fragment_=/help/contact</loc>
   <lastmod>2013-07-02</lastmod>
   <changefreq>weekly</changefreq>
 </url>
