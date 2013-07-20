@@ -172,8 +172,12 @@
           $room['price'] = 0 + $aRoom->price;
           $room['sanitize'] = $room['price'].preg_replace("/[^A-Z]+/", "", $room['origin']);
           if (isset($aRoom->location->state)) {
-            if (property_exists($aRoom, "body") && hasURL($aRoom->body)) {
-              // nothing
+            if (property_exists($aRoom, "body") && hasNoURL($aRoom->body) && hasContact($aRoom->annotations)) {
+              if (isRightLocation($room['origin'])) {
+                // do nothing
+              } else {
+                continue;
+              }
             } else {
               continue;
             }
@@ -201,7 +205,7 @@
       if ($page == 1) {
         // Uses the same room type rentals as craigslist (entire home only)
         if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-          $html = file_get_contents_curl("http://api.trevorstarick.com:443/flipkey/loc={$city}&min={$min}&max={$max}");
+          $html = file_get_contents("http://api.trevorstarick.com:443/flipkey/loc={$city}&min={$min}&max={$max}");
           $output = json_decode($html);
           break;
         }
@@ -261,24 +265,39 @@
 
   echo $_GET['callback'] . '('.json_encode($output).')';
 
-  function hasURL($body) {
+  function hasNoURL($body) {
     global $regex;
+    $body = strtolower($body);
     preg_match_all($regex, $body, $result, PREG_PATTERN_ORDER);
-    return isset($result[0][0]) ? false : true;
+    $hasNoURL = isset($result[0][0]) ? false : true;
+    if ($hasNoURL) {
+      $body = str_replace(array(
+        "income", "ethnicity", "religion"
+      ), "oB2466", $body);
+      $needle = substr_count($body, "oB2466");
+      if ($needle > 0) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
   }
-
-  function file_get_contents_curl($url) {
-      $ch = curl_init();
-
-      curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_URL, $url);
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-
-      $data = curl_exec($ch);
-      curl_close($ch);
-
-      return $data;
+  function hasContact($info) {
+    if (property_exists($info, "source_account")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  function isRightLocation($loc) {
+    global $endLocation;
+    $str =  substr($endLocation, 0, 3);
+    if (substr_count($loc, $str) > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 ?>

@@ -365,6 +365,19 @@
       }
       break;
 
+    case 'ridester':
+      if ($page == 1 && $origCountry == "US" && $destCountry == "US") {
+        $origCity = urlencode($origCity);
+        $destCity = urlencode($destCity);
+        if (isset($startDate)) {
+          $timestamp = strtotime($startDate);
+        }
+        $html = file_get_contents("192.168.1.2:443/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}");
+        $output = json_decode($html);
+        break;
+      }
+      break;
+
     case 'zimride':
       if ($page == 1) {
         $url = "http://www.zimride.com/search";
@@ -389,7 +402,7 @@
            if ($seat = $aRide->find('.count', 0)) {
              $seat = $seat->plaintext;
              $seat = 0 + $seat;
-             if ($guests  > $seat) {
+             if ($guests  > $seat || $seat > 6) {
                continue;
              }
              $ride['seat'] = $seat;

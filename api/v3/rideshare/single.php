@@ -317,19 +317,24 @@
 
     $json["labels"] = array();
 
-    if ($nosmoke = $single->find('.nosmoke', 0)->plaintext) {
+    $nosmoke = $single->find('.nosmoke', 0);
+    if (isset($nosmoke)) {
       $json["labels"][] = "This car is non-smoking";
     }
-    if ($rate = $single->find('.rate', 0)->plaintext) {
+    $rate = $single->find('.rate', 0);
+    if (isset($rate)) {
       $json["labels"][] = trim($rate);
     }
-    if ($time = $single->find('.time', 0)->plaintext) {
+    $time = $single->find('.time', 0);
+    if (isset($time)) {
       $json["labels"][] = trim($time);
     }
-    if ($fb = $single->find('.networks li', 0)->plaintext) {
+    $fb = $single->find('.networks li', 0);
+    if (isset($fb)) {
       $json["labels"][] = trim($fb);
     }
-    if ($aboutme = $single->find('.about_me', 0)->plaintext) {
+    $aboutme = $single->find('.about_me', 0);
+    if (isset($aboutme)) {
       $json["labels"][] = trim($aboutme);
     }
     $json["logopath"] = "img/zimride-final.png";

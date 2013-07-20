@@ -350,7 +350,11 @@
       $json["numOfBeds"] += $single->num_sofa_beds;
     }
 
-    $json["numOfBedrooms"] = $single->num_rooms;
+    $json["numOfBedrooms"] = "";
+    if (property_exists($single, "num_sofa_beds")) {
+      $json["numOfBedrooms"] = $single->num_rooms;
+    }
+
     $json["house_rules"] = $single->cancellation_policy;
     $json["link"] = $single->url;
 
