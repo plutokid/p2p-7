@@ -389,7 +389,6 @@
       var query = "";
       this.ridRequests = this.ridRequests || [];
       var data = {
-        idtype: idtype,
         eloc: options.destLocation,
         destlat: options.destLocationLat,
         destlon: options.destLocationLng,
@@ -407,6 +406,7 @@
 
         guests: options.guests,
 
+        idtype: idtype,
         page: state.page
       };
 
@@ -444,7 +444,6 @@
       this.houRequests = this.houRequests || [];
 
       var data = {
-        idtype: idtype,
         eloc: options.destLocation,
         destlat: options.destLocationLat,
         destlon: options.destLocationLng,
@@ -464,6 +463,7 @@
         price_min: state.min,
         price_max: state.max,
         room_type: state.roomType,
+        idtype: idtype,
         page: state.page
       };
 
@@ -502,7 +502,6 @@
       this.touRequests = this.touRequests || [];
 
       var data = {
-        idtype: idtype,
         eloc: options.destLocation,
         destlat: options.destLocationLat,
         destlon: options.destLocationLng,
@@ -520,6 +519,7 @@
 
         guests: options.guests,
 
+        idtype: idtype,
         page: state.page
       };
 

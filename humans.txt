@@ -3,13 +3,16 @@
 
 # TEAM
 
-    Hamed -- Lead Dev -- @wololodev
+    Hamed   -- Janitor  -- @wololodev
+    Trevor  -- CTO      -- @trevorstarick
 
 # THANKS
 
-    Ovi
+    Ovi     -- COO      -- @oviask
 
 # TECHNOLOGY COLOPHON
 
     HTML5, CSS3
-    jQuery, Modernizr
+    jQuery, Backbone.js
+    gMaps
+    PHP, Python

@@ -64,24 +64,24 @@
   */
   $airRoomType = '';
   $nflatsroomtype = '';
-  $roomaramaRoomtype = '';
+  $roomoramaRoomtype = '';
   $crt = '';
   for ($z=0; $z < count($roomType); $z++) {
     $nflatsroomtype .= $roomType[$z].'+';
     switch ($roomType[$z]) {
       case 'entire_home':
         $airRoomType .= "&room_types[]=".urlencode("Entire home/apt");
-        $roomaramaRoomtype .= "other";
+        $roomoramaRoomtype .= "other";
         $crt .= "home";
         break;
       case 'private_room':
         $airRoomType .= "&room_types[]=".urlencode("Private room");
-        $roomaramaRoomtype .= "room";
+        $roomoramaRoomtype .= "room";
         $crt .= "pr";
         break;
       case 'shared_room':
         $airRoomType .= "&room_types[]=".urlencode("Shared room");
-        $roomaramaRoomtype .= "room";
+        $roomoramaRoomtype .= "room";
         $crt .= "sr";
         break;
       default:
@@ -92,6 +92,7 @@
 
   // Declare the globar array for us to feed on
   $output = array();
+  $output["page"] = (int)$page;
 
   // Start crawling
   switch ($idtype) {
@@ -101,7 +102,11 @@
       $url = $url.$qry_str;
       $html = file_get_contents($url);
       $nflatsjson = json_decode($html);
+      $output["idtype"] = "nflats";
+      $output["provider"] = "nfl";
+      $output["rooms"] = array();
       if (isset($nflatsjson->places)) {
+        $output["entries"] = $nflatsjson->total_entries;
         foreach($nflatsjson->places as $aRoom) {
           $room['id'] = str_replace("-", "", filter_var($aRoom->place->place_details->slug, FILTER_SANITIZE_NUMBER_INT));
           $room['uri'] = $room['id'];
@@ -116,8 +121,10 @@
           $room['type'] = $aRoom->place->place_details->place_type;
           $room['origin'] = $aRoom->place->place_details->city;
 
-          $output[] = $room;
+          $output["rooms"][] = $room;
         }
+      } else {
+        $output["entries"] = 0;
       }
       break;
     case 'airbnb':
@@ -132,7 +139,15 @@
       // Instantiate a new DOM Scrapping object
       $rooms = new simple_html_dom();
       $rooms->load($html);
-
+      $entries = $rooms->find("meta[name='description']", 0)->content;
+      $output["entries"] = 0 + filter_var(substr($entries, -19), FILTER_SANITIZE_NUMBER_INT);
+      if ($output["entries"] < 100) {
+        $output["entries"] = trim($rooms->find("#results_count_top", 0)->plaintext);
+        $output["entries"] = 0 + filter_var(substr($output["entries"], 0, 5), FILTER_SANITIZE_NUMBER_INT);
+      }
+      $output["rooms"] = array();
+      $output["idtype"] = "airbnb";
+      $output["provider"] = "air";
       foreach($rooms->find('.search_result') as $aRoom) {
         $room['id'] = $aRoom->getAttribute("data-hosting-id");
         $room['uri'] = $aRoom->getAttribute("data-hosting-id");
@@ -152,21 +167,26 @@
         $room['origin'] = $room['origin'] == "Quebec" ? "Quebec city" : $room['origin'];
         $room['origin'] = str_replace("'", "", $room['origin']);
 
-        $output[] = $room;
+        $output["rooms"][] = $room;
       }
       break;
     case 'craigslist':
       $regex = '$\b(https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|]$i';
+      $output["rooms"] = array();
+      $output["idtype"] = "craigslist";
+      $output["provider"] = "cra";
+      $output["entries"] = 0;
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
         $max = $max == 10000 ? 300 : $max;
         $page = 0 + $page - 1;
         $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39";
         $qry_str = "&category=RVAC&lat={$endLat}&long={$endLon}&radius=7mi&price={$min}..{$max}&sort=price&has_image=1&page={$page}";
-        $extra = "&rpp=21&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
+        $extra = "&rpp=100&retvals=id,account_id,source,category,category_group,location,external_id,external_url,heading,body,timestamp,expires,language,price,currency,images,annotations,status,immortal";
         $url = $url.$qry_str.$extra;
         $html = file_get_contents($url);
         $json = json_decode($html);
         $dups = array();
+        $output["entries"] = $json->num_matches;
         foreach ($json->postings as $key => $aRoom) {
           $room['origin'] = isset($aRoom->annotations->source_neighborhood) ? $aRoom->annotations->source_neighborhood : $aRoom->annotations->source_loc;
           $room['price'] = 0 + $aRoom->price;
@@ -196,17 +216,28 @@
             $room['desc'] = $aRoom->heading;
             $room['type'] = "Entire Home/Apt";
 
-            $output[] = $room;
+            $output["rooms"][] = $room;
           }
         }
+      } else {
+        $output["entries"] = 0;
       }
       break;
     case 'flipkey':
+      $output["rooms"] = array();
+      $output["idtype"] = "flipkey";
+      $output["provider"] = "fli";
+      $output["entries"] = 0;
       if ($page == 1) {
         // Uses the same room type rentals as craigslist (entire home only)
         if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-          $html = file_get_contents("http://api.trevorstarick.com:443/flipkey/loc={$city}&min={$min}&max={$max}");
-          $output = json_decode($html);
+          $url = "http://50.97.128.250/flipkey/loc={$city}&min={$min}&max={$max}";
+          $html = file_get_contents($url);
+          if (!empty($html)) {
+            $rooms = json_decode($html);
+            $output["entries"] = count($rooms);
+            $output["rooms"] = $rooms;
+          }
           break;
         }
       }
@@ -220,7 +251,12 @@
       $url = $url . $qry_str;
       $html = file_get_contents($url);
       $roomoramajson = json_decode($html);
+      $output["rooms"] = array();
+      $output["idtype"] = "roomorama";
+      $output["provider"] = "roo";
+      $output["entries"] = 0;
       if (isset($roomoramajson->result)) {
+        $output["entries"] = $roomoramajson->pagination->count;
         foreach($roomoramajson->result as $aRoom) {
           $room['type'] = $aRoom->type;
           switch ($room['type']) {
@@ -232,12 +268,12 @@
               break;
           }
 
-          if ($roomTypeRoo == "room" && $roomaramaRoomtype == "other") {
+          if ($roomTypeRoo == "room" && $roomoramaRoomtype == "other") {
             continue;
           }
 
 
-          if ($roomTypeRoo == "other" && ($roomaramaRoomtype == "room" || $roomaramaRoomtype == "roomroom")) {
+          if ($roomTypeRoo == "other" && ($roomoramaRoomtype == "room" || $roomoramaRoomtype == "roomroom")) {
             continue;
           }
 
@@ -257,8 +293,10 @@
           }
           $room['origin'] = $aRoom->city;
 
-          $output[] = $room;
+          $output["rooms"][] = $room;
         }
+      } else {
+        $output["entries"] = 0;
       }
       break;
   }

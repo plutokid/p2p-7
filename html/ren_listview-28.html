@@ -45,84 +45,86 @@
       <div class="tab-content">
         <div class="tab-pane active" id="lp-spacerentals">
           <div class="span3">
-            <div class="accordion lp-sidebar">
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle">
-                    Room type
-                  </a>
-                </div>
-                <div id="lp-hou-roomType" class="accordion-body in collapse">
-                  <div class="accordion-inner">
-                    <label class="checkbox">
-                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="entire_home">Entire home/apt
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="private_room">Private room
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="shared_room">Shared room
-                    </label>
+            <div class="lp-sidebar">
+              <div class="accordion">
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle">
+                      Room type
+                    </a>
                   </div>
-                </div>
-              </div>
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle">
-                    Price
-                  </a>
-                </div>
-                <div id="lp-hou-priceFilter" class="accordion-body in collapse">
-                  <div class="accordion-inner">
-                    <div class="lp-price-filter">
-                      <ul class="slider_values">
-                        <li class="price-value-min minimax">$<span id="lp-price-value-min-hou">10</span> USD</li>
-                        <li class="price-value-max minimax">$<span id="lp-price-value-max-hou">300+</span> USD</li>
-                      </ul>
-                      <div class="input-large" id="lp-price-input-hou"></div>
+                  <div id="lp-hou-roomType" class="accordion-body in collapse">
+                    <div class="accordion-inner">
+                      <label class="checkbox">
+                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="entire_home">Entire home/apt
+                      </label>
+                      <label class="checkbox">
+                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="private_room">Private room
+                      </label>
+                      <label class="checkbox">
+                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="shared_room">Shared room
+                      </label>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle">
-                    Sort by
-                  </a>
-                </div>
-                <div class="accordion-body in collapse">
-                  <div class="accordion-inner">
-                    <select class="lp-sortfilter" id="lp-hou-sortby">
-                      <option value="low2high">Price: Low to high</option>
-                      <option value="high2low">Price: High to low</option>
-                      <option value="provider">Provider</option>
-                    </select>
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle">
+                      Price
+                    </a>
+                  </div>
+                  <div id="lp-hou-priceFilter" class="accordion-body in collapse">
+                    <div class="accordion-inner">
+                      <div class="lp-price-filter">
+                        <ul class="slider_values">
+                          <li class="price-value-min minimax">$<span id="lp-price-value-min-hou">10</span> USD</li>
+                          <li class="price-value-max minimax">$<span id="lp-price-value-max-hou">300+</span> USD</li>
+                        </ul>
+                        <div class="input-large" id="lp-price-input-hou"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle">
-                    Providers
-                  </a>
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle">
+                      Sort by
+                    </a>
+                  </div>
+                  <div class="accordion-body in collapse">
+                    <div class="accordion-inner">
+                      <select class="lp-sortfilter" id="lp-hou-sortby">
+                        <option value="low2high">Price: Low to high</option>
+                        <option value="high2low">Price: High to low</option>
+                        <option value="provider">Provider</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="accordion-body in collapse">
-                  <div class="accordion-inner">
-                    <label class="checkbox">
-                      <input class="lp-hou-providers" checked="checked" type="checkbox" value="nflats">9flats<span class="fil-num" id="fil-num-nfl"></span>
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-hou-providers" checked="checked" type="checkbox" value="airbnb">Airbnb<span class="fil-num" id="fil-num-air"></span>
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-hou-providers" type="checkbox" value="craigslist">Craigslist<span class="fil-num" id="fil-num-cra"></span>
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-hou-providers" checked="checked" type="checkbox" value="flipkey">FlipKey<span class="fil-num" id="fil-num-fli"></span>
-                    </label>
-                    <label class="checkbox">
-                      <input class="lp-hou-providers" checked="checked" type="checkbox" value="roomorama">Roomorama<span class="fil-num" id="fil-num-roo"></span>
-                    </label>
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle">
+                      Providers
+                    </a>
+                  </div>
+                  <div class="accordion-body in collapse">
+                    <div class="accordion-inner">
+                      <label class="checkbox">
+                        <input class="lp-hou-providers" checked="checked" type="checkbox" value="nflats">9flats<span class="fil-num" id="fil-num-nfl"></span>
+                      </label>
+                      <label class="checkbox">
+                        <input class="lp-hou-providers" checked="checked" type="checkbox" value="airbnb">Airbnb<span class="fil-num" id="fil-num-air"></span>
+                      </label>
+                      <label class="checkbox">
+                        <input class="lp-hou-providers" checked="checked" type="checkbox" value="craigslist">Craigslist<span class="fil-num" id="fil-num-cra"></span>
+                      </label>
+                      <label class="checkbox">
+                        <input class="lp-hou-providers" checked="checked" type="checkbox" value="flipkey">FlipKey<span class="fil-num" id="fil-num-fli"></span>
+                      </label>
+                      <label class="checkbox">
+                        <input class="lp-hou-providers" checked="checked" type="checkbox" value="roomorama">Roomorama<span class="fil-num" id="fil-num-roo"></span>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>

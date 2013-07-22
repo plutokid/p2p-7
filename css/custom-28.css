@@ -1525,10 +1525,13 @@ color: white;
   width: 228px;
   margin-left: -20px;
   padding: 0;
-  background-color: #fff;
   border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.065);
   top: 10px;
+}
+
+.lp-sidebar .accordion-group {
+  box-shadow: 0 1px 4px rgba(0,0,0,.065);
+  background-color: #fff;
 }
 
 .lp-aList {

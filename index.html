@@ -227,9 +227,9 @@
       guests = guests > 1 ? guests + " guests" : guests + " guest";
     %>
     <% if (location) { %>
-    Showing <b><%= numOfItems %> <%= place %></b> near <b><%= location %></b> <%= sdate %> <%= edate %> that accommodates <b>at least <%= guests %></b>.
+    <b><%= numOfItems %> <%= place %></b> found near <b><%= location %></b> <%= sdate %> <%= edate %> that accommodates <b>at least <%= guests %></b>.
     <% } else { %>
-    Showing <b><%= numOfItems %> <%= place %></b> around the world <%= sdate %> <%= edate %> that accommodates <b>at least <%= guests %></b>.
+    <b><%= numOfItems %> <%= place %></b> found around the world <%= sdate %> <%= edate %> that accommodates <b>at least <%= guests %></b>.
     <% } %>
   </script>
 

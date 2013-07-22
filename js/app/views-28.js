@@ -296,6 +296,7 @@
       numOfLoaded: 0,
       collection: [],
       sortedCollection: [],
+      numOfResults: 0,
       state: {
         prevSize: 0,
         page: 1,
@@ -356,6 +357,7 @@
       },
 
       resetState: function() {
+        this.numOfResults = 0;
         this.numOfLoaded = 0;
         this.state = {
           prevSize: 0,
@@ -371,6 +373,7 @@
       },
 
       resetListings: function() {
+        this.numOfResults = 0;
         this.collection = [];
         this.sortedCollection = [];
         this.state.page = 1;
@@ -381,18 +384,28 @@
       fetchRentals: function() {
         var _this = this;
         var len = this.idtypes.length;
+        var i = 0;
         var parseHTML = function(data) {
-          _this.collection = _this.collection.concat(data);
+          _this.collection = _this.collection.concat(data.rooms);
           _this.render();
           _this.numOfLoaded++;
           if (_this.numOfLoaded % len === 0) {
             _this.toggleLoading();
           }
+          if (data.page === 1) {
+            _this.updateProviders(
+              data.provider, data.idtype, data.entries, false
+            );
+          } else {
+            _this.updateProviders(
+              data.provider, data.idtype, data.entries, true
+            );
+          }
         };
 
         _this.toggleLoading();
 
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
           Outpost.helpers.fetchRentals(
             this.state,
             this.idtypes[i]
@@ -612,9 +625,9 @@
         this.fetchRentals();
       },
 
-      updateHeading: function(items) {
+      updateHeading: function() {
         var data = {
-          numOfItems: this.collection.length,
+          numOfItems: this.numOfResults,
           origLocation: Outpost.searchQuery.origLocation,
           destLocation: Outpost.searchQuery.destLocation,
           sdate: Outpost.searchQuery.sdateObj,
@@ -625,12 +638,15 @@
         $('#lp-hou-well').html(html);
       },
 
-      updateProviders: function() {
-        $('#fil-num-nfl').text($('.alist-nflats').length);
-        $('#fil-num-air').text($('.alist-airbnb').length);
-        $('#fil-num-cra').text($('.alist-craigslist').length);
-        $('#fil-num-fli').text($('.alist-flipkey').length);
-        $('#fil-num-roo').text($('.alist-roomorama').length);
+      updateProviders: function(pro, idtype, entries, isNext) {
+        var actualResults = $('.alist-' + idtype).length;
+        if (isNext) {
+          $('#fil-num-' + pro).text(actualResults + " / " + entries);
+        } else {
+          $('#fil-num-' + pro).text(actualResults + " / " + entries);
+          this.numOfResults += entries;
+          this.updateHeading();
+        }
       },
 
       lazyLoad: function() {
@@ -654,8 +670,6 @@
         });
         $('#lp-hou-list').html(html);
         this.sortListings("", $('#lp-hou-sortby').val());
-        this.updateHeading();
-        this.updateProviders();
         this.filterProviders();
       }
     }),
