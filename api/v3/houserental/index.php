@@ -241,6 +241,7 @@
           break;
         }
       }
+      break;
     case 'roomorama':
       if (!$startDate_dash || !$endDate_dash) {
         $startDate_dash = '';

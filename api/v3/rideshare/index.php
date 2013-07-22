@@ -372,7 +372,8 @@
         if (isset($startDate)) {
           $timestamp = strtotime($startDate);
         }
-        $html = file_get_contents("192.168.1.2:443/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}");
+        $url = "http://50.97.128.250/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
+        $html = file_get_contents($url);
         $output = json_decode($html);
         break;
       }

@@ -1615,6 +1615,10 @@ color: white;
   background:url("../img/blablacar.png") no-repeat #ec5f41 628px 3px;
 }
 
+.lpl-ridester {
+  background:url("../img/ridester.png") no-repeat #ec5f41 628px 3px;
+}
+
 .lpl-vayable {
   background:url("../img/vayable.png") no-repeat #95d17b 612px 4px;
 }
