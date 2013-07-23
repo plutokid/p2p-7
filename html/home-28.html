@@ -236,8 +236,12 @@
 
     var geoPromise = Outpost.helpers.ipToGeo();
 
-    var options = {
+    var optionsCities = {
       types: ['(cities)']
+    };
+
+    var optionsCountry = {
+      types: ["(regions)"]
     };
 
     var houDestInput = document.getElementById('sl-hou-dest-location-input');
@@ -245,10 +249,10 @@
     var ridDestInput = document.getElementById('sl-rid-dest-location-input');
     var expDestInput = document.getElementById('sl-exp-dest-location-input');
 
-    var houDestTA = new google.maps.places.Autocomplete(houDestInput, options);
-    var ridOrigTA = new google.maps.places.Autocomplete(ridOrigInput, options);
-    var ridDestTA = new google.maps.places.Autocomplete(ridDestInput, options);
-    var expDestTA = new google.maps.places.Autocomplete(expDestInput, options);
+    var houDestTA = new google.maps.places.Autocomplete(houDestInput, optionsCountry);
+    var ridOrigTA = new google.maps.places.Autocomplete(ridOrigInput, optionsCities);
+    var ridDestTA = new google.maps.places.Autocomplete(ridDestInput, optionsCities);
+    var expDestTA = new google.maps.places.Autocomplete(expDestInput, optionsCities);
 
     var $hou_sdate = $('#sl-hou-sdate-input');
     var $hou_edate = $('#sl-hou-edate-input');
