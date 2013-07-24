@@ -231,7 +231,7 @@
       if ($page == 1) {
         // Uses the same room type rentals as craigslist (entire home only)
         if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-          $url = "http://50.97.128.250/flipkey/loc={$city}&min={$min}&max={$max}";
+          $url = "http://50.22.47.234/flipkey/loc={$city}&min={$min}&max={$max}";
           $html = file_get_contents($url);
           if (!empty($html)) {
             $rooms = json_decode($html);
@@ -248,7 +248,7 @@
         $endDate_dash = '';
       }
       $url = "https://api.roomorama.com/v1.0/rooms.json";
-      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=11";
+      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=16";
       $url = $url . $qry_str;
       $html = file_get_contents($url);
       $roomoramajson = json_decode($html);

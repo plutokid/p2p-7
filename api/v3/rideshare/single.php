@@ -24,6 +24,9 @@
     case 'craigslist':
       $json = craigslist($url);
       break;
+    case 'ridester':
+      $json = ridester($url);
+      break;
   }
   echo $_GET['callback'] . '('.$json.')';
 
@@ -303,7 +306,10 @@
     $json["origin"] = trim($single->find('.start', 0)->plaintext);
     $json["destination"] = trim($single->find('.end', 0)->plaintext);
 
-    $json["description"] = trim($single->find('.notes', 0)->plaintext);
+    $desc = $single->find('.notes', 0);
+    if (isset($desc)) {
+      $json["description"] = trim($desc->plaintext);
+    }
     $json["numOfSeats"] = trim($single->find('.seats strong', 0)->plaintext) + 0;
 
     $json["link"] = $url;
@@ -353,6 +359,12 @@
 
     return json_encode($json);
   }
+
+  function ridester($url) {
+    global $idtype;
+    $url = "http://50.22.47.234/ridester/id={$id}";
+    $html = file_get_contents($url);
+    return $html;  }
 
 function filterPrice($text) {
   $pos = strpos($text, '$');

@@ -322,7 +322,7 @@
 
   function flipkey($id) {
     global $idtype;
-    $url = "http://50.97.128.250/flipkey/id={$id}";
+    $url = "http://50.22.47.234/flipkey/id={$id}";
     $html = file_get_contents($url);
     return $html;
   }

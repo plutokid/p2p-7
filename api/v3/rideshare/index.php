@@ -370,11 +370,13 @@
         $origCity = urlencode($origCity);
         $destCity = urlencode($destCity);
         if (isset($startDate)) {
-          $timestamp = strtotime($startDate);
+          $dateRid = urldecode($startDate);
+          $timestamp = strtotime($dateRid);
         }
-        $url = "http://50.97.128.250/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
+        $url = "http://50.22.47.234/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
         $html = file_get_contents($url);
         $output = json_decode($html);
+        echo "$url";
         break;
       }
       break;
