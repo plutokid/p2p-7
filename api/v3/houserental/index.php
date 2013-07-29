@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  error_reporting(-1);
 
   // For JSONP convinience
   header('Content-Type: application/javascript');
@@ -71,21 +71,24 @@
     switch ($roomType[$z]) {
       case 'entire_home':
         $airRoomType .= "&room_types[]=".urlencode("Entire home/apt");
-        $roomoramaRoomtype .= "other";
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("house");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("apartment");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("hotel");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("hostel");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("bnb");
         $crt .= "home";
         break;
       case 'private_room':
         $airRoomType .= "&room_types[]=".urlencode("Private room");
-        $roomoramaRoomtype .= "room";
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("room");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("hostel");
         $crt .= "pr";
         break;
       case 'shared_room':
         $airRoomType .= "&room_types[]=".urlencode("Shared room");
-        $roomoramaRoomtype .= "room";
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("room");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("hostel");
         $crt .= "sr";
-        break;
-      default:
-        $airRoomType .= '';
         break;
     }
   }
@@ -232,7 +235,7 @@
       $output["entries"] = 0;
       // Uses the same room type rentals as craigslist (entire home only)
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}";
+        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}";
         $html = file_get_contents($url);
         if (!empty($html)) {
           $output = json_decode($html);
@@ -246,7 +249,7 @@
         $endDate_dash = '';
       }
       $url = "https://api.roomorama.com/v1.0/rooms.json";
-      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=16";
+      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=16{$roomoramaRoomtype}";
       $url = $url . $qry_str;
       $html = file_get_contents($url);
       $roomoramajson = json_decode($html);
@@ -258,25 +261,6 @@
         $output["entries"] = $roomoramajson->pagination->count;
         foreach($roomoramajson->result as $aRoom) {
           $room['type'] = $aRoom->type;
-          switch ($room['type']) {
-            case 'room':
-              $roomTypeRoo = "room";
-              break;
-            default:
-              $roomTypeRoo = "other";
-              break;
-          }
-
-          if ($roomTypeRoo == "room" && $roomoramaRoomtype == "other") {
-            continue;
-          }
-
-
-          if ($roomTypeRoo == "other" && ($roomoramaRoomtype == "room" || $roomoramaRoomtype == "roomroom")) {
-            continue;
-          }
-
-
           $room['id'] = $aRoom->id;
           $room['uri'] = $room['id'];
           $room['idtype'] = "roomorama";
