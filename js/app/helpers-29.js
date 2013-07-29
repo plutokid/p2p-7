@@ -2,7 +2,7 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-  Outpost.rev = "-28";
+  Outpost.rev = "-29";
 
   // Used for ajax caching
   Outpost.cache = {};
@@ -380,6 +380,8 @@
 
         $('.modal').modal('hide');
         Outpost.mvc.views.navBar.render(data);
+
+        _gaq.push(['_trackEvent', 'registration', 'signedup', response.email]);
       });
     },
 

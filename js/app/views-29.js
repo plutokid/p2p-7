@@ -1575,6 +1575,8 @@
 
             data.name = user.get("first_name");
             Outpost.mvc.views.navBar.render(data);
+
+            _gaq.push(['_trackEvent', 'registration', 'signedup', $nodeArr[2].val()]);
           },
           error: function(user, error) {
             Outpost.state.$loader.hide();

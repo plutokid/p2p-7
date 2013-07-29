@@ -1,5 +1,5 @@
 <?php
-  error_reporting(-1);
+  error_reporting(0);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -41,7 +41,7 @@
     $json["numOfBeds"] = $single->place_details->number_of_beds;
     $json["numOfBedrooms"] = $single->place_details->number_of_bedrooms;
     $json["house_rules"] = $single->place_details->house_rules;
-    $json["link"] = "http://www.9flats.com/places/".$uri;
+    $json["link"] = "http://www.9flats.com/places/".$uri."?a_aid=51f14c6e0abce&a_bid=7c29c154&utm_source=coop-outpost&utm_campaign=outpost-integration&utm_medium=commission";
 
     $json["picture_url"] = "img/rsz_noavatar.png";
     $json["name"] = $single->place_details->host->name;
@@ -322,7 +322,7 @@
 
   function flipkey($id) {
     global $idtype;
-    $url = "http://50.22.47.234/flipkey/id={$id}";
+    $url = "http://api.outpost.travel/flipkey/id={$id}";
     $html = file_get_contents($url);
     return $html;
   }

@@ -1,5 +1,5 @@
 <?php
-  error_reporting(-1);
+  error_reporting(0);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -373,10 +373,9 @@
           $dateRid = urldecode($startDate);
           $timestamp = strtotime($dateRid);
         }
-        $url = "http://50.22.47.234/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
+        $url = "http://api.outpost.travel/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
         $html = file_get_contents($url);
         $output = json_decode($html);
-        echo "$url";
         break;
       }
       break;

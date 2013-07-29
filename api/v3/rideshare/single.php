@@ -1,5 +1,5 @@
 <?php
-  error_reporting(-1);
+  error_reporting(0);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -277,14 +277,13 @@
 
     $json["labels"] = array();
     foreach ($single->find(".addon") as $label) {
-      $json["labels"][] = $tmp;
+      $json["labels"][] = $label->plaintext;
     }
 
     $tmp = $single->find('.verifications', 0);
     if (isset($tmp)) {
       $json["labels"][] = trim($single->find('.verifications', 0)->plaintext);
     }
-
     return json_encode($json);
   }
 
@@ -362,9 +361,10 @@
 
   function ridester($url) {
     global $idtype;
-    $url = "http://50.22.47.234/ridester/id={$id}";
+    $url = "http://api.outpost.travel/ridester/id={$url}";
     $html = file_get_contents($url);
-    return $html;  }
+    return $html;
+  }
 
 function filterPrice($text) {
   $pos = strpos($text, '$');

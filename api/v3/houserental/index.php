@@ -1,5 +1,5 @@
 <?php
-  error_reporting(-1);
+  error_reporting(0);
 
   // For JSONP convinience
   header('Content-Type: application/javascript');
@@ -116,7 +116,7 @@
           $room['profileName'] = $aRoom->place->place_details->host->name;
           $room['price'] = round($aRoom->place->pricing->price);
           $room['desc'] = str_replace("'", "", $aRoom->place->place_details->name);
-          $room['link'] = "http://www.9flats.com/places/".$aRoom->place->place_details->slug;
+          $room['link'] = "http://www.9flats.com/places/".$aRoom->place->place_details->slug."?a_aid=51f14c6e0abce&a_bid=7c29c154&utm_source=coop-outpost&utm_campaign=outpost-integration&utm_medium=commission";
           $room['latLng'] = array($aRoom->place->place_details->lat, $aRoom->place->place_details->lng);
           $room['type'] = $aRoom->place->place_details->place_type;
           $room['origin'] = $aRoom->place->place_details->city;
@@ -188,7 +188,9 @@
         $dups = array();
         $output["entries"] = $json->num_matches;
         foreach ($json->postings as $key => $aRoom) {
-          $room['origin'] = isset($aRoom->annotations->source_neighborhood) ? $aRoom->annotations->source_neighborhood : $aRoom->annotations->source_loc;
+          $loccra = $aRoom->annotations;
+          $sourcecra = property_exists($loccra, "source_loc") ? $aRoom->annotations->source_loc : urldecode($endLocation);
+          $room['origin'] = property_exists($loccra, "source_neighborhood") ? $aRoom->annotations->source_neighborhood : $sourcecra;
           $room['price'] = 0 + $aRoom->price;
           $room['sanitize'] = $room['price'].preg_replace("/[^A-Z]+/", "", $room['origin']);
           if (isset($aRoom->location->state)) {
@@ -228,18 +230,14 @@
       $output["idtype"] = "flipkey";
       $output["provider"] = "fli";
       $output["entries"] = 0;
-      if ($page == 1) {
-        // Uses the same room type rentals as craigslist (entire home only)
-        if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-          $url = "http://50.22.47.234/flipkey/loc={$city}&min={$min}&max={$max}";
-          $html = file_get_contents($url);
-          if (!empty($html)) {
-            $rooms = json_decode($html);
-            $output["entries"] = count($rooms);
-            $output["rooms"] = $rooms;
-          }
-          break;
+      // Uses the same room type rentals as craigslist (entire home only)
+      if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
+        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}";
+        $html = file_get_contents($url);
+        if (!empty($html)) {
+          $output = json_decode($html);
         }
+        break;
       }
       break;
     case 'roomorama':
