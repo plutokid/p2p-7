@@ -1,5 +1,5 @@
 <?php
-  error_reporting(-1);
+  error_reporting(0);
 
   // For JSONP convinience
   header('Content-Type: application/javascript');
@@ -45,12 +45,16 @@
   // Converting dates to dashes for some providers
   $startDate_dash = '';
   $endDate_dash = '';
+  $sdTimeStamp = '';
+  $edTimeStamp = '';
   if ($startDate) {
     $startDate_dash = date('Y-m-d', strtotime($startDate));
+    $sdTimeStamp = strtotime($startDate);
   }
 
   if ($endDate) {
     $endDate_dash = date('Y-m-d', strtotime($endDate));
+    $edTimeStamp = strtotime($endDate);
   }
 
   /*
@@ -235,7 +239,7 @@
       $output["entries"] = 0;
       // Uses the same room type rentals as craigslist (entire home only)
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}";
+        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
         $html = file_get_contents($url);
         if (!empty($html)) {
           $output = json_decode($html);

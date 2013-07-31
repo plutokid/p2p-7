@@ -1690,6 +1690,13 @@ color: white;
   background: #2c3e50;
 }
 
+.list-img-zoom {
+  position: absolute;
+  margin-top: 118px;
+  margin-left: 183px;
+  display: none;
+}
+
 .lp-list-img {
   cursor: pointer;
   transition: 0.1s opacity linear;
@@ -1706,6 +1713,9 @@ color: white;
 
 .lp-list-img:hover {
   opacity: 0.85;
+}
+.lp-list-img:hover + .list-img-zoom {
+  display: block;
 }
 
 .lp-price-filter {

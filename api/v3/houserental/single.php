@@ -1,5 +1,5 @@
 <?php
-  error_reporting(-1);
+  error_reporting(0);
 
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -351,7 +351,7 @@
     }
 
     $json["numOfBedrooms"] = "";
-    if (property_exists($single, "num_sofa_beds")) {
+    if (property_exists($single, "num_rooms")) {
       $json["numOfBedrooms"] = $single->num_rooms;
     }
 
@@ -367,7 +367,10 @@
     $json["zipcode"] = "";
     $json["country"] = $single->country_code;
     $json["property_type"] = $single->type." -";
-    $json["room_type"] = $single->subtype;
+    $json["room_type"] = "";
+    if (property_exists($single, "subtype")) {
+      $json["room_type"] = $single->subtype;
+    }
     $json["address"] = "{$json['city']}, {$json['country']}";
 
     $json["logopath"] = "img/roomorama.png";

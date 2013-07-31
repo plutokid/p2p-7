@@ -567,6 +567,8 @@
         if (!isLogged) {
           e.preventDefault();
           $('#js-signup-modal').modal('show');
+        } else {
+          _gaq.push(['_trackEvent', 'click', 'bookit', isLogged.attributes.email]);
         }
       },
 
