@@ -562,6 +562,16 @@
     alternateSEO: function(data) {
       if (data.title) $('#title').text(data.title);
       if (data.description) $('#description').attr("content", data.description);
+    },
+
+    checkUserState: function(e) {
+      var isLogged = Parse.User.current();
+      if (!isLogged) {
+        e.preventDefault();
+        $('#js-signup-modal').modal('show');
+      } else {
+        _gaq.push(['_trackEvent', 'click', 'bookit', isLogged.attributes.email]);
+      }
     }
   };
 

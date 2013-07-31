@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+  error_reporting(-1);
 
   // For JSONP convinience
   header('Content-Type: application/javascript');

@@ -563,13 +563,7 @@
       },
 
       checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        } else {
-          _gaq.push(['_trackEvent', 'click', 'bookit', isLogged.attributes.email]);
-        }
+        Outpost.helpers.checkUserState(e);
       },
 
       sortListings: function(e, value) {
@@ -853,11 +847,7 @@
       },
 
       checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        }
+        Outpost.helpers.checkUserState(e);
       },
 
       sortListings: function(e, value) {
@@ -1153,11 +1143,7 @@
       },
 
       checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        }
+        Outpost.helpers.checkUserState(e);
       },
 
       sortListings: function(e, value) {
@@ -1293,11 +1279,7 @@
       },
 
       checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        }
+        Outpost.helpers.checkUserState(e);
       },
 
       render: function() {
@@ -1389,11 +1371,7 @@
       },
 
       checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        }
+        Outpost.helpers.checkUserState(e);
       },
 
       render: function() {
@@ -1464,11 +1442,7 @@
       },
 
       checkUserState: function(e) {
-        var isLogged = Parse.User.current();
-        if (!isLogged) {
-          e.preventDefault();
-          $('#js-signup-modal').modal('show');
-        }
+        Outpost.helpers.checkUserState(e);
       },
 
       render: function() {
