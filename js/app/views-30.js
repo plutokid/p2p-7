@@ -314,6 +314,7 @@
         _this.template('ren_listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           _this.resetState();
+          _this.preDetermineSettings();
           _this.fetchRentals();
           _this.initSliderGUI();
         });
@@ -354,6 +355,12 @@
             _this.fetchRentals();
           }
         });
+      },
+
+      preDetermineSettings: function() {
+        if (Outpost.searchQuery.guests >= 5) {
+          $('#roomtype-entire_home').attr('checked', 'checked');
+        }
       },
 
       resetState: function() {

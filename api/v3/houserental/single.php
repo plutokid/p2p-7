@@ -356,7 +356,7 @@
     }
 
     $json["house_rules"] = $single->cancellation_policy;
-    $json["link"] = $single->url;
+    $json["link"] = $single->url."?ref=outpost";
 
     $json["picture_url"] = "img/rsz_noavatar.png";
     $json["name"] = $single->host->display;

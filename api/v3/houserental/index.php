@@ -273,7 +273,7 @@
           $room['profileName'] = $aRoom->host->display;
           $room['price'] = $aRoom->price;
           $room['desc'] = str_replace("'", "", $aRoom->title);
-          $room['link'] = $aRoom->url;
+          $room['link'] = $aRoom->url."?ref=outpost";
           $room['latLng'] = array($aRoom->lat, $aRoom->lng);
           if (isset($aRoom->subtype) && $room['type'] !== $aRoom->subtype) {
             $room['type'] = $room['type'] . ' - ' . $aRoom->subtype;
