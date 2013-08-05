@@ -322,7 +322,7 @@
 
   function flipkey($id) {
     global $idtype;
-    $url = "http://api.outpost.travel/flipkey/id={$id}";
+    $url = "http://api.outpost.travel:8000/flipkey/id={$id}";
     $html = file_get_contents($url);
     return $html;
   }
