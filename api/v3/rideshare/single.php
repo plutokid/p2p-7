@@ -361,7 +361,7 @@
 
   function ridester($url) {
     global $idtype;
-    $url = "http://api.outpost.travel/ridester/id={$url}";
+    $url = "http://api.outpost.travel:8000/ridester/id={$url}";
     $html = file_get_contents($url);
     return $html;
   }
