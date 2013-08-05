@@ -7,7 +7,7 @@
 
   // Gather the params
   // eloc=Montreal%2C+QC%2C+Canada&destlat=45.513575277797784&destlon=-73.55735711472185&destState=QC&destCountry=CA&sloc=&origlat=&origlon=&origState=&origCountry=
-  // &sdate=&edate=&guests=1&price_min=10&price_max=300&room_type%5B%5D=entire_home&room_type%5B%5D=private_room&room_type%5B%5D=shared_room&page=1&_=1372448131844
+  // &sdate=&edate=&guests=1&price_min=10&price_max=1000&room_type%5B%5D=entire_home&room_type%5B%5D=private_room&room_type%5B%5D=shared_room&page=1&_=1372448131844
   $startLocation = $_GET["sloc"];
   $endLocation = $_GET["eloc"];
   $endLat = $_GET["destlat"];
@@ -25,8 +25,8 @@
   $min = 0 + $min;
   $max = 0 + $max;
 
-  // 300$ max cap should be maxed out to 10000
-  if ($max == 300) {
+  // 1000$ max cap should be maxed out to 10000
+  if ($max == 1000) {
     $max = 10000;
   }
 
@@ -184,7 +184,7 @@
       $output["provider"] = "cra";
       $output["entries"] = 0;
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-        $max = $max == 10000 ? 300 : $max;
+        $max = $max == 10000 ? 1000 : $max;
         $page = 0 + $page - 1;
         $url = "http://search.3taps.com/?auth_token=c19ae6773494ae4d0a4236c59eeaaf39";
         $qry_str = "&category=RVAC&lat={$endLat}&long={$endLon}&radius=7mi&price={$min}..{$max}&sort=price&has_image=1&page={$page}";
@@ -275,8 +275,11 @@
           $room['desc'] = str_replace("'", "", $aRoom->title);
           $room['link'] = $aRoom->url."?ref=outpost";
           $room['latLng'] = array($aRoom->lat, $aRoom->lng);
-          if (isset($aRoom->subtype) && $room['type'] !== $aRoom->subtype) {
-            $room['type'] = $room['type'] . ' - ' . $aRoom->subtype;
+          if (property_exists($aRoom, "subtype")) {
+            $subtype = $aRoom->subtype;
+            if (isset($subtype) && $room['type'] !== $subtype) {
+              $room['type'] = $room['type'] . ' - ' . $subtype;
+            }
           }
           $room['origin'] = $aRoom->city;
 

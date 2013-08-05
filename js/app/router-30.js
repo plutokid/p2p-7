@@ -110,6 +110,8 @@
         Outpost.single.type = type;
         Outpost.single.provider = provider;
         Outpost.single.id = id;
+        console.log(type);
+        Outpost.helpers.detectNavBar(type);
         if (Outpost.mvc.views.singlePage) {
           Outpost.mvc.views.singlePage.render();
         } else {
@@ -119,15 +121,16 @@
 
       listview: function(type, params) {
         Outpost.list.type = type;
+        Outpost.helpers.detectNavBar(type);
         if (params && !params.utm_source) {
           var searchQuery = Outpost.searchQuery;
           var origCity = Outpost.helpers.debarURI(params.origCity);
           var destCity = Outpost.helpers.debarURI(params.destCity);
           Outpost.helpers.defineOrigLoc(origCity);
           Outpost.helpers.defineDestLoc(destCity);
-          searchQuery.sdate = params.sdate;
-          searchQuery.edate = params.edate;
-          searchQuery.guests = params.guests;
+          searchQuery.sdate = params.sdate || "";
+          searchQuery.edate = params.edate || "";
+          searchQuery.guests = params.guests || "";
 
           if (searchQuery.sdate) {
             searchQuery.sdateObj = moment(searchQuery.sdate, "MM/DD/YYYY");

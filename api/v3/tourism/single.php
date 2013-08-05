@@ -47,7 +47,7 @@
     if (isset($origin)) {
       $json["origin"] = trim($single->find('.text-center strong', 0)->plaintext);
     } else {
-      $json["origin"] = "";
+      $json["origin"] = $json["location"];
     }
 
     $json["logopath"] = "img/vayable_logo_edited.png";

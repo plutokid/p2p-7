@@ -366,9 +366,10 @@
     $json["city"] = $single->city;
     $json["zipcode"] = "";
     $json["country"] = $single->country_code;
-    $json["property_type"] = $single->type." -";
+    $json["property_type"] = $single->type;
     $json["room_type"] = "";
     if (property_exists($single, "subtype")) {
+      $json["property_type"] .= " -";
       $json["room_type"] = $single->subtype;
     }
     $json["address"] = "{$json['city']}, {$json['country']}";
@@ -402,43 +403,43 @@
       "Cancellation:",
       $single->cancellation_policy ? "Strict" : "None"
     );
-    if (isset($single->num_double_beds)) {
+    if (property_exists($single, "num_double_beds")) {
       $json["smallInfo"][] = array(
         "Double beds",
         $single->num_double_beds
       );
     }
-    if (isset($single->num_single_beds)) {
+    if (property_exists($single, "num_single_beds")) {
       $json["smallInfo"][] = array(
         "Single beds",
         $single->num_single_beds
       );
     }
-    if (isset($single->num_sofa_beds)) {
+    if (property_exists($single, "num_sofa_beds")) {
       $json["smallInfo"][] = array(
         "Sofa beds",
         $single->num_sofa_beds
       );
     }
-    if ($single->num_bathrooms) {
+    if (property_exists($single, "num_bathrooms")) {
       $json["smallInfo"][] = array(
         "Bathrooms:",
         $single->num_bathrooms
       );
     }
-    if ($single->min_stay) {
+    if (property_exists($single, "min_stay")) {
       $json["smallInfo"][] = array(
         "Minimum Stay:",
         $single->min_stay
       );
     }
-    if ($single->check_in_time) {
+    if (property_exists($single, "check_in_time")) {
       $json["smallInfo"][] = array(
         "Check In:",
         $single->check_in_time
       );
     }
-    if ($single->check_out_time) {
+    if (property_exists($single, "check_out_time")) {
       $json["smallInfo"][] = array(
         "Check Out:",
         $single->check_out_time

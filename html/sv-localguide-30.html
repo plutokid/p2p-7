@@ -17,10 +17,26 @@
     description: location + ", for " + price + " per person. " +
       "Feel like a local by exploring rare venues with a local guide."
   });
+
+  var isFromRef, hrefRes = "";
+  var textBread = "Back to experiences for " + origin;
+  if (window.document.referrer === window.location.origin + "/") {
+    isFromRef = true;
+    hrefRes = "javascript:window.close()";
+  } else {
+    isFromRef = false;
+    hrefRes = window.location.origin + "/#!/experiences?destCity=" + Outpost.helpers.enbarURI(origin);
+  }
+
+  var currentBread = title.substr(0, 45) + "..";
 %>
 <div class="container" id="singleViewPage">
   <div class="row">
     <div class="span12">
+      <ul class="breadcrumb bc-spv">
+        <li><a href="<%= hrefRes %>"><%= textBread %></a> <span class="divider">/</span></li>
+        <li class="active"><%= currentBread %></li>
+      </ul>
       <div class="item-wrapper">
         <div class="panel-header css-bggreen">
           <h2 class="panel-title"><%= title %></h2>

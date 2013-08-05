@@ -572,6 +572,22 @@
       } else {
         _gaq.push(['_trackEvent', 'click', 'bookit', isLogged.attributes.email]);
       }
+    },
+
+    detectNavBar: function(type) {
+      switch (type) {
+        case "houserental":
+          type = "rentals";
+          break;
+        case "rideshare":
+          type = "rides";
+          break;
+        case "localguide":
+          type = "experiences";
+          break;
+      }
+      $('.nav-active').removeClass("nav-active");
+      $('.nav-' + type).addClass("nav-active");
     }
   };
 

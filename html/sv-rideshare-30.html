@@ -16,13 +16,31 @@
     title: origin + " to " + destination + " · " + date + " - Outpost",
     description: "Ride from " + origin + " → " + destination + " for " + price + " per seat"
   });
+
+  var isFromRef, hrefRes = "";
+  var textBread = "Back to rides for " + origin + " to " + destination;
+  var title = origin + " → " + destination;
+  if (window.document.referrer === window.location.origin + "/") {
+    isFromRef = true;
+    hrefRes = "javascript:window.close()";
+  } else {
+    isFromRef = false;
+    hrefRes = window.location.origin + "/#!/rides?origCity=" + Outpost.helpers.enbarURI(origin) + "destCity=" + Outpost.helpers.enbarURI(destination);
+  }
+
+  var currentBread = title + " (" + date + ")";
+  currentBread = currentBread.substr(0, 45) + "..";
 %>
 <div class="container" id="singleViewPage">
   <div class="row">
     <div class="span12">
+      <ul class="breadcrumb bc-spv">
+        <li><a href="<%= hrefRes %>"><%= textBread %></a> <span class="divider">/</span></li>
+        <li class="active"><%= currentBread %></li>
+      </ul>
       <div class="item-wrapper">
         <div class="panel-header css-bgred">
-          <h2 class="panel-title"><%= origin %> → <%= destination %></h2>
+          <h2 class="panel-title"><%= title %></h2>
         </div>
         <div class="item-content row">
           <h3 class="panel-subtitle"><%= date %></h3>

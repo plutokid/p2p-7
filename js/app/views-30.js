@@ -122,6 +122,7 @@
             }, 500);
             break;
         }
+        Outpost.helpers.detectNavBar(tab);
       },
 
       houSubmitForm: function(e) {
@@ -301,7 +302,7 @@
         prevSize: 0,
         page: 1,
         min: 10,
-        max: 300,
+        max: 1000,
         roomType: [
           "entire_home",
           "private_room",
@@ -334,14 +335,14 @@
         var _this = this;
         $("#lp-price-input-hou").slider({
           range: true,
-          values: [10, 300],
+          values: [10, 1000],
           min: 0,
-          max: 300,
+          max: 1000,
           step: 10,
           slide: function (event, ui) {
             $("#lp-price-value-min-hou").text(ui.values[0]);
-            if (ui.values[1] === 300) {
-              $("#lp-price-value-max-hou").text("300+");
+            if (ui.values[1] === 1000) {
+              $("#lp-price-value-max-hou").text("1000+");
             } else {
               $("#lp-price-value-max-hou").text(ui.values[1]);
             }
@@ -370,7 +371,7 @@
           prevSize: 0,
           page: 1,
           min: 10,
-          max: 300,
+          max: 1000,
           roomType: [
             "entire_home",
             "private_room",
@@ -801,8 +802,8 @@
           $duration = $(".direcrid" + item.id);
           origin = data.f_meeting_loc || item.origin;
           dest = data.f_drop_loc || item.destination;
-
-          origin = origin.trim(), dest = dest.trim();
+          origin = origin.trim();
+          dest = dest.trim();
           if (origin === "Quebec") {
             origin += " city";
           } else if (dest === "Quebec") {
