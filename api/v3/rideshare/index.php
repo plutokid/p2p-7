@@ -373,7 +373,7 @@
           $dateRid = urldecode($startDate);
           $timestamp = strtotime($dateRid);
         }
-        $url = "http://api.outpost.travel/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
+        $url = "http://api.outpost.travel:8000/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
         $html = file_get_contents($url);
         $output = json_decode($html);
         break;
