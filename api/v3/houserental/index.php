@@ -239,7 +239,7 @@
       $output["entries"] = 0;
       // Uses the same room type rentals as craigslist (entire home only)
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
+        $url = "http://api.outpost.travel:8000/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
         $html = file_get_contents($url);
         if (!empty($html)) {
           $output = json_decode($html);
