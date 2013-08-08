@@ -325,7 +325,7 @@
 
   function flipkey($id) {
     global $idtype;
-    $url = "http://api.outpost.travel:8000/flipkey/id={$id}";
+    $url = "http://api.outpost.travelerror_reporting(-1);/flipkey/id={$id}";
     $html = file_get_contents($url);
     return $html;
   }
