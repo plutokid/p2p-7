@@ -28,13 +28,16 @@
     hrefRes = window.location.origin + "/#!/rentals?destCity=" + Outpost.helpers.enbarURI(city);
   }
 
-  var currentBread = title.substr(0, 45) + "..";
+  var currentBread = title;
+  if (currentBread.length >= 45) {
+    currentBread = currentBread.substr(0, 45) + "..";
+  }
 %>
 <div class="container" id="singleViewPage">
   <div class="row">
     <div class="span12">
       <ul class="breadcrumb bc-spv">
-        <li><a href="<%= hrefRes %>"><%= textBread %></a> <span class="divider">/</span></li>
+        <li><a href="<%= hrefRes %>"><i class="icon-arrow-left"></i> <%= textBread %></a> <span class="divider">/</span></li>
         <li class="active"><%= currentBread %></li>
       </ul>
       <div class="item-wrapper">
@@ -147,7 +150,7 @@
                 </p>
               </div>
               <div class="item-contact-box">
-                <a class="out-btn btn-block btn-sv-hou" href="<%= link %>" target="_blank">Contact Host</a>
+                <a class="out-btn btn-block btn-sv-hou spv-bookit" id="spv-bookit" data-toggle="tooltip" data-placement="bottom" title="You will be redirected to <%= provider %>'s website where you can inquire or complete your purchase." href="<%= link %>" target="_blank">Book on <%= provider %></a>
               </div>
             </div>
             <div class="item-profile">
@@ -179,3 +182,8 @@
   </div>
 </div>
 <% } %>
+<script>
+  (function() {
+    $('#spv-bookit').tooltip();
+  })();
+</script>

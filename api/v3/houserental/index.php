@@ -118,6 +118,7 @@
           $room['id'] = str_replace("-", "", filter_var($aRoom->place->place_details->slug, FILTER_SANITIZE_NUMBER_INT));
           $room['uri'] = $room['id'];
           $room['idtype'] = "nflats";
+          $room["full_provider"] = "9flats";
           $room['roomImg'] =  $aRoom->place->place_details->featured_photo->medium;
           $room['profileImg'] = "img/noprofile.jpg";
           $room['profileName'] = $aRoom->place->place_details->host->name;
@@ -159,6 +160,7 @@
         $room['id'] = $aRoom->getAttribute("data-hosting-id");
         $room['uri'] = $aRoom->getAttribute("data-hosting-id");
         $room['idtype'] = "airbnb";
+        $room["full_provider"] = "Airbnb";
         $room['roomImg'] = str_replace('x_small', 'small', $aRoom->find('img', 0)->getAttribute("data-original"));
         $room['profileImg'] = str_replace('tiny', 'small', $aRoom->find('img', 1)->getAttribute("data-original"));
         $room['profileName'] = $aRoom->find('img', 1)->alt;
@@ -216,6 +218,7 @@
             $dups[] = $room['sanitize'];
             $room['id'] = $aRoom->id;
             $room['uri'] = $aRoom->id;
+            $room["full_provider"] = "Craigslist";
             $room['currency'] = $aRoom->currency;
             $room['idtype'] = "craigslist";
             $room['roomImg'] = $aRoom->images[0]->full;
@@ -267,6 +270,7 @@
           $room['type'] = $aRoom->type;
           $room['id'] = $aRoom->id;
           $room['uri'] = $room['id'];
+          $room["full_provider"] = "Roomorama";
           $room['idtype'] = "roomorama";
           $room['roomImg'] = $aRoom->thumbnail;
           $room['profileImg'] = "img/noprofile.jpg";

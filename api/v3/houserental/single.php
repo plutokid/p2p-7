@@ -44,6 +44,7 @@
     $json["link"] = "http://www.9flats.com/places/".$uri."?a_aid=51f14c6e0abce&a_bid=7c29c154&utm_source=coop-outpost&utm_campaign=outpost-integration&utm_medium=commission";
 
     $json["picture_url"] = "img/rsz_noavatar.png";
+    $json["provider"] = "9flats";
     $json["name"] = $single->place_details->host->name;
     $json["response_time"] = "&nbsp;";
     $json["amenities"] = $single->place_details->amenities_list;
@@ -134,6 +135,7 @@
       $json["house_rules"] = $single->house_rules;
     $json["link"] = "https://www.airbnb.com/rooms/".$uri;
 
+    $json["provider"] = "Airbnb";
     $json["picture_url"] = $single->user->user->picture_url;
     $json["name"] = $single->user->user->first_name;
     $json["response_time"] = "Responds ".$single->user->user->response_time;
@@ -248,6 +250,7 @@
     $json["house_rules"] = "";
     $json["link"] = $single->external_url;
 
+    $json["provider"] = "Craigslist";
     $json["picture_url"] = "img/rsz_noavatar.png";
     $json["name"] = "";
     $json["response_time"] = "&nbsp;";
@@ -358,6 +361,7 @@
     $json["house_rules"] = $single->cancellation_policy;
     $json["link"] = $single->url."?ref=outpost";
 
+    $json["provider"] = "Roomorama";
     $json["picture_url"] = "img/rsz_noavatar.png";
     $json["name"] = $single->host->display;
     $json["response_time"] = "&nbsp;";

@@ -40,6 +40,7 @@
 
     $json = array();
 
+    $json['provider'] = "BlaBlaCar";
     $json["price"] = trim($single->find('.big-price', 0)->plaintext);
 
     $json["date"] = trim($single->find('strong', 3)->plaintext);
@@ -135,6 +136,7 @@
       }
     }
 
+    $json['provider'] = "Craigslist";
     $json['price'] = '$'.$json['price'];
     $json["date"] = $heading;
 
@@ -182,6 +184,7 @@
     $single->load($html);
     $json = array();
 
+    $json['provider'] = "Kangaride";
     $title = trim($single->find('#content h2', 0)->plaintext);
     $json["price"] = substr($title, -5) + 0;
     $json["price"] = '$'.$json["price"];
@@ -267,6 +270,7 @@
     $json["numOfSeats"] = filter_var($title[0], FILTER_SANITIZE_NUMBER_INT);
 
     $json["link"] = $url;
+    $json['provider'] = "Ridejoy";
 
     $json["profile_pic"] = $single->find('.thumb_180', 0)->src;
     $json["name"] = trim($single->find('.details div', 2)->plaintext);
@@ -321,6 +325,7 @@
     $json["age"] = "&nbsp;";
 
     $json["labels"] = array();
+    $json['provider'] = "Zimride";
 
     $nosmoke = $single->find('.nosmoke', 0);
     if (isset($nosmoke)) {

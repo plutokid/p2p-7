@@ -110,7 +110,6 @@
         Outpost.single.type = type;
         Outpost.single.provider = provider;
         Outpost.single.id = id;
-        console.log(type);
         Outpost.helpers.detectNavBar(type);
         if (Outpost.mvc.views.singlePage) {
           Outpost.mvc.views.singlePage.render();

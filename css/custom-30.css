@@ -880,6 +880,11 @@ line-height: 1.2;
   width: 125px;
 }
 
+.spv-bookit + .tooltip {
+  padding-left: 35px;
+  width: 250px;
+}
+
 .around-me:hover {
  background-color: #A41414;
 
@@ -1949,7 +1954,7 @@ color: white;
 .btn-block {
   height: 45px;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 22px;
   padding-top: 11px;
   text-align: center;
 }
@@ -2379,6 +2384,7 @@ td.details-td {
 
 .w620 {
   width: 620px;
+  height: 425px;
 }
 
 /*HELP PAGES*/

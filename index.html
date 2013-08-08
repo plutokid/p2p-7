@@ -297,7 +297,7 @@
         </div>
         <span class="lp-left-group">
           <a class="out-btn btn-rid btn-rid-details" href="/#!/item/rideshare/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
-          <a class="out-btn btn-rid btn-rid-bookit" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
+          <a class="out-btn btn-rid btn-rid-bookit" title="Book on <%= item.full_provider %>" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-rid btn-rid-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
         </span>
       </div>
@@ -341,7 +341,7 @@
         </div>
         <span class="lp-left-group">
           <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
-          <a class="out-btn btn-hou btn-hou-bookit" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
+          <a class="out-btn btn-hou btn-hou-bookit" title="Book on <%= item.full_provider %>" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-hou btn-hou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
         </span>
       </div>

@@ -59,12 +59,16 @@
   $guests = 0 + $guests;
 
   $output = array();
+  $output["page"] = (int)$page;
+  $output["rides"] = array();
 
   $poolList = new simple_html_dom();
 
   // Start the crawling
   switch ($idtype) {
     case 'blablacar':
+      $output["idtype"] = "blablacar";
+      $output["provider"] = "bla";
       if ($country == "world") {
         $url = "http://www.blablacar.com/search-car-sharing-result";
         $startDate2 = '';
@@ -92,6 +96,7 @@
           } else {
             continue;
           }
+          $ride["full_provider"] = "BlaBlaCar";
           $ride['img'] = $aRide->find('img', 0)->src;
           $ride['link'] = "http://www.blablacar.com".$aRide->find('a', 0)->href;
           $ride['uri'] = str_replace('http://www.blablacar.com/', '', $ride['link']);
@@ -117,12 +122,16 @@
           $ride['destination'] = $destination[0];
           $ride['desc'] = $aRide->find('.fromto', 0)->plaintext;
           $ride['price'] = $price;
-          $output[] = $ride;
+          $output["rides"][] = $ride;
         }
+
       }
+      $output["entries"] = count($output["rides"]);
       break;
 
     case 'craigslist':
+      $output["idtype"] = "craigslist";
+      $output["provider"] = "cra";
       if (!empty($startLocation) && !empty($endLocation) && $country === "NA") {
         $page = 0 + $page - 1;
         $timestamp = empty($startDate) ? strtotime("today") : strtotime(urldecode($startDate));
@@ -167,6 +176,7 @@
               continue;
             }
 
+            $ride["full_provider"] = "Craigslist";
             $ride['idtype'] = "craigslist";
             $ride['origin'] = $origCity;
             $ride['destination'] = $destCity;
@@ -179,13 +189,17 @@
             $ride['img'] = "img/noprofile.jpg";
             $ride['infoWindowIcon'] = "img/craigslist.png";
 
-            $output[] = $ride;
+            $output["rides"][] = $ride;
           }
         }
       }
+
+      $output["entries"] = count($output["rides"]);
       break;
 
     case 'kangaride':
+      $output["idtype"] = "kangaride";
+      $output["provider"] = "kan";
       if ($country == "NA" && ($origCountry == "CA" || $destCountry == "CA")) {
         $origState = $origState ? $origState."/" : '';
         $destState = $destState ? $destState."/" : '';
@@ -284,6 +298,7 @@
             $price_full = $aRide->find('.itineraryPrice', 0)->plaintext;
             $price = 0 + $price_full;
             $link = $aRide->getAttribute('onclick');
+            $ride["full_provider"] = "Kangaride";
             $ride['link'] = str_replace($crap, '', $link);
             $cleanLink = str_replace("http://www.kangaride.com/", '', $ride['link']);
             $ride['id'] = explode("/", $cleanLink);
@@ -308,13 +323,16 @@
             $ride['img'] = "img/noprofile.jpg";
             $ride['iconPath'] = "img/kangaride.ico";
             $ride['infoWindowIcon'] = "img/kangaride.png";
-            $output[] = $ride;
+            $output["rides"][] = $ride;
           }
         }
       }
+      $output["entries"] = count($output["rides"]);
       break;
 
     case 'ridejoy':
+      $output["idtype"] = "ridejoy";
+      $output["provider"] = "rid";
       if ($page == 1) {
         $url = "http://ridejoy.com/rides/search";
         $qry_str = "?type=ride_request&origin={$startLocation}&origin_latitude={$origLat}&origin_longitude={$origLon}&destination={$endLocation}&destination_latitude={$destLat}&destination_longitude={$destLon}&date={$startDate}";
@@ -347,6 +365,7 @@
             $price_full = trim($aRide->find('.seats_container', 0)->plaintext);
             $price = 0 + substr($price_full, 1);
             $ride['idtype'] = "ridejoy";
+            $ride["full_provider"] = "Ridejoy";
             $ride['date'] = $date;
             $ride['img'] = $aRide->find('img', 0)->src;
             $ride['desc'] = str_replace(array("'", "&#x27;", "&quot;"), "", $aRide->find('.extra_info', 0)->plaintext);
@@ -359,10 +378,11 @@
             // im actually lieing here since  ridejoy isnt giving it on the go
             $ride['time'] = "Anytime";
             $ride['timestamp'] = strtotime($date. "12:00");
-            $output[] = $ride;
+            $output["rides"][] = $ride;
           }
         }
       }
+      $output["entries"] = count($output["rides"]);
       break;
 
     case 'ridester':
@@ -381,6 +401,8 @@
       break;
 
     case 'zimride':
+    $output["idtype"] = "zimride";
+    $output["provider"] = "zim";
       if ($page == 1) {
         $url = "http://www.zimride.com/search";
         $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer&pageID={$page}";
@@ -442,6 +464,7 @@
              }
            }
 
+           $ride["full_provider"] = "Zimride";
            $price_full = $aRide->find('.price_box p', 0)->plaintext;
            $price = 0 + substr($price_full, 1);
            $ride['link'] = $aRide->href;
@@ -488,10 +511,11 @@
            }
            $ride['price'] = $price;
 
-           $output[] = $ride;
+           $output["rides"][] = $ride;
           }
         }
       }
+      $output["entries"] = count($output["rides"]);
       break;
   }
 

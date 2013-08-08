@@ -726,14 +726,22 @@
         var _this = this;
         var len = this.idtypes.length;
         var parseHTML = function(data) {
-          _this.collection = _this.collection.concat(data);
+          _this.collection = _this.collection.concat(data.rooms);
           _this.render();
           _this.numOfLoaded++;
           if (_this.numOfLoaded % len === 0) {
             _this.toggleLoading();
           }
+          if (data.page === 1) {
+            _this.updateProviders(
+              data.provider, data.idtype, data.entries, false
+            );
+          } else {
+            _this.updateProviders(
+              data.provider, data.idtype, data.entries, true
+            );
+          }
         };
-
 
         _this.toggleLoading();
 
@@ -898,6 +906,7 @@
 
       updateHeading: function() {
         var data = {
+          // numOfResults
           numOfItems: this.collection.length,
           origLocation: Outpost.searchQuery.origLocation,
           destLocation: Outpost.searchQuery.destLocation,

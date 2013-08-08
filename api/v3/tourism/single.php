@@ -24,10 +24,13 @@
     $single = new simple_html_dom();
     $single->load($html);
 
+    $json['provider'] = "Vayable";
     $json["title"] = trim($single->find('.trip-title h1', 0)->plaintext);
     $json["location"] = trim($single->find('.trip-header-prop', 0)->plaintext);
-    $json["duration"] = trim($single->find('.trip-header-prop', 1)->plaintext);
-    $json["amount"] = trim($single->find('.trip-header-prop', 2)->plaintext);
+    $json["duration"] = "Up to ". trim($single->find('.trip-header-prop', 1)->plaintext). " long";
+
+    $json["amount"] = strtolower(trim($single->find('.trip-header-prop', 2)->plaintext));
+    $json["amount"] = str_replace('-', 'to', $json["amount"]);
 
     $json["price"] = trim($single->find('.price', 0)->plaintext);
 
