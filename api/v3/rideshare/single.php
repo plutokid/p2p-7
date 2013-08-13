@@ -1,6 +1,4 @@
 <?php
-  error_reporting(-1);
-
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   header('Access-Control-Allow-Credentials: true' );
@@ -79,87 +77,90 @@
     $html = file_get_contents($url);
     $single = json_decode($html);
 
-    $single = $single->postings[0];
+    $single = $single->postings;
     $json = array();
+    if (empty($single)) {
+      $json["date"] = "";
+    } else {
+      $single = $single[0];
+      $filter_list = array(
+        ' to ', ' / ', '--gt;', ' - ', '-', ' -> ', ' > ', ' → ', ' -', '- ', ' from ', '.'
+      );
 
-    $filter_list = array(
-      ' to ', ' / ', '--gt;', ' - ', '-', ' -> ', ' > ', ' → ', ' -', '- ', ' from ', '.'
-    );
+      $heading = strtolower($single->heading);
+      $source_loc = strtolower($single->annotations->source_loc);
+      $explodedLoc = explode($source_loc, $heading);
+      if (isset($explodedLoc[1])) {
+        if (!empty($explodedLoc[0])) {
+          $newDest = urlencode(preg_replace("/[^A-Za-z]/", '', $explodedLoc[0]));
+          $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$newDest}&sensor=false";
+          $geocode = file_get_contents($geourl);
+          $geocode = json_decode($geocode);
+          if ($geocode->status === "ZERO_RESULTS") {
+            $json["destination"] = null;
+          } else {
+            $json["destination"] = $geocode->results[0]->formatted_address;
+          }
+        }
+        $address = $explodedLoc[1];
+      } else {
+        $address = $explodedLoc[0];
+      }
 
-    $heading = strtolower($single->heading);
-    $source_loc = strtolower($single->annotations->source_loc);
-    $explodedLoc = explode($source_loc, $heading);
-    if (isset($explodedLoc[1])) {
-      if (!empty($explodedLoc[0])) {
-        $newDest = urlencode(preg_replace("/[^A-Za-z]/", '', $explodedLoc[0]));
+      if (!isset($json["destination"])) {
+        $length = strlen($address);
+        for ($i=0; $i < count($filter_list); $i++) {
+          $newDest = explode($filter_list[$i], $address);
+          if (isset($newDest[1]) && strlen($newDest[1]) !== $length) {
+            break;
+          }
+        }
+        $newDest = urlencode($newDest[1]);
         $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$newDest}&sensor=false";
         $geocode = file_get_contents($geourl);
         $geocode = json_decode($geocode);
-        if ($geocode->status === "ZERO_RESULTS") {
-          $json["destination"] = null;
-        } else {
-          $json["destination"] = $geocode->results[0]->formatted_address;
-        }
+        $json["destination"] = $geocode->results[0]->formatted_address;
       }
-      $address = $explodedLoc[1];
-    } else {
-      $address = $explodedLoc[0];
-    }
 
-    if (!isset($json["destination"])) {
-      $length = strlen($address);
-      for ($i=0; $i < count($filter_list); $i++) {
-        $newDest = explode($filter_list[$i], $address);
-        if (isset($newDest[1]) && strlen($newDest[1]) !== $length) {
-          break;
-        }
-      }
-      $newDest = urlencode($newDest[1]);
-      $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$newDest}&sensor=false";
+      $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$source_loc}&sensor=false";
       $geocode = file_get_contents($geourl);
       $geocode = json_decode($geocode);
-      $json["destination"] = $geocode->results[0]->formatted_address;
-    }
+      $json["origin"] = $geocode->results[0]->formatted_address;
 
-    $geourl = "http://maps.googleapis.com/maps/api/geocode/json?address={$source_loc}&sensor=false";
-    $geocode = file_get_contents($geourl);
-    $geocode = json_decode($geocode);
-    $json["origin"] = $geocode->results[0]->formatted_address;
+      $json["price"] = "";
+      $json['price'] = filterPrice($heading);
 
-    $json["price"] = "";
-    $json['price'] = filterPrice($heading);
+      if (property_exists($single, "body")) {
+        $json['description'] = $single->body;
+        if (!$json['price']) {
+          $json['price'] = filterPrice($single->body);
+        }
+      }
 
-    if (property_exists($single, "body")) {
-      $json['description'] = $single->body;
-      if (!$json['price']) {
-        $json['price'] = filterPrice($single->body);
+      $json['provider'] = "Craigslist";
+      $json['price'] = '$'.$json['price'];
+      $json["date"] = $heading;
+
+      $json["numOfSeats"] = "1-5";
+
+      $json["link"] = $single->external_url;
+      $json["id"] = $single->id;
+
+      $json["profile_pic"] = "img/rsz_noavatar.png";
+      $json["name"] = "";
+      $json["age"] = "&nbsp;";
+      $json["logopath"] = "img/craigslist_hp.png";
+      $json["idtype"] = $idtype;
+      $json["logodesc"] = "Craigslist has thousands of classifieds not limited to vacation rentals and rideshares.";
+
+      $json["labels"] = array();
+      if (property_exists($single->annotations, "phone")) {
+        $json["labels"][] = "<b>Phone: </b>".$single->annotations->phone;
+      }
+      if (property_exists($single->annotations, "source_account")) {
+        $json["labels"][] = "<b>Email: </b>".$single->annotations->source_account;
       }
     }
-
-    $json['provider'] = "Craigslist";
-    $json['price'] = '$'.$json['price'];
-    $json["date"] = $heading;
-
-    $json["numOfSeats"] = "1-5";
-
-    $json["link"] = $single->external_url;
-    $json["id"] = $single->id;
-
-    $json["profile_pic"] = "img/rsz_noavatar.png";
-    $json["name"] = "";
-    $json["age"] = "&nbsp;";
-    $json["logopath"] = "img/craigslist_hp.png";
-    $json["idtype"] = $idtype;
-    $json["logodesc"] = "Craigslist has thousands of classifieds not limited to vacation rentals and rideshares.";
-
-    $json["labels"] = array();
-    if (property_exists($single->annotations, "phone")) {
-      $json["labels"][] = "<b>Phone: </b>".$single->annotations->phone;
-    }
-    if (property_exists($single->annotations, "source_account")) {
-      $json["labels"][] = "<b>Email: </b>".$single->annotations->source_account;
-    }
-
     return json_encode($json);
   }
 
@@ -309,6 +310,7 @@
     $json["origin"] = trim($single->find('.start', 0)->plaintext);
     $json["destination"] = trim($single->find('.end', 0)->plaintext);
 
+    $json["description"] = "";
     $desc = $single->find('.notes', 0);
     if (isset($desc)) {
       $json["description"] = trim($desc->plaintext);
@@ -320,7 +322,7 @@
     $json["f_meeting_loc"] = trim($single->find('.locations .start', 0)->plaintext);
     $json["f_drop_loc"] = trim($single->find('.locations .end', 0)->plaintext);
 
-    $json["profile_pic"] = str_replace("x:27/y:27", "x:225/y:225", $single->find('.requires_login img', 0)->src);
+    $json["profile_pic"] = str_replace(array("x:75/y:75", "x:27/y:27"), "x:225/y:225", $single->find('.head .pic .requires_login img', 0)->src);
     $json["name"] = trim($single->find('.name', 0)->plaintext);
     $json["age"] = "&nbsp;";
 
@@ -366,7 +368,7 @@
 
   function ridester($url) {
     global $idtype;
-    $url = "http://api.outpost.travelerror_reporting(-1);/ridester/id={$url}";
+    $url = "http://api.outpost.travel/ridester/id={$url}";
     $html = file_get_contents($url);
     return $html;
   }

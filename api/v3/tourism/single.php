@@ -1,6 +1,4 @@
 <?php
-  error_reporting(-1);
-
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   header('Access-Control-Allow-Credentials: true' );

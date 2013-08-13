@@ -1,6 +1,4 @@
 <?php
-  error_reporting(-1);
-
   // For JSONP convinience
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
@@ -242,7 +240,7 @@
       $output["entries"] = 0;
       // Uses the same room type rentals as craigslist (entire home only)
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-        $url = "http://api.outpost.travelerror_reporting(-1);/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
+        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
         $html = file_get_contents($url);
         if (!empty($html)) {
           $output = json_decode($html);

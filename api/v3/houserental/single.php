@@ -1,6 +1,4 @@
 <?php
-  error_reporting(-1);
-
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   header('Access-Control-Allow-Credentials: true' );
@@ -54,7 +52,10 @@
     $json["country"] = $single->place_details->country;
     $json["property_type"] = $single->place_details->category." -";
     $json["room_type"] = $single->place_details->place_type;
-    $json["address"] = "{$json['city']}, {$json['zipcode']}, {$json['country']}";
+    $address = empty($json['city']) ? "" : $json['city'] . ", ";
+    $address .= empty($json['zipcode']) ? "" : $json['zipcode'] . ", ";
+    $address .= empty($json['country']) ? "" : $json['country'];
+    $json["address"] = $address;
 
     $json["logopath"] = "img/9flats-final.png";
     $json["idtype"] = $idtype;
@@ -106,10 +107,18 @@
         $single->place_details->minimum_nights
       );
     }
-    $json["smallInfo"][] = array(
-      "Extra People:",
-      '$'."{$single->pricing->charge_per_extra_person} {$json['currency']} / night after {$single->place_details->charge_per_extra_person_limit} guests"
-    );
+    if (!empty($single->place_details->charge_per_extra_person_limit)) {
+      $json["smallInfo"][] = array(
+        "Extra People:",
+        '$'."{$single->pricing->charge_per_extra_person} {$json['currency']} / night after {$single->place_details->charge_per_extra_person_limit} guest(s)"
+      );
+    } else {
+      $json["smallInfo"][] = array(
+        "Extra People:",
+        "No extra charge"
+      );
+    }
+
 
     $json["review"] = false;
 
@@ -325,7 +334,7 @@
 
   function flipkey($id) {
     global $idtype;
-    $url = "http://api.outpost.travelerror_reporting(-1);/flipkey/id={$id}";
+    $url = "http://api.outpost.travel/flipkey/id={$id}";
     $html = file_get_contents($url);
     return $html;
   }

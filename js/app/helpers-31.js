@@ -2,7 +2,7 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-  Outpost.rev = "-30";
+  Outpost.rev = "-31";
 
   // Used for ajax caching
   Outpost.cache = {};
@@ -392,14 +392,14 @@
       this.ridRequests = this.ridRequests || [];
       var data = {
         eloc: options.destLocation,
-        destlat: options.destLocationLat,
-        destlon: options.destLocationLng,
+        destlat: options.destLocationLat || "",
+        destlon: options.destLocationLng || "",
         destState: options.destState,
         destCountry: options.destCountry,
 
         sloc: options.origLocation,
-        origlat: options.origLocationLat,
-        origlon: options.origLocationLng,
+        origlat: options.origLocationLat || "",
+        origlon: options.origLocationLng || "",
         origState: options.origState,
         origCountry: options.origCountry,
 
@@ -447,8 +447,8 @@
 
       var data = {
         eloc: options.destLocation,
-        destlat: options.destLocationLat,
-        destlon: options.destLocationLng,
+        destlat: options.destLocationLat || "",
+        destlon: options.destLocationLng || "",
         destState: options.destState,
         destCountry: options.destCountry,
 

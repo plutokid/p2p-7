@@ -27,7 +27,8 @@
 
       events: {
         "click .js-logout": "logoutUser",
-        "click #sign-up-btn": "focusInput"
+        "click #sign-up-btn": "showSignupModal",
+        "click #login-in-btn": "showLoginModal"
       },
 
       initialize: function() {
@@ -41,7 +42,31 @@
         this.render(data);
       },
 
-      focusInput: function() {
+      showLoginModal: function() {
+        var $signup = $('#signup-form');
+        var $login = $('#login-form');
+        var $header = $('#signup-outpost-header');
+        $header.text("Log in to Outpost");
+        $signup.slideUp(function() {
+          $login.slideDown(function() {
+            $('#js-lo-email').focus();
+          });
+        });
+        setTimeout(function () {
+          $('#js-lo-email').focus();
+        }, 600);
+      },
+
+      showSignupModal: function() {
+        var $signup = $('#signup-form');
+        var $login = $('#login-form');
+        var $header = $('#signup-outpost-header');
+        $header.text("Sign up for Outpost");
+        $login.slideUp(function() {
+          $signup.slideDown(function() {
+            $('#js-su-first_name').focus();
+          });
+        });
         setTimeout(function () {
           $('#js-su-first_name').focus();
         }, 600);
@@ -293,7 +318,7 @@
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
       templateCarousel: _.template($('#tmpl-carousel').html()),
-      idtypes: ["nflats", "airbnb", "craigslist", "flipkey", "roomorama"],
+      idtypes: ["nflats", "craigslist", "flipkey", "roomorama"],
       numOfLoaded: 0,
       collection: [],
       sortedCollection: [],
@@ -301,7 +326,7 @@
       state: {
         prevSize: 0,
         page: 1,
-        min: 10,
+        min: 0,
         max: 1000,
         roomType: [
           "entire_home",
@@ -316,8 +341,8 @@
           _this.$el.html(tmpl);
           _this.resetState();
           _this.preDetermineSettings();
-          _this.fetchRentals();
           _this.initSliderGUI();
+          _this.fetchRentals();
         });
       },
 
@@ -335,7 +360,7 @@
         var _this = this;
         $("#lp-price-input-hou").slider({
           range: true,
-          values: [10, 1000],
+          values: [0, 1000],
           min: 0,
           max: 1000,
           step: 10,
@@ -359,8 +384,9 @@
       },
 
       preDetermineSettings: function() {
-        if (Outpost.searchQuery.guests >= 5) {
+        if (Outpost.searchQuery.guests >= 4) {
           $('#roomtype-entire_home').attr('checked', 'checked');
+          this.state.roomType = ["entire_home"];
         }
       },
 
@@ -370,7 +396,7 @@
         this.state = {
           prevSize: 0,
           page: 1,
-          min: 10,
+          min: 0,
           max: 1000,
           roomType: [
             "entire_home",
@@ -463,7 +489,8 @@
       slideCarousel: function(e) {
         var _this = this;
         var $this = $(e.currentTarget);
-        var item = $("." + $this.data("id")).data('item');
+        var rowClass = $("." + $this.data("id"));
+        var item = rowClass.data('item');
         var jhr = Outpost.helpers.loadAPI({
           uri: Outpost.helpers.formURI({
             idtype: item.idtype,
@@ -480,6 +507,9 @@
             var html = _this.templateCarousel(data);
             $extra.css("height", "425px");
             $extra.html(html);
+            $('body, html').animate({
+              scrollTop: $(rowClass).offset().top
+            }, 300);
           });
         });
       },
@@ -500,7 +530,7 @@
           var origin, dest, $extra, xhrDuration, $duration;
           var latLng = [data.lat, data.lng];
           $extra = $(".ehou" + item.id);
-          $extra.css("height", "225px");
+          $extra.css("height", "425px");
           $(".hou-extra").gmap3('destroy').empty().slideUp();
           $extra.slideDown(function(){
             $extra.gmap3({
@@ -725,8 +755,9 @@
       fetchRides: function() {
         var _this = this;
         var len = this.idtypes.length;
+        var i = 0;
         var parseHTML = function(data) {
-          _this.collection = _this.collection.concat(data.rooms);
+          _this.collection = _this.collection.concat(data.rides);
           _this.render();
           _this.numOfLoaded++;
           if (_this.numOfLoaded % len === 0) {
@@ -745,7 +776,7 @@
 
         _this.toggleLoading();
 
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
           Outpost.helpers.fetchRideShares(
             this.state,
             this.idtypes[i]
@@ -992,7 +1023,6 @@
         $('#lp-rid-list').html(html);
         this.sortListings("", $('#lp-rid-sortby').val());
         this.updateHeading();
-        this.updateProviders();
         this.filterProviders();
       }
     }),
@@ -1506,14 +1536,14 @@
         var $header = $('#signup-outpost-header');
         if ($signup.is(":visible")) {
           $header.text("Log in to Outpost");
-          $signup.slideUp(function(){
+          $signup.slideUp(function() {
             $login.slideDown(function() {
               $('#js-lo-email').focus();
             });
           });
         } else {
           $header.text("Sign up for Outpost");
-          $login.slideUp(function(){
+          $login.slideUp(function() {
             $signup.slideDown(function() {
               $('#js-su-first_name').focus();
             });

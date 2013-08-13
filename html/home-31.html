@@ -141,10 +141,12 @@
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vacation Rentals – Beach Houses, Cabins, Condos, Cottages, Vacation Homes &amp; Villas | FlipKey">
         <img src="../img/flipkey.png" alt="flipkey logo">
       </span>
+      <!--
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="Vacation rentals, private rooms, sublets by the night - Accommodations on houserental">
         <img src="../img/airbnb_logo_edited.png" alt="houserental logo">
       </span>
-      <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="rideshare | Rideshare and carpool with friendly people.">
+       -->
+       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="rideshare | Rideshare and carpool with friendly people.">
         <img src="../img/ridejoy_logo_edited.png" alt="rideshare logo">
       </span>
       <span class="tooly logos" data-toggle="tooltip" data-placement="top" title="Ridester - The way to rideshare anywhere in the USA">
@@ -311,7 +313,7 @@
       }
     });
 
-    $(ridOrigInput).one("click", function(){
+    $([houDestInput, ridOrigInput, ridDestInput, expDestInput]).on("click", function(){
       $(this).val("");
     });
 

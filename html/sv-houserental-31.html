@@ -32,12 +32,27 @@
   if (currentBread.length >= 45) {
     currentBread = currentBread.substr(0, 45) + "..";
   }
+
+  var geoPromise = Outpost.helpers.ipToGeo();
+
+  geoPromise.done(function(data) {
+    var origLocation = data.location;
+    var directionsHref = "";
+    if (data.lat && data.lon) {
+      directionsHref = "http://maps.google.com/maps?saddr=" + data.lat + "," + data.lon + "&daddr=" + lat + "," + lng;
+    } else if (data.city) {
+      directionsHref = "http://maps.google.com/maps?saddr=" + data.city + "&daddr=" + lat + "," + lng;
+    } else {
+      directionsHref = "http://maps.google.com/maps?saddr=&daddr=" + lat + "," + lng;
+    }
+    $('.spv-directions-link').attr("href", directionsHref);
+  });
 %>
 <div class="container" id="singleViewPage">
   <div class="row">
     <div class="span12">
       <ul class="breadcrumb bc-spv">
-        <li><a href="<%= hrefRes %>"><i class="icon-arrow-left"></i> <%= textBread %></a> <span class="divider">/</span></li>
+        <li><a class="bc-back" href="<%= hrefRes %>"><i class="icon-arrow-left"></i> <%= textBread %></a> <span class="divider">/</span></li>
         <li class="active"><%= currentBread %></li>
       </ul>
       <div class="item-wrapper">
@@ -53,6 +68,7 @@
                   <li class="active"><a href="#sv-carousel" data-toggle="tab">Photos</a></li>
                   <li><a class="tab-map-view" href="#sv-map-view" data-toggle="tab">Map View</a></li>
                   <li><a class="tab-street-view" href="#sv-street-view" data-toggle="tab">Street View</a></li>
+                  <a class="spv-directions-link" href="#" target="_blank">Directions&nbsp;<i class="icon-share"></i></a>
                 </ul>
                 <div class="tab-content">
                   <div class="tab-pane active" id="sv-carousel">
@@ -185,5 +201,12 @@
 <script>
   (function() {
     $('#spv-bookit').tooltip();
+
+    $('html').keyup(function(e) {
+      var href = $('.bc-back').attr("href");
+      if (e.keyCode === 8 && href === "javascript:window.close()" && $('#js-signup-modal').is(":hidden")) {
+        window.close();
+      }
+    });
   })();
 </script>

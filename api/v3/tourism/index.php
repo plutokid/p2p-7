@@ -1,6 +1,4 @@
 <?php
-  error_reporting(-1);
-
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
   require_once('../../simple_html_dom.php');
@@ -34,6 +32,7 @@
           $price = 0 + substr($price_full, 1);
           $trip['id'] = 0 + filter_var($aTrip->find('a', 0)->href, FILTER_SANITIZE_NUMBER_INT);
           $trip['idtype'] = "vayable";
+          $trip['full_provider'] = "Vayable";
           $trip['uri'] = $trip['id'];
           $trip['infoWindowIcon'] = "img/vayable.png";
           $trip['profileImg'] = "img/noprofile.jpg";

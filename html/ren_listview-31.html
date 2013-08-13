@@ -77,10 +77,10 @@
                     <div class="accordion-inner">
                       <div class="lp-price-filter">
                         <ul class="slider_values">
-                          <li class="price-value-min minimax">$<span id="lp-price-value-min-hou">10</span> USD</li>
+                          <li class="price-value-min minimax">$<span id="lp-price-value-min-hou">0</span> USD</li>
                           <li class="price-value-max minimax">$<span id="lp-price-value-max-hou">1000+</span> USD</li>
                         </ul>
-                        <div class="input-large" id="lp-price-input-hou"></div>
+                        <div class="input-large lp-price-input-hou" id="lp-price-input-hou"></div>
                       </div>
                     </div>
                   </div>
@@ -105,6 +105,7 @@
                   <div class="accordion-heading">
                     <a class="accordion-toggle">
                       Providers
+                      <span class="question-mark-prov" id="question-mark-prov" data-toggle="tooltip" data-placement="right" title="Indicates current number of shown results / number of total results. Scroll down to load more.">[?]</span>
                     </a>
                   </div>
                   <div class="accordion-body in collapse">
@@ -112,10 +113,12 @@
                       <label class="checkbox">
                         <input class="lp-hou-providers" checked="checked" type="checkbox" value="nflats">9flats<span class="fil-num" id="fil-num-nfl"></span>
                       </label>
+                      <!--
                       <label class="checkbox">
                         <input class="lp-hou-providers" checked="checked" type="checkbox" value="airbnb">Airbnb<span class="fil-num" id="fil-num-air"></span>
                       </label>
-                      <label class="checkbox">
+                       -->
+                       <label class="checkbox">
                         <input class="lp-hou-providers" checked="checked" type="checkbox" value="craigslist">Craigslist<span class="fil-num" id="fil-num-cra"></span>
                       </label>
                       <label class="checkbox">
@@ -152,6 +155,7 @@
       offset: 125
     });
 
+    var houDestInput = document.getElementById('ref-ren-dest-loc');
     var $sdate = $('#ref-ren-sdate');
     var $edate = $("#ref-ren-edate");
 
@@ -159,7 +163,7 @@
     var options = {
       types: ['(regions)']
     };
-    var houDestTA = new google.maps.places.Autocomplete($('#ref-ren-dest-loc')[0], options);
+    var houDestTA = new google.maps.places.Autocomplete(houDestInput, options);
     google.maps.event.addListener(houDestTA, 'place_changed', function() {
       $sdate.focus();
     });
@@ -197,5 +201,11 @@
         $('#ref-ren-guest').focus();
       }
     });
+
+    $(houDestInput).on("click", function(){
+      $(this).val("");
+    });
+
+    $('#question-mark-prov').tooltip();
   })();
 </script>

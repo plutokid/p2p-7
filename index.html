@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
-  <link rel="stylesheet" href="css/custom-30.css">
+  <link rel="stylesheet" href="css/custom-31.css">
 </head>
 <body>
   <div class="bs-load" id="js-bsload" style="display:none">
@@ -132,6 +132,7 @@
           <div class="css-mainmenu js-mainmenu" id="js-mainmenu">
             <ul class="css-nav">
               <% if (!name) { %>
+                <li><a class="login-in-btn" id="login-in-btn" data-toggle="modal" href="#js-signup-modal">Log in</a></li>
                 <li><button class="navbar-btn sign-up-btn" id="sign-up-btn" data-toggle="modal" href="#js-signup-modal">Sign up</button></li>
               <% } else { %>
                 <li class="logged-upmenu">
@@ -382,7 +383,7 @@
         </div>
         <span class="lp-left-group">
           <a class="out-btn btn-tou btn-tou-details" href="/#!/item/localguide/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
-          <a class="out-btn btn-tou btn-tou-bookit" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
+          <a class="out-btn btn-tou btn-tou-bookit" title="Book on <%= item.full_provider %>" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-tou btn-tou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
         </span>
       </div>
@@ -407,13 +408,12 @@
   <script src="js/vendor/backbone.analytics-1.0.min.js"></script>
   <script src="js/vendor/moment-2.1.0.min.js"></script>
   <!-- MVC -->
-  <script src="js/app/helpers-30.js"></script>
-  <script src="js/app/views-30.js"></script>
-  <script src="js/app/router-30.js"></script>
+  <script src="js/app/helpers-31.js"></script>
+  <script src="js/app/views-31.js"></script>
+  <script src="js/app/router-31.js"></script>
   <!-- CUSTOM -->
-  <script src="js/main-30.js"></script>
+  <script src="js/main-31.js"></script>
   <!-- FACEBOOK SDK -->
-  <!--
   <div id="fb-root"></div>
   <script>
     window.fbAsyncInit = function() {
@@ -461,7 +461,6 @@
   (function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
   </script>
   <noscript><img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=pNdKh1awVK00ay" style="display:none" height="1" width="1" alt="" /></noscript>
-  -->
 
   <script>
     var _gaq = _gaq || [];

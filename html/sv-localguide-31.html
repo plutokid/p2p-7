@@ -37,7 +37,7 @@
   <div class="row">
     <div class="span12">
       <ul class="breadcrumb bc-spv">
-        <li><a href="<%= hrefRes %>"><i class="icon-arrow-left"></i> <%= textBread %></a> <span class="divider">/</span></li>
+        <li><a class="bc-back" href="<%= hrefRes %>"><i class="icon-arrow-left"></i> <%= textBread %></a> <span class="divider">/</span></li>
         <li class="active"><%= currentBread %></li>
       </ul>
       <div class="item-wrapper">
@@ -105,5 +105,12 @@
 <script>
   (function() {
     $('#spv-bookit').tooltip();
+
+    $('html').keyup(function(e) {
+      var href = $('.bc-back').attr("href");
+      if (e.keyCode === 8 && href === "javascript:window.close()" && $('#js-signup-modal').is(":hidden")) {
+        window.close();
+      }
+    });
   })();
 </script>

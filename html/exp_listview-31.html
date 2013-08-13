@@ -72,14 +72,19 @@
       offset: 125
     });
 
+    var expDestInput = document.getElementById('ref-exp-dest-loc');
+
     // REFINE SEARCH INIT
     var options = {
       types: ['(cities)']
     };
-    var expDestTA = new google.maps.places.Autocomplete($('#ref-exp-dest-loc')[0], options);
+    var expDestTA = new google.maps.places.Autocomplete(expDestInput, options);
     google.maps.event.addListener(expDestTA, 'place_changed', function() {
       $("#ref-exp-search").focus();
     });
 
+    $(expDestInput).on("click", function(){
+      $(this).val("");
+    });
   })();
 </script>
