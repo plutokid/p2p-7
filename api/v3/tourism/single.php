@@ -39,11 +39,16 @@
       $json["name"] = "&nbsp;";
     }
 
-    $json["picture_url"] = trim($single->find('.user-picture', 1)->src);
-    $json["image"] = trim($single->find('#trip-photos-carousel-0 img', 0)->src);
+    $json["picture_url"] = trim($single->find('#trip-guide-img', 0)->src);
 
-    $json["desc"] = trim($single->find('.trip-description', 0)->plaintext);
+    $coverImg = $single->find('.trip-cover img', 0);
+    if (isset($coverImg)) {
+      $json["image"] = $single->find('.trip-cover img', 0)->src;
+    } else {
+      $json["image"] = $single->find('.cover-img', 0)->src;
+    }
 
+    $json["desc"] = trim($single->find('.framed2', 0)->innertext);
     $origin = $single->find('.text-center strong', 0);
     if (isset($origin)) {
       $json["origin"] = trim($single->find('.text-center strong', 0)->plaintext);

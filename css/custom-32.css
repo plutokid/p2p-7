@@ -2513,3 +2513,10 @@ td.details-td {
 .spv-directions-link:hover {
   color: #16a085;
 }
+
+/* Smartphones (portrait and landscape) ----------- */
+@media (max-width: 1281px) {
+  .main-head {
+    background-attachment: scroll;
+  }
+}

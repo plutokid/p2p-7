@@ -394,7 +394,11 @@
         $url = "http://api.outpost.travel/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
         $html = file_get_contents($url);
         $output = json_decode($html);
-        break;
+      } else if ($page >= 2) {
+        $output["idtype"] = "ridester";
+        $output["provider"] = "rids";
+        $output["page"] = (int)$page;
+        $output["entries"] = 0;
       }
       break;
 

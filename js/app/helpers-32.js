@@ -2,7 +2,7 @@
   "use strict";
   window.Outpost = window.Outpost || {};
   var Outpost = window.Outpost;
-  Outpost.rev = "-31";
+  Outpost.rev = "-32";
 
   // Used for ajax caching
   Outpost.cache = {};
@@ -494,6 +494,7 @@
       this.houRequests[query].done(function(data) {
         dff.resolve(data);
       });
+
       return dff.promise();
     },
 
@@ -547,6 +548,7 @@
       this.touRequests[query].done(function(data) {
         dff.resolve(data);
       });
+
       return dff.promise();
     },
 
@@ -566,12 +568,13 @@
 
     checkUserState: function(e) {
       var isLogged = Parse.User.current();
-      if (!isLogged) {
-        e.preventDefault();
-        $('#js-signup-modal').modal('show');
-      } else {
-        _gaq.push(['_trackEvent', 'click', 'bookit', isLogged.attributes.email]);
-      }
+      // if (!isLogged) {
+      //   e.preventDefault();
+      //   $('#js-signup-modal').modal('show');
+      // } else {
+      //   _gaq.push(['_trackEvent', 'click', 'bookit', isLogged.attributes.email]);
+      // }
+      _gaq.push(['_trackEvent', 'click', 'bookit', $('title').text()]);
     },
 
     detectNavBar: function(type) {
@@ -588,6 +591,34 @@
       }
       $('.nav-active').removeClass("nav-active");
       $('.nav-' + type).addClass("nav-active");
+    },
+
+    latLngToAddr: function(latLng) {
+      var dff = $.Deferred();
+      var query = latLng.toString();
+      this.req = this.req || [];
+
+      if (!this.req[query]) {
+        this.req[query] = $.ajax({
+          url: "http://maps.googleapis.com/maps/api/geocode/json",
+          data: {
+            latlng: query,
+            sensor: false
+          },
+          type: "GET",
+          dataType: "json"
+        });
+      }
+
+      this.req[query].done(function(data) {
+        dff.resolve(data);
+      });
+
+      return dff.promise();
+    },
+
+    triggerReady: function() {
+      $('body').addClass("outpost-done");
     }
   };
 

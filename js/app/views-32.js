@@ -158,9 +158,12 @@
 
         var destCity = $("#sl-hou-dest-location-input").val();
         var hasComma = destCity.indexOf(",");
-        destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
+        var newDestCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
         var queryString = {
-          destCity: Outpost.helpers.enbarURI(destCity),
+          destCity: Outpost.helpers.enbarURI(newDestCity),
           sdate: $('#sl-hou-sdate-input').val(),
           edate: $('#sl-hou-edate-input').val(),
           guests: $('#sl-hou-guest-input').val()
@@ -183,11 +186,17 @@
         var $pcDest = $('.pac-container:eq(2)');
         var firstOrig = $pcOrig.find(".pac-item:first").text();
         var firstDest = $pcDest.find(".pac-item:first").text();
-        origCity = hasCommaOrig === -1 ? firstOrig : origCity;
-        destCity = hasCommaDest === -1 ? firstDest : destCity;
+        var newOrigCity = hasCommaOrig === -1 ? firstOrig : origCity;
+        var newDestCity = hasCommaDest === -1 ? firstDest : destCity;
+        if (!newOrigCity) {
+          newOrigCity =  origCity;
+        }
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
         var queryString = {
-          origCity: Outpost.helpers.enbarURI(origCity),
-          destCity: Outpost.helpers.enbarURI(destCity),
+          origCity: Outpost.helpers.enbarURI(newOrigCity),
+          destCity: Outpost.helpers.enbarURI(newDestCity),
           sdate: $('#sl-rid-sdate-input').val(),
           guests: $('#sl-rid-guest-input').val()
         };
@@ -204,9 +213,12 @@
         var destCity = $("#sl-exp-dest-location-input").val();
         var hasComma = destCity.indexOf(",");
         var $pcDest = $('.pac-container:eq(3)');
-        destCity = hasComma === -1 ? $pcDest.find('.pac-item:first').text() : destCity;
+        var newDestCity = hasComma === -1 ? $pcDest.find('.pac-item:first').text() : destCity;
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
         var queryString = {
-          destCity: Outpost.helpers.enbarURI(destCity)
+          destCity: Outpost.helpers.enbarURI(newDestCity)
         };
         queryString = $.param(queryString);
         this.navigateTo("!/experiences?" + queryString);
@@ -222,6 +234,7 @@
         _this.template('home', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           $('.sl-tab-' + Outpost.list.type).tab('show');
+          Outpost.helpers.triggerReady();
         });
       }
     }),
@@ -425,6 +438,7 @@
           _this.numOfLoaded++;
           if (_this.numOfLoaded % len === 0) {
             _this.toggleLoading();
+            Outpost.helpers.triggerReady();
           }
           if (data.page === 1) {
             _this.updateProviders(
@@ -594,9 +608,12 @@
         var hasCommaDest = destCity.indexOf(",");
         var $pcDest = $('.pac-container');
         var firstDest = $pcDest.find(".pac-item:first").text();
-        destCity = hasCommaDest === -1 ? firstDest : destCity;
+        var newDestCity = hasCommaDest === -1 ? firstDest : destCity;
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
         return {
-          destCity: destCity
+          destCity: newDestCity
         };
       },
 
@@ -762,6 +779,7 @@
           _this.numOfLoaded++;
           if (_this.numOfLoaded % len === 0) {
             _this.toggleLoading();
+            Outpost.helpers.triggerReady();
           }
           if (data.page === 1) {
             _this.updateProviders(
@@ -1000,11 +1018,17 @@
         var $pcDest = $('.pac-container:eq(1)');
         var firstOrig = $pcOrig.find(".pac-item:first").text();
         var firstDest = $pcDest.find(".pac-item:first").text();
-        origCity = origCity ? hasCommaOrig === -1 ? firstOrig : origCity : '';
-        destCity = destCity ? hasCommaDest === -1 ? firstDest : destCity : '';
+        var newOrigCity = origCity ? hasCommaOrig === -1 ? firstOrig : origCity : '';
+        var newDestCity = destCity ? hasCommaDest === -1 ? firstDest : destCity : '';
+        if (!newOrigCity) {
+          newOrigCity =  origCity;
+        }
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
         return {
-          origCity: origCity,
-          destCity: destCity
+          origCity: newOrigCity,
+          destCity: newDestCity
         };
       },
 
@@ -1080,6 +1104,7 @@
           _this.numOfLoaded++;
           if (_this.numOfLoaded % len === 0) {
             _this.toggleLoading();
+            Outpost.helpers.triggerReady();
           }
         };
 
@@ -1252,9 +1277,12 @@
         e.preventDefault();
         var destCity = $("#ref-exp-dest-loc").val();
         var hasComma = destCity.indexOf(",");
-        destCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
+        var newDestCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
         var queryString = {
-          destCity: Outpost.helpers.enbarURI(destCity)
+          destCity: Outpost.helpers.enbarURI(newDestCity)
         };
         queryString = "!/experiences?" + $.param(queryString);
         Outpost.mvc.router.navigate(queryString, true);
@@ -1299,13 +1327,13 @@
         var origin = data.f_meeting_loc || data.origin;
         var dest = data.f_drop_loc || data.destination;
         $("#single-map").gmap3({
-          getroute:{
+          getroute: {
             options: {
               origin: origin,
               destination: dest,
               travelMode: google.maps.DirectionsTravelMode.DRIVING
             },
-            callback: function(results){
+            callback: function(results) {
               if (!results) return;
               $(this).gmap3({
                 map: {
@@ -1345,6 +1373,7 @@
           _this.template('sv-rideshare', data).done(function(tmpl) {
             _this.$el.html(tmpl);
             _this.paintMap(data);
+            Outpost.helpers.triggerReady();
           });
         });
       }
@@ -1405,15 +1434,43 @@
 
       loadMapView: function() {
         var latLng = [this.data.lat, this.data.lng];
-        $("#single-map").gmap3({
-          marker: {
-            latLng: latLng
-          },
-          map: {
-            options: {
-              zoom: 12
+        var jhr = Outpost.helpers.latLngToAddr(latLng);
+        jhr.done(function(address) {
+          address = address.results[0].formatted_address;
+          $("#single-map").gmap3({
+            marker: {
+              latLng: latLng,
+              data: address,
+              events: {
+                mouseover: function(marker, event, context) {
+                  var map = $(this).gmap3("get"),
+                    infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.open(map, marker);
+                    infowindow.setContent(context.data);
+                  } else {
+                    $(this).gmap3({
+                      infowindow:{
+                        anchor:marker,
+                        options:{content: context.data}
+                      }
+                    });
+                  }
+                },
+                mouseout: function() {
+                  var infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.close();
+                  }
+                }
+              }
+            },
+            map: {
+              options: {
+                zoom: 12
+              }
             }
-          }
+          });
         });
       },
 
@@ -1439,6 +1496,7 @@
             _this.data = data;
             _this.loadStreetView();
             _this.loadMapView();
+            Outpost.helpers.triggerReady();
           });
         });
       }
@@ -1509,6 +1567,7 @@
             _this.$el.html(tmpl);
             _this.data = data;
             _this.loadMapView();
+            Outpost.helpers.triggerReady();
           });
         });
       }
@@ -1692,6 +1751,7 @@
               scrollTop: $("body").offset().top
             }, 300);
           }
+          Outpost.helpers.triggerReady();
         });
       }
     })

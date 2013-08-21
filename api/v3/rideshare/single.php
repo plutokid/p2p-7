@@ -192,56 +192,60 @@
     $title = explode("(", $title);
 
     $json["date"] = $title[0];
-    $json["origin"] = explode(")", $title[1]);
-    $json["origin"] = trim($json["origin"][1]);
+    if (!empty($json["date"]) && $json["date"] != "Ooopsy!") {
+      $json["origin"] = explode(")", $title[1]);
+      $json["origin"] = trim($json["origin"][1]);
 
-    $json["destination"] = explode(")", $title[2]);
-    $json["destination"] = $json["destination"][1];
-    $json["destination"] = trim(str_replace(" to ", "", $json["destination"]));
+      $json["destination"] = explode(")", $title[2]);
+      $json["destination"] = $json["destination"][1];
+      $json["destination"] = trim(str_replace(" to ", "", $json["destination"]));
 
-    if ($json["origin"] === "Québec") {
-      $json["origin"] = "Quebec City";
-    } else if ($json["destination"] === "Québec") {
-      $json["destination"] = "Quebec City";
-    }
+      if ($json["origin"] === "Québec") {
+        $json["origin"] = "Quebec City";
+      } else if ($json["destination"] === "Québec") {
+        $json["destination"] = "Quebec City";
+      }
 
-    $desc = $single->find('em', 0);
-    if (isset($desc)) {
-      $json["description"] = trim(str_replace(array("«", "»"), "", $desc->plaintext));
+      $desc = $single->find('em', 0);
+      if (isset($desc)) {
+        $json["description"] = trim(str_replace(array("«", "»"), "", $desc->plaintext));
+      } else {
+        $json["description"] = "";
+      }
+      $json["numOfSeats"] = count($single->find('option'));
+
+      $cc = $single->find('#content .info', 0);
+      $cc2 = $single->find('#content .info', 1);
+      $f_meeting_loc = $cc->find('small', 0);
+      $f_drop_loc = $cc2->find('small', 0);
+      if (isset($f_meeting_loc)) {
+        $json["f_meeting_loc"] = str_replace($filter, '', trim($f_meeting_loc->plaintext));
+      } else {
+        $json["f_meeting_loc"] = "";
+      }
+      if (isset($f_drop_loc)) {
+        $json["f_drop_loc"] = str_replace($filter, '', trim($f_drop_loc->plaintext));
+      } else {
+        $json["f_drop_loc"] = "";
+      }
+
+      $json["s_meeting_loc"] = trim($single->find('#content .info', 0)->find('p', 0)->plaintext);
+      $json["s_drop_loc"] = trim($single->find('#content .info', 1)->find('p', 0)->plaintext);
+
+      $json["link"] = $url;
+
+      $json["profile_pic"] = "img/rsz_noavatar.png";
+      $json["name"] = "";
+      $json["age"] = "&nbsp;";
+      $json["logopath"] = "img/kangaride_logo_edited.png";
+      $json["idtype"] = $idtype;
+      $json["logodesc"] = "Kangaride is a reliable, well supervised rideshare and carpooling service for Canada and the United States.";
+
+      foreach ($single->find("#ridePrefsLegend .label") as $label) {
+        $json["labels"][] = trim($label->plaintext);
+      }
     } else {
-      $json["description"] = "";
-    }
-    $json["numOfSeats"] = count($single->find('option'));
-
-    $cc = $single->find('#content .info', 0);
-    $cc2 = $single->find('#content .info', 1);
-    $f_meeting_loc = $cc->find('small', 0);
-    $f_drop_loc = $cc2->find('small', 0);
-    if (isset($f_meeting_loc)) {
-      $json["f_meeting_loc"] = str_replace($filter, '', trim($f_meeting_loc->plaintext));
-    } else {
-      $json["f_meeting_loc"] = "";
-    }
-    if (isset($f_drop_loc)) {
-      $json["f_drop_loc"] = str_replace($filter, '', trim($f_drop_loc->plaintext));
-    } else {
-      $json["f_drop_loc"] = "";
-    }
-
-    $json["s_meeting_loc"] = trim($single->find('#content .info', 0)->find('p', 0)->plaintext);
-    $json["s_drop_loc"] = trim($single->find('#content .info', 1)->find('p', 0)->plaintext);
-
-    $json["link"] = $url;
-
-    $json["profile_pic"] = "img/rsz_noavatar.png";
-    $json["name"] = "";
-    $json["age"] = "&nbsp;";
-    $json["logopath"] = "img/kangaride_logo_edited.png";
-    $json["idtype"] = $idtype;
-    $json["logodesc"] = "Kangaride is a reliable, well supervised rideshare and carpooling service for Canada and the United States.";
-
-    foreach ($single->find("#ridePrefsLegend .label") as $label) {
-      $json["labels"][] = trim($label->plaintext);
+      $json["date"] = "";
     }
 
     return json_encode($json);

@@ -25,7 +25,7 @@
     hrefRes = "javascript:window.close()";
   } else {
     isFromRef = false;
-    hrefRes = window.location.origin + "/#!/rides?origCity=" + Outpost.helpers.enbarURI(origin) + "destCity=" + Outpost.helpers.enbarURI(destination);
+    hrefRes = window.location.origin + "/#!/rides?origCity=" + Outpost.helpers.enbarURI(origin) + "&destCity=" + Outpost.helpers.enbarURI(destination);
   }
 
   var currentBread = title + " (" + date + ")";

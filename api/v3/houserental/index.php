@@ -75,15 +75,14 @@
         $airRoomType .= "&room_types[]=".urlencode("Entire home/apt");
         $roomoramaRoomtype .=  "&room_types[]=".urlencode("house");
         $roomoramaRoomtype .=  "&room_types[]=".urlencode("apartment");
-        $roomoramaRoomtype .=  "&room_types[]=".urlencode("hotel");
-        $roomoramaRoomtype .=  "&room_types[]=".urlencode("hostel");
-        $roomoramaRoomtype .=  "&room_types[]=".urlencode("bnb");
         $crt .= "home";
         break;
       case 'private_room':
         $airRoomType .= "&room_types[]=".urlencode("Private room");
         $roomoramaRoomtype .=  "&room_types[]=".urlencode("room");
         $roomoramaRoomtype .=  "&room_types[]=".urlencode("hostel");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("bnb");
+        $roomoramaRoomtype .=  "&room_types[]=".urlencode("hotel");
         $crt .= "pr";
         break;
       case 'shared_room':
@@ -182,7 +181,6 @@
       $output["rooms"] = array();
       $output["idtype"] = "craigslist";
       $output["provider"] = "cra";
-      $output["entries"] = 0;
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
         $max = $max == 10000 ? 1000 : $max;
         $page = 0 + $page - 1;
@@ -229,6 +227,7 @@
             $output["rooms"][] = $room;
           }
         }
+        $output["entries"] = count($output["rooms"]);
       } else {
         $output["entries"] = 0;
       }
@@ -240,7 +239,11 @@
       $output["entries"] = 0;
       // Uses the same room type rentals as craigslist (entire home only)
       if ($crt === "home" || $crt === "homepr" || $crt === "homeprsr" || $crt === "homesr") {
-        $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
+        if (empty($endLat)) {
+          $url = "http://api.outpost.travel/flipkey/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
+        } else {
+          $url = "http://api.outpost.travel/flipkey/lat={$endLat}&lng={$endLon}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}";
+        }
         $html = file_get_contents($url);
         if (!empty($html)) {
           $output = json_decode($html);
@@ -249,46 +252,63 @@
       }
       break;
     case 'roomorama':
-      if (!$startDate_dash || !$endDate_dash) {
-        $startDate_dash = '';
-        $endDate_dash = '';
-      }
-      $url = "https://api.roomorama.com/v1.0/rooms.json";
-      $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=16{$roomoramaRoomtype}";
-      $url = $url . $qry_str;
-      $html = file_get_contents($url);
-      $roomoramajson = json_decode($html);
       $output["rooms"] = array();
       $output["idtype"] = "roomorama";
       $output["provider"] = "roo";
       $output["entries"] = 0;
-      if (isset($roomoramajson->result)) {
-        $output["entries"] = $roomoramajson->pagination->count;
-        foreach($roomoramajson->result as $aRoom) {
-          $room['type'] = $aRoom->type;
-          $room['id'] = $aRoom->id;
-          $room['uri'] = $room['id'];
-          $room["full_provider"] = "Roomorama";
-          $room['idtype'] = "roomorama";
-          $room['roomImg'] = $aRoom->thumbnail;
-          $room['profileImg'] = "img/noprofile.jpg";
-          $room['profileName'] = $aRoom->host->display;
-          $room['price'] = $aRoom->price;
-          $room['desc'] = str_replace("'", "", $aRoom->title);
-          $room['link'] = $aRoom->url."?ref=outpost";
-          $room['latLng'] = array($aRoom->lat, $aRoom->lng);
-          if (property_exists($aRoom, "subtype")) {
-            $subtype = $aRoom->subtype;
-            if (isset($subtype) && $room['type'] !== $subtype) {
-              $room['type'] = $room['type'] . ' - ' . $subtype;
-            }
-          }
-          $room['origin'] = $aRoom->city;
+      if (empty($endLat)) {
+        $url = "http://api.outpost.travel/roomorama/loc={$city}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}{$roomoramaRoomtype}";
+      } else {
+        $url = "http://api.outpost.travel/roomorama/lat={$endLat}&lng={$endLon}&min={$min}&max={$max}&page={$page}&guests={$guests}&start={$sdTimeStamp}&end={$edTimeStamp}{$roomoramaRoomtype}";
+      }
 
-          $output["rooms"][] = $room;
+      $html = file_get_contents($url);
+      if ($html === false) {
+        if (!$startDate_dash || !$endDate_dash) {
+          $startDate_dash = '';
+          $endDate_dash = '';
+        }
+        $url = "https://api.roomorama.com/v1.0/rooms.json";
+        $qry_str = "?destination={$city}&check_in={$startDate_dash}&check_out={$endDate_dash}&num_guests={$guests}&min_price={$min}&max_price={$max}&page={$page}&limit=16{$roomoramaRoomtype}";
+        $url = $url . $qry_str;
+        $html = file_get_contents($url);
+        $roomoramajson = json_decode($html);
+        $output["rooms"] = array();
+        $output["idtype"] = "roomorama";
+        $output["provider"] = "roo";
+        $output["entries"] = 0;
+        if (isset($roomoramajson->result)) {
+          $output["entries"] = $roomoramajson->pagination->count;
+          foreach($roomoramajson->result as $aRoom) {
+            $room['type'] = $aRoom->type;
+            $room['id'] = $aRoom->id;
+            $room['uri'] = $room['id'];
+            $room["full_provider"] = "Roomorama";
+            $room['idtype'] = "roomorama";
+            $room['roomImg'] = $aRoom->thumbnail;
+            $room['profileImg'] = "img/noprofile.jpg";
+            $room['profileName'] = $aRoom->host->display;
+            $room['price'] = $aRoom->price;
+            $room['desc'] = str_replace("'", "", $aRoom->title);
+            $room['link'] = $aRoom->url."?ref=outpost";
+            $room['latLng'] = array($aRoom->lat, $aRoom->lng);
+            if (property_exists($aRoom, "subtype")) {
+              $subtype = $aRoom->subtype;
+              if (isset($subtype) && $room['type'] !== $subtype) {
+                $room['type'] = $room['type'] . ' - ' . $subtype;
+              }
+            }
+            $room['origin'] = $aRoom->city;
+
+            $output["rooms"][] = $room;
+          }
+        } else {
+          $output["entries"] = 0;
         }
       } else {
-        $output["entries"] = 0;
+        if (!empty($html)) {
+          $output = json_decode($html);
+        }
       }
       break;
   }
