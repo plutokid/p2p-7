@@ -130,6 +130,9 @@
           searchQuery.sdate = params.sdate || "";
           searchQuery.edate = params.edate || "";
           searchQuery.guests = params.guests || "";
+          if (type === "rentals") {
+            searchQuery.rentals.page = Number(params.page) || 1;
+          }
 
           if (searchQuery.sdate) {
             searchQuery.sdateObj = moment(searchQuery.sdate, "MM/DD/YYYY");

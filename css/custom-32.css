@@ -1795,7 +1795,7 @@ color: white;
 }
 
 .lp-origdest-block {
-  max-width: 175px;
+  max-width: 300px;
   float: left;
   margin: 7px 5px 5px 5px;
 }
@@ -2512,6 +2512,11 @@ td.details-td {
 
 .spv-directions-link:hover {
   color: #16a085;
+}
+
+.ren-list-page {
+/*  margin: 18px auto;
+  text-align: center;*/
 }
 
 /* Smartphones (portrait and landscape) ----------- */

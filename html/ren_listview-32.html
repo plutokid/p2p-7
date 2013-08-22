@@ -141,6 +141,8 @@
             <div class="lp-spinner css-blue lp-hidden" id="lp-hou-ls" style="display: none;">
               <div class="icon-spinner icon-spin icon-4x"></div>
             </div>
+            <div class="ren-list-page pagination" id="ren-list-page">
+            </div>
           </div>
         </div>
       </div>
@@ -207,5 +209,40 @@
     });
 
     $('#question-mark-prov').tooltip();
+
+    $('#ren-list-page').bootstrapPaginator({
+      currentPage: Outpost.searchQuery.rentals.page,
+      totalPages: 48,
+      alignment:'right',
+      itemContainerClass: function(type, page, current) {
+        return (page === current) ? "active" : "pointer-cursor";
+      },
+      pageUrl: function(type, page, current){
+        return "http://localhost:8000/#!/rentals?destCity=Montreal_QC_Canada&sdate=&edate=&guests=1&page=" + page;
+      }
+    });
   })();
 </script>
+<!--
+<ul>
+  <%
+    var currentPage = Outpost.searchQuery.renPage;
+    var max = currentPage + 3;
+  %>
+  <% for (var i = currentPage; i <= max; i++) { %>
+    <% if (i === currentPage) { %>
+      <% if (i === 1) { %>
+        <li class="disabled"><span title="Go to previous page">&laquo;</span></li>
+      <% } else { %>
+        <li class=""><a href="#<%= i - 1 %>" title="Go to previous page">&laquo;</a></li>
+      <% } %>
+      <li class="active"><span title="You're in page <%= i %>"><%= i %></span></li>
+    <% } else { %>
+      <li class=""><a href="#<%= i %>" title="Go to page <%= i %>"><%= i %></a></li>
+      <% if (i === max) { %>
+        <li class=""><a href="#<%= currentPage + 1 %>" title="Go to next page">&raquo;</a></li>
+      <% } %>
+    <% } %>
+  <% } %>
+</ul>
+-->

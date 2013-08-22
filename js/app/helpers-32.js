@@ -38,7 +38,10 @@
     edate: "",
     sdateObj: "",
     edateObj: "",
-    guests: ""
+    guests: "",
+    rentals: {
+      page: 1
+    }
   };
 
   // Extra helper functions

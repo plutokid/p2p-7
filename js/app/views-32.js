@@ -166,7 +166,8 @@
           destCity: Outpost.helpers.enbarURI(newDestCity),
           sdate: $('#sl-hou-sdate-input').val(),
           edate: $('#sl-hou-edate-input').val(),
-          guests: $('#sl-hou-guest-input').val()
+          guests: $('#sl-hou-guest-input').val(),
+          page: 1
         };
         queryString = $.param(queryString);
         this.navigateTo("!/rentals?" + queryString);
@@ -475,7 +476,7 @@
       loadMore: function() {
         $.waypoints('destroy');
         this.state.page += 1;
-        this.fetchRentals();
+        // this.fetchRentals();
       },
 
       infiniteScroll: function() {

@@ -385,15 +385,23 @@
 
     case 'ridester':
       if ($page == 1 && $origCountry == "US" && $destCountry == "US") {
+        $ip = @get_client_ip();
         $origCity = urlencode($origCity);
         $destCity = urlencode($destCity);
         if (isset($startDate)) {
           $dateRid = urldecode($startDate);
           $timestamp = strtotime($dateRid);
         }
-        $url = "http://api.outpost.travel/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
+        $url = "http://api.outpost.travel/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}&ip={$ip}";
         $html = file_get_contents($url);
-        $output = json_decode($html);
+        if ($html) {
+          $output = json_decode($html);
+        } else {
+          $output["idtype"] = "ridester";
+          $output["provider"] = "rids";
+          $output["page"] = (int)$page;
+          $output["entries"] = 0;
+        }
       } else if ($page >= 2) {
         $output["idtype"] = "ridester";
         $output["provider"] = "rids";
@@ -567,4 +575,25 @@ function filterTime($text, $m) {
   } else {
     return false;
   }
+}
+
+// Function to get the client ip address
+function get_client_ip() {
+    $ipaddress = '';
+    if ($_SERVER['HTTP_CLIENT_IP'])
+        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    else if($_SERVER['HTTP_X_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_X_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    else if($_SERVER['HTTP_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    else if($_SERVER['REMOTE_ADDR'])
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
+    else
+        $ipaddress = 'UNKNOWN';
+
+    return $ipaddress;
 }
