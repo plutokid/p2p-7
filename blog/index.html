@@ -30,7 +30,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				md = markdown.toHTML(res);
 				title = md.find("h1").innerHTML;
 				md.find("h1").innerHTML = '';
-				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+md);
+				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
 				
 			});
 		}
