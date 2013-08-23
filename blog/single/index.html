@@ -25,7 +25,7 @@ $.get('http://blog.outpost.travel/posts/'+postname+'.md', function(res,x,y) {
 	md = markdown.toHTML(res);
 	title = $(md).add('h1')[1].innerHTML;
 	title = '<h2>'+title+'</h2>';
-	$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+md);
+	$("#posts").append('<hr><p style="float:right">'+date+'</p>'+title+md);
 	$('#posts h1').remove();
 });
 </script>
