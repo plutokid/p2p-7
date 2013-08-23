@@ -2,9 +2,13 @@
 <html lang="en">
 <body>
 <script>
-console.log(name)
-if((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[0] === 'newest'){
- console.log((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]) 
+console.log(getUrlVars())
+function getUrlVars() {
+	var vars = {};
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+		vars[key] = value;
+	});
+	return vars;
 }
 </script>
 </body>
