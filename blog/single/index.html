@@ -23,7 +23,7 @@ var postname = (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null]
 $.get('http://blog.outpost.travel/posts/'+postname, function(res,x,y) {
 	date = y.getResponseHeader('Last-Modified');
 	md = markdown.toHTML(res);
-	$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
+	$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="0">'+md);
 });
 </script>
 <script type="text/javascript">
