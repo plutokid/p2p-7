@@ -28,8 +28,6 @@ $.get('posts/?C=M;O=D', function(res) {
 			$.get('posts/'+$(res).find('a')[i].innerHTML, function(res,x,y){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
-				console.log(md.find("h1").innerHTML);
-
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
 				
 			});
