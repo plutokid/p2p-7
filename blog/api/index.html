@@ -18,7 +18,7 @@ if(getUrlVars()["newest"]){
 	var a = [];
 	var md, date = ''
 	var length = $(res).find('a').length;
-	for(i = 0; i < length; i++) {
+	for(i = 0; i < 3; i++) {
 		if($(res).find('a')[i].innerHTML.substr(-3) === '.md'){
 			var mdname = $(res).find('a')[i].innerHTML;
 			$.ajax({url:'http://blog.outpost.travel/posts/'+mdname,async:false}).done(function(res,x,y){
