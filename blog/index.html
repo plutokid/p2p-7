@@ -28,9 +28,10 @@ $.get('posts/?C=M;O=D', function(res) {
 			$.get('posts/'+$(res).find('a')[i].innerHTML, function(res,x,y){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
-				$title = $(md).add('h1');
-				$md = $(md).not('h1');
-				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+$md);
+				title = $(md).add('h1');
+				md = $(md).not('h1');
+				console.log(md);
+				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
 				
 			});
 		}
