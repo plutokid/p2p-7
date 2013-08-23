@@ -37,7 +37,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				}
 				console.log(title);
 				console.log(body);
-				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
+				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+body);
 				
 			});
 		}
