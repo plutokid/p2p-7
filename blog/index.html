@@ -1,9 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link href="css/stylesheet.css" type="text/css" rel="stylesheet" />
+</head>
+<title>Outpost.Travel</title>
+<body>
+<div class="wrapper">
+<header>
+    <a href="http://outpost.travel" class="logo"></a>
+    <h1>Outpost.Travel</h1>
+    <h3 style="">tagline goes here!</h3>
+</header>
+<div id="posts"></div>  <!-- Markdown will be displayed here on the page. -->
+<div id="push"></div>
+</div>
+<footer><a href="https://github.com/trevorstarick/pa.js">GitHub</a> &middot; <a href="http://outpost.travel">Outpost.Travel</a> &middot; <a href="http://starick.me">@trevorstarick</a></footer>
+<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 <script src="js/markdown.js"></script>
 <script src="js/html5.js"></script>
-<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 <script type="text/javascript">
 $.get('posts/?C=M;O=D', function(res) {
 	var a = [];
@@ -20,20 +34,6 @@ $.get('posts/?C=M;O=D', function(res) {
 	};
 });
 </script>
-<link href="css/stylesheet.css" type="text/css" rel="stylesheet" />
-</head>
-<title>Outpost.Travel</title>
-<body>
-<div class="wrapper">
-<header>
-    <a href="http://outpost.travel" class="logo"></a>
-    <h1>Outpost.Travel</h1>
-    <h3 style="">tagline goes here!</h3>
-</header>
-<div id="posts"></div>  <!-- Markdown will be displayed here on the page. -->
-<div id="push"></div>
-</div>
-<footer><a href="https://github.com/trevorstarick/pa.js">GitHub</a> &middot; <a href="http://outpost.travel">Outpost.Travel</a> &middot; <a href="http://starick.me">@trevorstarick</a></footer>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
