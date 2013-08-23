@@ -31,14 +31,9 @@ $.get('posts/?C=M;O=D', function(res) {
 				md = markdown.toHTML(res);
 				title = $(md).add('h1')[1].innerHTML;
 				title = '<a href="single/?post='+mdname+'"><h1>'+title+'</h1></a>'
-				md = $(md).not('h1');
-				length = md.length;
-				body = '<span>';
-				for (var i = 0; i < length; i++){
-					body = body+md[i].innerHTML+'</span><br/><br/><span>';
-				}
+				body = $(md).children("h1").remove();
 				console.log(body);
-				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+'<br/>'+body+'<span>');
+				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+'<br/>'+body);
 				
 			});
 		}
