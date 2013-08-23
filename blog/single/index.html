@@ -20,7 +20,7 @@
 <script src="../js/html5.js"></script>
 <script type="text/javascript">
 var postname = (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
-$.get('.../posts/'+postname, function(res) {
+$.get('http://blog.outpost.travel/posts/'+postname, function(res) {
 	console.log(postname)
 	var a = [];
 	var md, date = ''
