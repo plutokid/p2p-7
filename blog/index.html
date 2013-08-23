@@ -25,12 +25,13 @@ $.get('posts/?C=M;O=D', function(res) {
 	var length = $(res).find('a').length;
 	for(i = 0; i < length; i++) {
 		if($(res).find('a')[i].innerHTML.substr(-3) === '.md'){
-			$.get('posts/'+$(res).find('a')[i].innerHTML, function(res,x,y){
-				console.log(x.getAllResponseHeaders());
+			var mdname = $(res).find('a')[i].innerHTML;
+			$.get('posts/'+mdname, function(res,x,y){
+				console.log(mdname);
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
 				title = $(md).add('h1')[1].innerHTML;
-				title = '<a href="'+res+'">'+title+'</a>'
+				title = '<a href="'+mdname+'">'+title+'</a>'
 				md = $(md).not('h1');
 				length = md.length;
 				body = '';
