@@ -24,7 +24,7 @@ if(getUrlVars()["newest"]){
 			$.ajax({url:'http://blog.outpost.travel/posts/'+mdname,async:false}).done(function(res,x,y){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
-				title = $(md).add('h1')[1].innerHTML;
+				title = $(md).add('h1')[0].innerHTML;
 				$("#res").append(title+md);
 				$('#res h1').remove()
 			});
