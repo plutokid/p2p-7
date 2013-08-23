@@ -31,7 +31,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
 				title = $(md).add('h1')[1].innerHTML;
-				title = '<a href="'+mdname+'">'+title+'</a>'
+				title = '<a href="single/?post='+mdname+'"><h1>'+title+'</h1></a>'
 				md = $(md).not('h1');
 				length = md.length;
 				body = '';
