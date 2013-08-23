@@ -31,7 +31,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				title = $(md).add('h1')[0].innerHTML;
 				md = $(md).not('h1');
 				length = md.length;
-				body = null;
+				body = '';
 				for (var i = 0; i < length; i++){
 					body= body+md[i];
 				}
