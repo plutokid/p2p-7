@@ -29,7 +29,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
-				$("#posts").find("h1").innerHTML = '<a href='+res+'></a>';
+				$("#posts").find("h1").innerHTML = 'Test';
 			});
 		}
 	};
