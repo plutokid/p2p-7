@@ -33,9 +33,9 @@ $.get('posts/?C=M;O=D', function(res) {
 				title = '<a href="single/?post='+mdname+'"><h1>'+title+'</h1></a>'
 				md = $(md).not('h1');
 				length = md.length;
-				body = '';
+				body = '<span>';
 				for (var i = 0; i < length; i++){
-					body = body+md[i].innerHTML+'\n';
+					body = body+md[i].innerHTML+'</span>';
 				}
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+body);
 				
