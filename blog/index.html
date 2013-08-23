@@ -26,7 +26,7 @@ $.get('posts/?C=M;O=D', function(res) {
 	for(i = 0; i < length; i++) {
 		if($(res).find('a')[i].innerHTML.substr(-3) === '.md'){
 			var mdname = $(res).find('a')[i].innerHTML;
-			$.ajax(url:'posts/'+mdname,async:false).done(function(res,x,y){
+			$.ajax({url:'posts/'+mdname,async:false}).done(function(res,x,y){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
 				console.log(md);
