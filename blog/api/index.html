@@ -25,7 +25,7 @@ if(getUrlVars()["newest"]){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
 				title = $(md).add('h1')[0].innerHTML;
-				$("#res").append('{"title":'+title+','+'"content":'+md+','+'"date":'+date+'}');
+				$("#res").append('{"title":"'+title+'","content":"'+md+',"date":"'+date+'"}');
 				$('#res h1').remove()
 			});
 		}
