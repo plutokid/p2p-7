@@ -31,7 +31,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				md = markdown.toHTML(res);
 				//title = '<a href="single/?post='+mdname+'"><h1>'+title+'</h1></a>'
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
-				$('div.h1').remove()
+				$('#posts h1').remove()
 			});
 		}
 	};
