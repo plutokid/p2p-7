@@ -29,9 +29,9 @@ $.get('posts/?C=M;O=D', function(res) {
 			$.get('posts/'+mdname, function(res,x,y){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
+				console.log(typeof(md));
 				//title = '<a href="single/?post='+mdname+'"><h1>'+title+'</h1></a>'
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
-				$("div.posts > h1").remove();
 			});
 		}
 	};
