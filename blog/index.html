@@ -29,11 +29,11 @@ $.get('posts/?C=M;O=D', function(res) {
 			$.ajax({url:'posts/'+mdname,async:false}).done(function(res,x,y){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
-				console.log(md);
 				//title = '<a href="single/?post='+mdname+'"><h1>'+title+'</h1></a>'
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
 			});
 		}
+	console.log($('#posts'))
 	};
 });
 </script>
