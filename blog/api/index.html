@@ -12,6 +12,7 @@ function getUrlVars() {
 console.log(getUrlVars())
 if(getUrlVars()["newest"]){
 	console.log(getUrlVars()["newest"])
+	$(body).append(getUrlVars()["newest"])
 }
 </script>
 </body>
