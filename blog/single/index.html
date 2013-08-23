@@ -20,20 +20,10 @@
 <script src="../js/html5.js"></script>
 <script type="text/javascript">
 var postname = (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
-$.get('http://blog.outpost.travel/posts/'+postname, function(res) {
-	console.log(postname)
-	var a = [];
-	var md, date = ''
-	var length = $(res).find('a').length;
-	for(i = 0; i < length; i++) {
-		if($(res).find('a')[i].innerHTML.substr(-3) === '.md'){
-			$.get('posts/'+$(res).find('a')[i].innerHTML, function(res,x,y){
-				date = y.getResponseHeader('Last-Modified');
-				md = markdown.toHTML(res);
-				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
-			});
-		}
-	};
+$.get('http://blog.outpost.travel/posts/'+postname, function(res,x,y) {
+	date = y.getResponseHeader('Last-Modified');
+	md = markdown.toHTML(res);
+	$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
 });
 </script>
 <script type="text/javascript">
