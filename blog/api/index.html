@@ -2,13 +2,15 @@
 <html lang="en">
 <body>
 <script>
-console.log(getUrlVars())
 function getUrlVars() {
 	var vars = {};
 	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
 		vars[key] = value;
 	});
 	return vars;
+}
+if(getUrlVars()[0] === 'newest'){
+	console.log(getUrlVars()[1])
 }
 </script>
 </body>
