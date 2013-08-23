@@ -35,7 +35,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				length = md.length;
 				body = '<span>';
 				for (var i = 0; i < length; i++){
-					body = body+md[i].innerHTML+'</span><br/>';
+					body = body+md[i].innerHTML+'</span><br/><span>';
 				}
 				console.log(body);
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+'<br/>'+body+'<span>');
