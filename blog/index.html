@@ -6,16 +6,18 @@
 <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
 <script type="text/javascript">
 $.get('posts/?C=M;O=D', function(res) {
-    var a = [];
-    var md, date = ''
-    var length = $(res).find('a').length;
-    for(i = 0; i < length; i++) {
-        $.get('posts/'+$(res).find('a')[i].innerHTML, function(res,x,y){
-        	date = y.getResponseHeader('Last-Modified');
-        	md = markdown.toHTML(res);
-	        $("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
-        });
-    };
+	var a = [];
+	var md, date = ''
+	var length = $(res).find('a').length;
+	for(i = 0; i < length; i++) {
+		if($(res).find('a')[i].innerHTML.substr(-3) = '.md'){
+			$.get('posts/'+$(res).find('a')[i].innerHTML, function(res,x,y){
+				date = y.getResponseHeader('Last-Modified');
+				md = markdown.toHTML(res);
+				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+md);
+			});
+		}
+	};
 });
 </script>
 <link href="css/stylesheet.css" type="text/css" rel="stylesheet" />
