@@ -27,7 +27,7 @@ if(getUrlVars()["newest"]){
 				title = $(md).add('h1')[0].innerHTML;
 				$("#res").append('{"title":"'+title+'","content":"'+md+'","date":"'+date+'"}');
 				$('#res h1').remove()
-				$('#res').replace(/(\r\n|\n|\r)/gm,"");
+				$('#res').trim();
 			});
 		}
 	};
