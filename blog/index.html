@@ -31,7 +31,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				md = markdown.toHTML(res);
 				title = $(md).add('h1')[1].innerHTML;
 				console.log(title)
-				title = '<a href="single/?post='+mdname.substr(length.mdname-3)+'"><h2>'+title+'</h2></a>';
+				title = '<a href="single/?post='+mdname.substr(0,mdname.length-3)+'"><h2>'+title+'</h2></a>';
 				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+md);
 				$('#posts h1').remove();
 			});
