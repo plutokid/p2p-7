@@ -24,10 +24,10 @@ if(getUrlVars()["newest"]){
 			$.ajax({url:'http://blog.outpost.travel/posts/'+mdname,async:false}).done(function(res,x,y){
 				date = y.getResponseHeader('Last-Modified');
 				md = markdown.toHTML(res);
-				md.text = md.replace(/(\r\n|\n|\r)/gm,"");
 				title = $(md).add('h1')[0].innerHTML;
 				$("#res").append('{"title":"'+title+'","content":"'+md+'","date":"'+date+'"}');
 				$('#res h1').remove()
+				$('#res').replace(/(\r\n|\n|\r)/gm,"");
 			});
 		}
 	};
