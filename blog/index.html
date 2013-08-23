@@ -36,7 +36,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				length = md.length;
 				body = '';
 				for (var i = 0; i < length; i++){
-					body = body+'\n'+md[i].innerHTML;
+					body = body+'&nbsp;&nbsp;\n'+md[i].innerHTML;
 				}
 				console.log(title);
 				console.log(body);
