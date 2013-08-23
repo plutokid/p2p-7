@@ -31,10 +31,8 @@ $.get('posts/?C=M;O=D', function(res) {
 				md = markdown.toHTML(res);
 				title = $(md).add('h1')[1].innerHTML;
 				title = '<a href="single/?post='+mdname+'"><h1>'+title+'</h1></a>'
-				body = $(md).children("h1").remove();
 				console.log(body);
-				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+'<br/>'+body);
-				
+				$("#posts").append('<hr><p style="float:right">'+date+'</p><div id="'+i+'">'+title+'<br/>'+md);
 			});
 		}
 	};
