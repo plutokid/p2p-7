@@ -33,7 +33,7 @@ $.get('posts/?C=M;O=D', function(res) {
 				length = md.length;
 				body = null;
 				for (var i = 0; i < length; i++){
-					body += md[i];
+					body.append(md[i]);
 				}
 				console.log(title);
 				console.log(body);
