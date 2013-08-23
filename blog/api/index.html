@@ -13,8 +13,20 @@ function getUrlVars() {
 }
 console.log(getUrlVars())
 if(getUrlVars()["newest"]){
-	console.log(getUrlVars()["newest"])
-	$('#res').append(getUrlVars()["newest"])
+	$.get('http://outpost.travel/blog/posts/?C=M;O=D', function(res) {
+	var a = [];
+	var md, date = ''
+	var length = $(res).find('a').length;
+	for(i = 0; i < 1; i++) {
+		if($(res).find('a')[i].innerHTML.substr(-3) === '.md'){
+			var mdname = $(res).find('a')[i].innerHTML;
+			$.ajax({url:'posts/'+mdname,async:false}).done(function(res,x,y){
+				md = markdown.toHTML(res);
+				$("#res").append(md);
+			});
+		}
+	};
+});
 }
 </script>
 </body>
