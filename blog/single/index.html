@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link href="../css/stylesheet.css" type="text/css" rel="stylesheet" />
+</head>
+<title>Outpost.Travel</title>
+<body>
+<div class="wrapper">
+<header>
+    <a href="http://outpost.travel" class="logo"></a>
+    <h1>Outpost.Travel</h1>
+    <h3 style="">tagline goes here!</h3>
+</header>
+<div id="posts"></div>  <!-- Markdown will be displayed here on the page. -->
+<div id="push"></div>
+</div>
+<footer><a href="https://github.com/trevorstarick/pa.js">GitHub</a> &middot; <a href="http://outpost.travel">Outpost.Travel</a> &middot; <a href="http://starick.me">@trevorstarick</a></footer>
+<script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+<script src="../js/markdown.js"></script>
+<script src="../js/html5.js"></script>
+<script type="text/javascript">
+var postname = (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
+$.get('http://blog.outpost.travel/posts/'+postname+'.md', function(res,x,y) {
+	date = y.getResponseHeader('Last-Modified');
+	md = markdown.toHTML(res);
+	title = $(md).add('h1')[1].innerHTML;
+	title = '<h2>'+title+'</h2>';
+	$("#posts").append('<hr><p style="float:right">'+date+'</p>'+title+md);
+	$('#posts h1').remove();
+});
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-39723359-1']);
+  _gaq.push(['_setDomainName', 'blog.outpost.travel']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>
