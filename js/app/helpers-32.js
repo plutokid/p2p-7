@@ -27,6 +27,7 @@
     models: {}
   };
 
+  // i dont think this is nessecary
   Outpost.searchQuery = {
     origLocation: "",
     origLocationLat: "",
@@ -40,6 +41,34 @@
     edateObj: "",
     guests: "",
     rentals: {
+      location: "",
+      lat: 0.0,
+      lng: 0.0,
+      sdate: 0,
+      edate: 0,
+      guests: 1,
+      room_type: ["entire_place", "private_room", "shared_room"],
+      property_type: [
+        "apartment",
+        "bnb",
+        "cabin",
+        "dorm",
+        "house",
+        "loft",
+        "villa"
+      ],
+      min: 0,
+      max: 10000,
+      sortBy: "relevance",
+      providers: [
+        "nflats",
+        "airbnb",
+        "craigslist",
+        "flipkey",
+        "roomorama"
+      ],
+      rpp: 25,
+      radius: 2,
       page: 1
     }
   };
@@ -441,7 +470,6 @@
       return dff.promise();
     },
 
-
     fetchRentals: function(state, idtype) {
       var dff = $.Deferred();
       var options = Outpost.searchQuery;
@@ -488,6 +516,54 @@
       if (!this.houRequests[query]) {
         this.houRequests[query] = $.ajax({
           url: '/api/v3/houserental/',
+          type: 'GET',
+          dataType: 'jsonp',
+          data: data
+        });
+      }
+
+      this.houRequests[query].done(function(data) {
+        dff.resolve(data);
+      });
+
+      return dff.promise();
+    },
+
+    loadRentals: function(state) {
+      var dff = $.Deferred();
+      var options = Outpost.searchQuery;
+      var query = [];
+      this.houRequests = this.houRequests || [];
+
+      var data = {
+        loc: options.destLocation || "",
+        lat: options.destLocationLat || "",
+        lng: options.destLocationLng || "",
+        state: options.destState || "",
+        country: options.destCountry || "",
+
+        sdate: options.sdate ? options.sdate.unix() : "",
+        edate: options.edate ? options.edate.unix() : "",
+
+        guests: options.guests || "",
+        min: state.min || "",
+        max: state.max || "",
+        sort: state.sortBy || "",
+        radius: state.radius || "",
+        room_type: state.roomType || [],
+        property_type: state.propertyType || [],
+        providers: state.providers || [],
+        rpp: state.rpp || "",
+        page: state.page || ""
+      };
+
+      query = $.map(data, function(value) {
+        return value.toString ? value.toString() : String(value);
+      }).toString();
+
+      if (!this.houRequests[query]) {
+        this.houRequests[query] = $.ajax({
+          url: '/api/v3/houserental/load.php',
           type: 'GET',
           dataType: 'jsonp',
           data: data

@@ -368,7 +368,7 @@
     }
 
     $json["house_rules"] = $single->cancellation_policy;
-    $json["link"] = $single->url."?ref=outpost";
+    $json["link"] = $single->url."?channel=outpost&utm_medium=affiliate&utm_source=outpost&channel=outpost";
 
     $json["provider"] = "Roomorama";
     $json["picture_url"] = "img/rsz_noavatar.png";
