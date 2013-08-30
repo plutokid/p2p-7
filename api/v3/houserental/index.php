@@ -104,7 +104,7 @@
       $url = "https://api.9flats.com/api/v4/places";
       $qry_str = "?search[query]={$endLocation}&search[start_date]={$startDate_dash}&search[end_date]={$endDate_dash}&search[number_of_beds]={$guests}&search[price_min]={$min}&search[price_max]={$max}&search[page]={$page}&search[place_type]={$nflatsroomtype}&search[per_page]=11&client_id=nubHrbRJUVPVlUjaH7SeO1RmmcZBug8Qm9Uyizus";
       $url = $url.$qry_str;
-      $html = @file_get_contents($url);
+      $html = file_get_contents($url);
       $nflatsjson = json_decode($html);
       $output["idtype"] = "nflats";
       $output["provider"] = "nfl";

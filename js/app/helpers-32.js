@@ -40,37 +40,7 @@
     sdateObj: "",
     edateObj: "",
     guests: "",
-    rentals: {
-      location: "",
-      lat: 0.0,
-      lng: 0.0,
-      sdate: 0,
-      edate: 0,
-      guests: 1,
-      room_type: ["entire_place", "private_room", "shared_room"],
-      property_type: [
-        "apartment",
-        "bnb",
-        "cabin",
-        "dorm",
-        "house",
-        "loft",
-        "villa"
-      ],
-      min: 0,
-      max: 10000,
-      sortBy: "relevance",
-      providers: [
-        "nflats",
-        "airbnb",
-        "craigslist",
-        "flipkey",
-        "roomorama"
-      ],
-      rpp: 25,
-      radius: 2,
-      page: 1
-    }
+    rentals: {}
   };
 
   // Extra helper functions
@@ -214,6 +184,30 @@
         str += query[i];
       }
       return str;
+    },
+
+    genSearchParamsAndGo: function(cat) {
+      var paramStr;
+      var param = Outpost.searchQuery;
+
+      if (cat === "rentals") {
+        paramStr = $.param({
+          destCity: Outpost.helpers.enbarURI(param.destLocation),
+          sdate: param.sdate,
+          edate: param.edate,
+          guests: param.guests,
+          min: param.rentals.min,
+          max: param.rentals.max,
+          sortBy: param.rentals.sortBy,
+          radius: param.rentals.radius,
+          roomType: param.rentals.roomType,
+          propertyType: param.rentals.propertyType,
+          providers: param.rentals.providers,
+          page: param.rentals.page
+        });
+      }
+
+      Outpost.mvc.router.navigate("!/" + cat + "?" + paramStr, true);
     },
 
     loadAPI: function(data) {
@@ -529,11 +523,12 @@
       return dff.promise();
     },
 
-    loadRentals: function(state) {
+    loadRentals: function() {
       var dff = $.Deferred();
       var options = Outpost.searchQuery;
+      var state = options.rentals;
       var query = [];
-      this.houRequests = this.houRequests || [];
+      this.renRequests = this.renRequests || [];
 
       var data = {
         loc: options.destLocation || "",
@@ -542,27 +537,32 @@
         state: options.destState || "",
         country: options.destCountry || "",
 
-        sdate: options.sdate ? options.sdate.unix() : "",
-        edate: options.edate ? options.edate.unix() : "",
+        sdate: options.sdate ? options.sdateObj.unix() : "",
+        edate: options.edate ? options.edateObj.unix() : "",
 
         guests: options.guests || "",
+
         min: state.min || "",
         max: state.max || "",
         sort: state.sortBy || "",
         radius: state.radius || "",
-        room_type: state.roomType || [],
-        property_type: state.propertyType || [],
+        roomType: state.roomType || [],
+        propertyType: state.propertyType || [],
         providers: state.providers || [],
         rpp: state.rpp || "",
         page: state.page || ""
       };
 
-      query = $.map(data, function(value) {
-        return value.toString ? value.toString() : String(value);
+      query = $.map(data, function(value, key) {
+        if (key === "lat" || key === "lng") {
+          // do nothing
+        } else {
+          return value.toString ? value.toString() : String(value);
+        }
       }).toString();
 
-      if (!this.houRequests[query]) {
-        this.houRequests[query] = $.ajax({
+      if (!this.renRequests[query]) {
+        this.renRequests[query] = $.ajax({
           url: '/api/v3/houserental/load.php',
           type: 'GET',
           dataType: 'jsonp',
@@ -570,7 +570,7 @@
         });
       }
 
-      this.houRequests[query].done(function(data) {
+      this.renRequests[query].done(function(data) {
         dff.resolve(data);
       });
 

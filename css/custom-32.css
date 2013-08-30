@@ -1616,6 +1616,9 @@ color: white;
 .lpl-roomorama {
   background:url("../img/roomorama_small.png") no-repeat #24b0cf 621px 3px;
 }
+.lpl-waytostay {
+  background:url("../img/waytostay_small.png") no-repeat #24b0cf 605px -2px;
+}
 
 .lp-aList-rid .lpl-craigslist {
   background:url("../img/craigslist.png") no-repeat #ec5f41 603px 4px;
@@ -2514,9 +2517,13 @@ td.details-td {
   color: #16a085;
 }
 
-.ren-list-page {
-/*  margin: 18px auto;
-  text-align: center;*/
+.pointer-cursor {
+  cursor: pointer;
+}
+
+.blog-title {
+  font-size: 17px;
+  font-weight: bold;
 }
 
 /* Smartphones (portrait and landscape) ----------- */

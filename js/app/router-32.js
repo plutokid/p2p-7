@@ -119,6 +119,7 @@
       },
 
       listview: function(type, params) {
+        var rentalsOption;
         Outpost.list.type = type;
         Outpost.helpers.detectNavBar(type);
         if (params && !params.utm_source) {
@@ -129,9 +130,36 @@
           Outpost.helpers.defineDestLoc(destCity);
           searchQuery.sdate = params.sdate || "";
           searchQuery.edate = params.edate || "";
-          searchQuery.guests = params.guests || "";
+          searchQuery.guests = params.guests || 1;
           if (type === "rentals") {
-            searchQuery.rentals.page = Number(params.page) || 1;
+            rentalsOption = searchQuery.rentals;
+            rentalsOption.page = Number(params.page) || 1;
+            rentalsOption.rpp = Number(params.rpp) || 25;
+            rentalsOption.min = Number(params.min) || 0;
+            rentalsOption.max = Number(params.max) || 1000;
+            rentalsOption.radius = Number(params.radius) || 0.7;
+            rentalsOption.sortBy = params.sortBy || "relevance";
+            rentalsOption.roomType = params.roomType || [
+                                                          "entire_place",
+                                                          "private_room",
+                                                          "shared_room"
+                                                        ];
+            rentalsOption.propertyType = params.propertyType || [
+                                                                  "apartment_condo",
+                                                                  "bnb",
+                                                                  "cabin",
+                                                                  "dorm",
+                                                                  "house",
+                                                                  "loft",
+                                                                  "villa",
+                                                                  "other"
+                                                                ];
+            rentalsOption.providers = params.providers || [
+                                                            "nflats",
+                                                            "airbnb",
+                                                            "flipkey",
+                                                            "roomorama"
+                                                          ];
           }
 
           if (searchQuery.sdate) {

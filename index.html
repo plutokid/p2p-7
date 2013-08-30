@@ -54,8 +54,8 @@
         </div>
       </div>
       <div class="footer-right">
-        <h5 class="margin0">Latest blog post: <span>[Fri 23 Aug, 2013]</span></h5>
-        <p class="latest-tweet margin0" id="latest-tweet">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, obcaecati, magnam quis at eius reprehenderit perspiciatis minima dolorum ullam totam quo amet..[read more]</p>
+        <a class="margin0 blog-title" id="blog-title" title="Read Outpost.Travel's blog!" href="http://blog.outpost.travel/" target="_blank"></a>
+        <p class="latest-tweet margin0" id="blog-text"></p>
       </div>
     </div>
   </footer>
@@ -123,7 +123,7 @@
         <div class="container navbar-container">
           <div class="navbar-left">
             <a class="header-logo-link" id="logo-img" href="/">
-              <img class="logo" src="img/outpost_logo.png" alt="outpost logo">
+              <img class="logo" src="img/logobeta.png" alt="outpost logo">
             </a>
             <ul class="css-nav">
               <li><a class="navbar-cat nav-rentals nav-active" href="#!/rentals">Place Rentals</a></li>
@@ -153,7 +153,7 @@
     <div id="svhouCarousel" class="carousel slide air-carousel">
       <ol class="carousel-indicators">
         <% var j = 0; %>
-        <% _.each(imgs, function(src) { %>
+        <% _.each(photos, function(src) { %>
           <li data-target="#svhouCarousel" data-slide-to="<%= j %>" class="<%= j ? '' : 'active' %>"></li>
           <% j++ %>
         <% }); %>
@@ -161,7 +161,7 @@
       <!-- Carousel items -->
       <div class="carousel-inner sv-hou-carousel-inner">
         <% var i = 0; %>
-        <% _.each(imgs, function(src) { %>
+        <% _.each(photos, function(src) { %>
           <div class="item <%= i ? '' : 'active' %> ">
             <img class="modal-img" src="<%= src %>">
             <% if (captions[i]) { %>
@@ -313,24 +313,24 @@
     <% _.each(items, function(item) { %>
     <%
       var json_item = JSON.stringify(item);
-      var idtype = "alist-" + item.idtype;
+      var provider = "alist-" + item.provider;
       var id = "hou-" + item.id;
     %>
-    <div class="lp-aList lp-aList-hou <%= idtype %> <%= id %>" data-item='<%= json_item %>'>
-      <div class="lp-list-head lpl-<%= item.idtype %>">
-        <img class="lp-list-pp" src="<%= item.profileImg %>">
-        <h4 class="lp-list-title"><a href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>" target="_blank"><%= item.desc %></a></h4>
+    <div class="lp-aList lp-aList-hou <%= provider %> <%= id %>" data-item='<%= json_item %>'>
+      <div class="lp-list-head lpl-<%= item.provider %>">
+        <img class="lp-list-pp" src="<%= "img/" + item.roomType + ".png" %>">
+        <h4 class="lp-list-title"><a href="/#!/item/houserental/<%= item.provider %>/<%= item.id %>" target="_blank"><%= item.heading %></a></h4>
       </div>
       <div class="lp-list-body">
         <div class="list-img-container">
-          <img class="lp-list-img" data-id="<%= id %>" src="<%= item.roomImg %>">
+          <img class="lp-list-img" data-id="<%= id %>" src="<%= item.thumbnail %>">
           <i class="icon-zoom-in icon-2x list-img-zoom"></i>
         </div>
         <div class="lp-list-info">
           <ul>
             <li>
               <span class="icon-home css-blue tfpx"></span>
-              <span class="lp-list-type"><%= item.type %></span>
+              <span class="lp-list-type"><%= item.propertyTypeAlias %></span>
             </li>
             <li>
               <span class="icon-map-marker css-green tfpx"></span>
@@ -338,12 +338,12 @@
             </li>
           </ul>
           <div class="lp-hou-pricewrap">
-            <div class="lp-hou-price">$<%= item.price %></div>
-            <div class="lp-hou-pricedesc">per night</div>
+            <div class="lp-hou-price"><%= item.currencySign + item.rate %></div>
+            <div class="lp-hou-pricedesc"><%= item.ratePer %></div>
           </div>
         </div>
         <span class="lp-left-group">
-          <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.idtype %>/<%= item.uri %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
+          <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.provider %>/<%= item.id %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
           <a class="out-btn btn-hou btn-hou-bookit" title="Book on <%= item.full_provider %>" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-hou btn-hou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
         </span>

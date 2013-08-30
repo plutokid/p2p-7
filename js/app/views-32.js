@@ -40,6 +40,7 @@
 
         new Outpost.views.signupModal();
         this.render(data);
+        this.loadBlogPost();
       },
 
       showLoginModal: function() {
@@ -75,6 +76,20 @@
       logoutUser: function() {
         Parse.User.logOut();
         this.render({});
+      },
+
+      loadBlogPost: function() {
+        $.ajax({
+          url: "/blog/json.php",
+          type: "GET",
+          dataType: "jsonp"
+        }).done(function(data) {
+          $('#blog-title').text(data.blogTitle + " [" + data.blogDate + "]");
+          $('#blog-text').html(
+            data.blogPost +
+            '<a href="http://blog.outpost.travel/" target="_blank">[read more]</a>'
+          );
+        });
       },
 
       render: function(data) {
@@ -332,28 +347,13 @@
       templateList: _.template($('#tmpl-hou-aList').html()),
       templateWell: _.template($('#tmpl-hou-well').html()),
       templateCarousel: _.template($('#tmpl-carousel').html()),
-      idtypes: ["nflats", "craigslist", "flipkey", "roomorama"],
-      numOfLoaded: 0,
       collection: [],
-      sortedCollection: [],
-      numOfResults: 0,
-      state: {
-        prevSize: 0,
-        page: 1,
-        min: 0,
-        max: 1000,
-        roomType: [
-          "entire_home",
-          "private_room",
-          "shared_room"
-        ]
-      },
 
       initialize: function() {
         var _this = this;
         _this.template('ren_listview', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
-          _this.resetState();
+          // _this.resetState();
           _this.preDetermineSettings();
           _this.initSliderGUI();
           _this.fetchRentals();
@@ -400,7 +400,7 @@
       preDetermineSettings: function() {
         if (Outpost.searchQuery.guests >= 4) {
           $('#roomtype-entire_home').attr('checked', 'checked');
-          this.state.roomType = ["entire_home"];
+          Outpost.searchQuery.rentals.roomType = ["entire_home"];
         }
       },
 
@@ -431,35 +431,18 @@
 
       fetchRentals: function() {
         var _this = this;
-        var len = this.idtypes.length;
-        var i = 0;
         var parseHTML = function(data) {
-          _this.collection = _this.collection.concat(data.rooms);
+          _this.collection = _this.collection.concat(data.rentals);
+          _this.toggleLoading();
+          _this.initPagination(data.page, data.totalPages);
+          _this.updateHeading(data.totalResults);
+          _this.updateProviders();
           _this.render();
-          _this.numOfLoaded++;
-          if (_this.numOfLoaded % len === 0) {
-            _this.toggleLoading();
-            Outpost.helpers.triggerReady();
-          }
-          if (data.page === 1) {
-            _this.updateProviders(
-              data.provider, data.idtype, data.entries, false
-            );
-          } else {
-            _this.updateProviders(
-              data.provider, data.idtype, data.entries, true
-            );
-          }
+          Outpost.helpers.triggerReady();
         };
 
         _this.toggleLoading();
-
-        for (i = 0; i < len; i++) {
-          Outpost.helpers.fetchRentals(
-            this.state,
-            this.idtypes[i]
-          ).done(parseHTML);
-        }
+        Outpost.helpers.loadRentals().done(parseHTML);
       },
 
       toggleLoading: function() {
@@ -477,6 +460,36 @@
         $.waypoints('destroy');
         this.state.page += 1;
         // this.fetchRentals();
+      },
+
+      initPagination: function(currentPage, totalPages) {
+        $('#ren-list-page').bootstrapPaginator({
+          currentPage: currentPage,
+          totalPages: totalPages,
+          alignment:'right',
+          useBootstrapTooltip: true,
+          onPageChanged: function(e, oldPage, newPage) {
+            Outpost.searchQuery.rentals.page = newPage;
+            Outpost.helpers.genSearchParamsAndGo("rentals");
+          },
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                  return "First";
+              case "prev":
+                  return "&laquo;";
+              case "next":
+                  return "&raquo;";
+              case "last":
+                  return "Last";
+              case "page":
+                  return page;
+            }
+          },
+          itemContainerClass: function(type, page, current) {
+            return (page === current) ? "active" : "pointer-cursor";
+          }
+        });
       },
 
       infiniteScroll: function() {
@@ -506,82 +519,61 @@
         var $this = $(e.currentTarget);
         var rowClass = $("." + $this.data("id"));
         var item = rowClass.data('item');
-        var jhr = Outpost.helpers.loadAPI({
-          uri: Outpost.helpers.formURI({
-            idtype: item.idtype,
-            id: item.uri
-          }),
-          idtype: item.idtype,
-          apicat: "houserental"
-        });
-
-        jhr.done(function(data) {
-          var $extra = $(".ehou" + item.id);
-          $(".hou-extra").gmap3('destroy').empty().slideUp();
-          $extra.slideDown(function(){
-            var html = _this.templateCarousel(data);
-            $extra.css("height", "425px");
-            $extra.html(html);
-            $('body, html').animate({
-              scrollTop: $(rowClass).offset().top
-            }, 300);
-          });
+        var $extra = $(".ehou" + item.id);
+        $(".hou-extra").gmap3('destroy').empty().slideUp();
+        $extra.slideDown(function() {
+          var html = _this.templateCarousel(item);
+          $extra.css("height", "425px");
+          $extra.html(html);
+          $('body, html').animate({
+            scrollTop: $(rowClass).offset().top
+          }, 300);
         });
       },
 
       slideMap: function(e) {
         var $this = $(e.currentTarget);
         var item = $("." + $this.data("id")).data('item');
-        var jhr = Outpost.helpers.loadAPI({
-          uri: Outpost.helpers.formURI({
-            idtype: item.idtype,
-            id: item.uri
-          }),
-          idtype: item.idtype,
-          apicat: "houserental"
-        });
 
-        jhr.done(function(data) {
-          var origin, dest, $extra, xhrDuration, $duration;
-          var latLng = [data.lat, data.lng];
-          $extra = $(".ehou" + item.id);
-          $extra.css("height", "425px");
-          $(".hou-extra").gmap3('destroy').empty().slideUp();
-          $extra.slideDown(function(){
-            $extra.gmap3({
-              marker: {
-                latLng: latLng,
-                data: data.address,
-                events: {
-                  mouseover: function(marker, event, context) {
-                    var map = $(this).gmap3("get"),
-                      infowindow = $(this).gmap3({get:{name:"infowindow"}});
-                    if (infowindow) {
-                      infowindow.open(map, marker);
-                      infowindow.setContent(context.data);
-                    } else {
-                      $(this).gmap3({
-                        infowindow:{
-                          anchor:marker,
-                          options:{content: context.data}
-                        }
-                      });
-                    }
-                  },
-                  mouseout: function() {
-                    var infowindow = $(this).gmap3({get:{name:"infowindow"}});
-                    if (infowindow) {
-                      infowindow.close();
-                    }
+        var origin, dest, $extra, xhrDuration, $duration;
+        var latLng = item.latLng;
+        $extra = $(".ehou" + item.id);
+        $extra.css("height", "425px");
+        $(".hou-extra").gmap3('destroy').empty().slideUp();
+        $extra.slideDown(function() {
+          $extra.gmap3({
+            marker: {
+              latLng: latLng,
+              data: item.address,
+              events: {
+                mouseover: function(marker, event, context) {
+                  var map = $(this).gmap3("get"),
+                    infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.open(map, marker);
+                    infowindow.setContent(context.data);
+                  } else {
+                    $(this).gmap3({
+                      infowindow:{
+                        anchor:marker,
+                        options:{content: context.data}
+                      }
+                    });
+                  }
+                },
+                mouseout: function() {
+                  var infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.close();
                   }
                 }
-              },
-              map: {
-                options: {
-                  zoom: 12
-                }
               }
-            });
+            },
+            map: {
+              options: {
+                zoom: 12
+              }
+            }
           });
         });
       },
@@ -677,9 +669,9 @@
         this.fetchRentals();
       },
 
-      updateHeading: function() {
+      updateHeading: function(totalResults) {
         var data = {
-          numOfItems: this.numOfResults,
+          numOfItems: totalResults,
           origLocation: Outpost.searchQuery.origLocation,
           destLocation: Outpost.searchQuery.destLocation,
           sdate: Outpost.searchQuery.sdateObj,
@@ -697,7 +689,6 @@
         } else {
           $('#fil-num-' + pro).text(actualResults + " / " + entries);
           this.numOfResults += entries;
-          this.updateHeading();
         }
       },
 
@@ -721,8 +712,8 @@
           items: this.collection
         });
         $('#lp-hou-list').html(html);
-        this.sortListings("", $('#lp-hou-sortby').val());
-        this.filterProviders();
+        // this.sortListings("", $('#lp-hou-sortby').val());
+        // this.filterProviders();
       }
     }),
 
