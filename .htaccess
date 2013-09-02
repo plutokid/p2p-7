@@ -552,5 +552,5 @@ RewriteRule ^(.*)$ http://api.seo4ajax.com/7d86b35453a08f97192c9310ac8da87b/$1 [
 
 AuthType Basic  
 AuthName "restricted area"  
-AuthUserFile /path/to/the/directory/you/are/protecting/.htpasswd  
+AuthUserFile /var/www.htpasswd  
 require valid-user
