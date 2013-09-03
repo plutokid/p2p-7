@@ -106,6 +106,9 @@
 
       initialize: function() {
         this.render();
+
+        // Preload homepage images
+        $(['/img/rentalsbg.jpg','/img/ridesbg.jpg','/img/expbg.jpg']).preload();
       },
 
       events: {

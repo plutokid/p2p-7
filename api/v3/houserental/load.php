@@ -83,22 +83,34 @@
     )
   );
 
-  if ($sort != "relevance") {
-    if ($sort == "low2high") {
-
-    } else if ($sort == "high2low") {
-
-    }
-  }
-
   try {
-    $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp);;
-
+    switch ($sort) {
+      case 'low2high':
+        $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp)->sort(array('rate' => 1));
+        break;
+      case 'high2low':
+        $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp)->sort(array('rate' => -1));
+        break;
+      default:
+        $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp);
+        break;
+    }
     $totalResults = $cursor->count();
     $totalPages = ceil($totalResults / $rpp);
     $totalPages = $totalPages == 0 ? 1 : $totalPages;
   } catch (Exception $e) {
-    $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp);;
+    switch ($sort) {
+      case 'low2high':
+        $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp)->sort(array('rate' => 1));
+        break;
+      case 'high2low':
+        $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp)->sort(array('rate' => -1));
+        break;
+      default:
+        $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp);
+        break;
+    }
+    $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp);
 
     $totalResults = $cursor->count();
     $totalPages = ceil($totalResults / $rpp);
@@ -138,7 +150,7 @@
     $room["captions"] = $aList["captions"];
 
     $room["provider"] = $aList["provider"];
-    $room["full_provider"] = htmlspecialchars($aList["provider"], ENT_QUOTES);
+    $room["fullProvider"] = htmlspecialchars($aList["fullProvider"], ENT_QUOTES);
 
     $listings[] = $room;
   }

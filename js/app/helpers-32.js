@@ -700,6 +700,12 @@
     }
   };
 
+  $.fn.preload = function() {
+    this.each(function(){
+        $('<img/>')[0].src = this;
+    });
+  };
+
   String.prototype.removeDiacritics = function() {
     var diacritics = [
       [/[\300-\306]/g, 'A'],
