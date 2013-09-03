@@ -2099,9 +2099,8 @@ color: white;
 
 /*FOOTER */
 .js-footer {
-  margin-top: 50px;
   background: #ecf0f1;
-  border-top: 1px solid #e8e8e8;
+  border-top: 3px solid #e8e8e8;
   padding: 7px 0 8px 0;
 }
 
@@ -2526,9 +2525,98 @@ td.details-td {
   font-weight: bold;
 }
 
+.rid-block-loc {
+  width: 215px;
+}
+
+.logo-container {
+  text-align: center;
+  display: inline-block;
+}
+
+.provider-wrap {
+  background-color: #ede9e3;
+  box-shadow:inset 0px 10px 0px rgba(0, 0, 0, 0.7);
+}
+
+.providers-box {
+  margin: 0 auto;
+  width: 1018px;
+}
+
+.logo-headline {
+  margin: 0;
+  padding: 30px 0 5px;
+  text-align: center;
+  font-weight: 300;
+}
+
+
 /* Smartphones (portrait and landscape) ----------- */
 @media (max-width: 1281px) {
   .main-head {
     background-attachment: scroll;
+  }
+
+  .marketing-wrapper {
+    width: 92%;
+    height: auto;
+    padding-bottom: 20px;
+  }
+
+  .sl-nav a {
+    font-size: 0.92em;
+  }
+
+  .marketing-wrapper > div {
+    margin: -17px auto 0;
+    width: 95%;
+  }
+
+  .hir-comp {
+    display: none;
+  }
+
+  #marketing-titles {
+    padding-top: 35px !important;
+  }
+
+  .marketing-sub {
+    font-size: 16px;
+  }
+
+  .marketing-header {
+    font-size: 39px;
+  }
+
+  .css-nav {
+    display: none;
+  }
+
+  #sl-hou-dest-location-input, #sl-exp-dest-location-input,
+  #sl-rid-orig-location-input, #sl-rid-dest-location-input {
+    width: 91%;
+    margin-bottom: 5px;
+  }
+
+  .input-wrapper {
+    width: 100%;
+  }
+
+  .css-searchit {
+    float: right !important;
+    margin-top: 2px !important;
+  }
+
+  .js-footer {
+    display: none;
+  }
+
+  .main-wrapper {
+    min-height: 0;
+  }
+
+  .push-footer {
+    height: auto;
   }
 }

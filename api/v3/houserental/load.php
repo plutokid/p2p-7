@@ -27,7 +27,7 @@
   $max = !empty($_GET["max"]) ? (int)$_GET["max"] : 10000;
 
   // "low2high", "high2low", "relevance"
-  $sortBy = !empty($_GET["sort"]) ? $_GET["sort"] : "relevance";
+  $sort = !empty($_GET["sort"]) ? $_GET["sort"] : "relevance";
 
   // 1.5
   $radius = !empty($_GET["radius"]) ? (float)$_GET["radius"] : 0.7;
@@ -38,9 +38,6 @@
   // ["apartment", "bnb", "cabin", "dorm", "house", "loft", "villa"]
   $propertyType = !empty($_GET["propertyType"]) ? $_GET["propertyType"] : array();
 
-  // ["nflats", "craigslist", "airbnb", "flipkey", "roomorama"],
-  $providers = !empty($_GET["providers"]) ? $_GET["providers"] : array();
-
   // 25
   $rpp = !empty($_GET["rpp"]) ? (int)$_GET["rpp"] : 25;
 
@@ -49,7 +46,6 @@
 
   // Start the madness
   $listings = array();
-
   $latLng = array($lat, $lng);
 
   // Configuration
@@ -81,10 +77,19 @@
     ),
     'roomType' => array(
       '$in' => $roomType
+    ),
+    'propertyType' => array(
+      '$in' => $propertyType
     )
   );
 
-  // print_r($roomType);
+  if ($sort != "relevance") {
+    if ($sort == "low2high") {
+
+    } else if ($sort == "high2low") {
+
+    }
+  }
 
   try {
     $cursor = $c_rentals->find($query)->skip($rpp * ($page - 1))->limit($rpp);;
@@ -110,11 +115,11 @@
     $room["heading"] = htmlspecialchars($aList["heading"], ENT_QUOTES);
 
     $room["roomType"] = $aList["roomType"];
-    $room["roomTypeAlias"] = $aList["roomTypeAlias"];
-    $room["propertyTypeAlias"] = $aList["propertyTypeAlias"];
+    $room["roomTypeAlias"] = htmlspecialchars($aList["roomTypeAlias"], ENT_QUOTES);
+    $room["propertyTypeAlias"] = htmlspecialchars($aList["propertyTypeAlias"], ENT_QUOTES);
     $room["propertyType"] = $aList["propertyType"];
 
-    $room["origin"] = $aList["origin"];
+    $room["origin"] = htmlspecialchars($aList["origin"], ENT_QUOTES);
     $room["address"] = htmlspecialchars($aList["address"], ENT_QUOTES);
     $room["latLng"] = $aList["latLng"];
 
@@ -133,7 +138,7 @@
     $room["captions"] = $aList["captions"];
 
     $room["provider"] = $aList["provider"];
-    $room["full_provider"] = $aList["provider"];
+    $room["full_provider"] = htmlspecialchars($aList["provider"], ENT_QUOTES);
 
     $listings[] = $room;
   }

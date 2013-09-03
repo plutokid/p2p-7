@@ -548,7 +548,6 @@
         radius: state.radius || "",
         roomType: state.roomType || [],
         propertyType: state.propertyType || [],
-        providers: state.providers || [],
         rpp: state.rpp || "",
         page: state.page || ""
       };

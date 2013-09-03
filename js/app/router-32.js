@@ -145,21 +145,12 @@
                                                           "shared_room"
                                                         ];
             rentalsOption.propertyType = params.propertyType || [
-                                                                  "apartment_condo",
+                                                                  "apartment",
                                                                   "bnb",
-                                                                  "cabin",
-                                                                  "dorm",
+                                                                  "chalet",
                                                                   "house",
-                                                                  "loft",
-                                                                  "villa",
                                                                   "other"
                                                                 ];
-            rentalsOption.providers = params.providers || [
-                                                            "nflats",
-                                                            "airbnb",
-                                                            "flipkey",
-                                                            "roomorama"
-                                                          ];
           }
 
           if (searchQuery.sdate) {

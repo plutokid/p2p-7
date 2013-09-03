@@ -9,9 +9,6 @@
   });
 
   $(document).ready(function() {
-    // New google map
-    google.maps.visualRefresh = true;
-
     // Initializes the MVC
     new Outpost.views.main();
   });
