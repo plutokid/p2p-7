@@ -121,7 +121,7 @@
     $aList = $cursor->getNext();
 
     $room = array();
-    $room["id"] = $aList["pid"];
+    $room["id"] = $aList["microProvider"].$aList["pid"];
     $room["link"] = $aList["link"];
 
     $room["heading"] = htmlspecialchars($aList["heading"], ENT_QUOTES);
