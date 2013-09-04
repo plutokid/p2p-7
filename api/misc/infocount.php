@@ -1,4 +1,7 @@
 <?php
+  header('Content-Type: application/javascript');
+  header("Access-Control-Allow-Origin: *");
+
   $output = array();
 
   // Configuration
@@ -19,12 +22,9 @@
     $output["rentalsAmtCity"] = count($c_rentals->distinct('origin'));
   }
 
-  $str = json_encode($output);
-  echo "$str";
-  $filestr = "infocount.json";
-  $fp=@fopen($filestr, 'w');
-  fwrite($fp, $str);
-  fwrite($fp, "");
-  fclose($fp);
-  echo $str;
+  if (isset($_GET['callback'])) {
+    echo $_GET['callback'] . '('.json_encode($output).')';
+  } else {
+    echo json_encode($output);
+  }
 ?>

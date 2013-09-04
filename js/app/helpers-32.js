@@ -700,8 +700,13 @@
     },
 
     loadRentalsCount: function() {
-      $('#renCountPlace').text("400000");
-      $('#renCountCity').text("1200");
+      $.ajax({
+        url: "/api/misc/infocount.php",
+        dataType: 'jsonp',
+      }).done(function(data) {
+        $('#renCountPlace').text(data.rentalsAmt);
+        $('#renCountCity').text(data.rentalsAmtCity);
+      });
     },
   };
 
