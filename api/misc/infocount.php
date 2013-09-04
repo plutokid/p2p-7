@@ -13,10 +13,10 @@
 
   try {
     $output["rentalsAmt"] = $c_rentals->find()->count();
-    $output["rentalsAmtCity"] = $c_rentals->distinct('origin')->length;
+    $output["rentalsAmtCity"] = count($c_rentals->distinct('origin'));
   } catch (Exception $e) {
     $output["rentalsAmt"] = $c_rentals->find()->count();
-    $output["rentalsAmtCity"] = $c_rentals->distinct('origin')->length;
+    $output["rentalsAmtCity"] = count($c_rentals->distinct('origin'));
   }
 
   $str = json_encode($output);
