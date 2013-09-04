@@ -562,7 +562,7 @@
 
       if (!this.renRequests[query]) {
         this.renRequests[query] = $.ajax({
-          url: '/api/v3/houserental/load.php',
+          url: '/api/v4/placerentals/list.php',
           type: 'GET',
           dataType: 'jsonp',
           data: data
@@ -697,11 +697,16 @@
 
     triggerReady: function() {
       $('body').addClass("outpost-done");
-    }
+    },
+
+    loadRentalsCount: function() {
+      $('#renCountPlace').text("400000");
+      $('#renCountCity').text("1200");
+    },
   };
 
   $.fn.preload = function() {
-    this.each(function(){
+    this.each(function() {
         $('<img/>')[0].src = this;
     });
   };

@@ -80,15 +80,29 @@
 
       loadBlogPost: function() {
         $.ajax({
-          url: "/blog/json.php",
+          url: "http://api.tumblr.com/v2/blog/outposttravel.tumblr.com/posts",
           type: "GET",
+          data: {
+            api_key: "g1iguGKeyU5GYJbQXil31DGocG8gCsYvx32YDDv8vEpONMxfi9",
+            limit: 1,
+            type: "text"
+          },
           dataType: "jsonp"
         }).done(function(data) {
-          $('#blog-title').text(data.blogTitle + " [" + data.blogDate + "]");
-          $('#blog-text').html(
-            data.blogPost +
-            '<a href="http://blog.outpost.travel/" target="_blank">[read more]</a>'
-          );
+          var text = "";
+          var date = "";
+          var timestamp = 0;
+          if (data && data.meta.status === 200) {
+            data = data.response.posts[0];
+            text = ($(data.body).text()).substring(0, 160) + "... ";
+            timestamp = moment.unix(data.timestamp);
+            date = timestamp.format("MM/DD/YYYY");
+            $('#blog-title').text(data.title + " [" + date + "]");
+            $('#blog-text').html(
+              text +
+              '<a href="http://blog.outpost.travel/" target="_blank">[read more]</a>'
+            );
+          }
         });
       },
 
@@ -253,6 +267,7 @@
         _this.template('home', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           $('.sl-tab-' + Outpost.list.type).tab('show');
+          Outpost.helpers.loadRentalsCount();
           Outpost.helpers.triggerReady();
         });
       }

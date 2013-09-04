@@ -33,10 +33,10 @@
   $radius = !empty($_GET["radius"]) ? (float)$_GET["radius"] : 0.7;
 
   // ["entire_place", "private_room", "shared_room"]
-  $roomType = !empty($_GET["roomType"]) ? $_GET["roomType"] : array();
+  $roomType = !empty($_GET["roomType"]) ? $_GET["roomType"] : array("entire_place", "private_room", "shared_room");
 
   // ["apartment", "bnb", "cabin", "dorm", "house", "loft", "villa"]
-  $propertyType = !empty($_GET["propertyType"]) ? $_GET["propertyType"] : array();
+  $propertyType = !empty($_GET["propertyType"]) ? $_GET["propertyType"] : array("apartment", "bnb", "chalet", "house", "other");
 
   // 25
   $rpp = !empty($_GET["rpp"]) ? (int)$_GET["rpp"] : 25;
