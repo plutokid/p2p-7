@@ -267,7 +267,6 @@
         _this.template('home', {}).done(function(tmpl) {
           _this.$el.html(tmpl);
           $('.sl-tab-' + Outpost.list.type).tab('show');
-          Outpost.helpers.loadRentalsCount();
           Outpost.helpers.triggerReady();
         });
       }
@@ -417,8 +416,8 @@
 
       preDetermineSettings: function() {
         if (Outpost.searchQuery.guests >= 4) {
-          $('#roomtype-entire_home').attr('checked', 'checked');
-          Outpost.searchQuery.rentals.roomType = ["entire_home"];
+          $('#roomtype-entire_place').attr('checked', 'checked');
+          Outpost.searchQuery.rentals.roomType = ["entire_place"];
         }
       },
 
@@ -431,7 +430,7 @@
           min: 0,
           max: 1000,
           roomType: [
-            "entire_home",
+            "entire_place",
             "private_room",
             "shared_room"
           ]

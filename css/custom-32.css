@@ -874,7 +874,6 @@ line-height: 1.2;
 }
 
 .hiw-desc {
-
   line-height:  22px;
   text-align: left;
   width: 260px;
@@ -892,6 +891,11 @@ line-height: 1.2;
 }
 
 .question-mark-prov + .tooltip {
+  width: 200px;
+}
+
+.lp-help + .tooltip {
+  position: fixed;
   width: 200px;
 }
 
@@ -1566,13 +1570,38 @@ color: white;
   display: inline-block;
 }
 
+.mb3 {
+  margin-bottom: 3px;
+}
+
+.mgb5 {
+  margin-bottom: 5px;
+}
+
 .lp-list-head {
   border-radius: 3px 3px 0 0;
   padding: 0 8px;
+  height: 50px;
+}
+
+.lp-list-rt {
+  position: relative;
+  top: 27px;
+  text-align: right;
+  float: right;
+  margin-right: -2px;
+  font-size: 10px;
+}
+
+.lp-list-rtpic {
+  height: 17px;
+  border-radius: 5px;
 }
 
 .lp-list-title {
-  display: inline;
+  display: inline-block;
+  width: 565px;
+  margin-top: 4px;
 }
 
 .lp-list-title a {
@@ -1581,6 +1610,12 @@ color: white;
 
 .lp-list-title a:hover {
   text-decoration: underline;
+}
+
+.lp-list-rttext {
+  color: white;
+  vertical-align: middle;
+  font-weight: 700;
 }
 
 .lp-list-title a:visited {
@@ -1601,57 +1636,16 @@ color: white;
   height: 150px;
 }
 
-.lpl-nflats {
-  background:url("../img/9flats.png") no-repeat #24b0cf 621px 3px;
-}
-.lpl-airbnb {
-  background:url("../img/airbnb.png") no-repeat #24b0cf 621px 3px;
-}
-.lpl-craigslist {
-  background:url("../img/craigslist.png") no-repeat #24b0cf 603px 4px;
-}
-.lpl-flipkey {
-  background:url("../img/flipkey_small.png") no-repeat #24b0cf 598px 3px;
-}
-.lpl-roomorama {
-  background:url("../img/roomorama_small.png") no-repeat #24b0cf 621px 3px;
-}
-.lpl-waytostay {
-  background:url("../img/waytostay_small.png") no-repeat #24b0cf 605px -2px;
-}
-
-.lp-aList-rid .lpl-craigslist {
-  background:url("../img/craigslist.png") no-repeat #ec5f41 603px 4px;
-}
-
-
-.lpl-kangaride {
-  background:url("../img/kangaride.png") no-repeat #ec5f41 622px 4px;
-}
-.lpl-ridejoy {
-  background:url("../img/ridejoy.png") no-repeat #ec5f41 624px 5px;
-}
-.lpl-zimride {
-  background:url("../img/zimride.png") no-repeat #ec5f41 616px 5px;
-}
-.lpl-blablacar {
-  background:url("../img/blablacar.png") no-repeat #ec5f41 628px 3px;
-}
-
-.lpl-ridester {
-  background:url("../img/ridester_small.png") no-repeat #ec5f41 600px 5px;
-}
-
-.lpl-vayable {
-  background:url("../img/vayable.png") no-repeat #95d17b 612px 4px;
-}
-
 .tfpx {
-  font-size: 24px;
+  font-size: 16px;
   margin-left: 5px;
   text-align: center;
   width: 22px;
   display: inline-block;
+}
+
+.fs21 {
+  font-size: 21px;
 }
 
 .lp-list-info {
@@ -1831,7 +1825,7 @@ color: white;
   color: white;
   background: #24b0cf;
   padding: 12px;
-  margin: 10px 7px;
+  margin: 7px 8px;
   text-align: center;
   border-radius: 3px;
   width: 70px;
@@ -1879,6 +1873,13 @@ color: white;
   background: #bdc3c7;
   padding: 0 4px;
   border-radius: 3px;
+}
+
+.fil-qmark {
+  float: right;
+  background: #f1f1f1;
+  padding: 0 4px;
+  border-radius: 24px;
 }
 
 /*ITEM VIEW*/
@@ -2112,7 +2113,7 @@ color: white;
 .footer-links {
   display: block;
   height: 25px;
-  margin: 0;
+  margin: 2px 0 0 0;
 }
 
 .footer-links li {
@@ -2619,4 +2620,62 @@ td.details-td {
   .push-footer {
     height: auto;
   }
+}
+
+.lpl-bedycasa {
+  background: url("../img/providers/lv/bedycasa.png") no-repeat #24b0cf 630px 3px;
+}
+.lpl-holidayvelvet {
+  background: url("../img/providers/lv/holidayvelvet.png") no-repeat #24b0cf 624px 2px;
+}
+.lpl-geronimo {
+  background: url("../img/providers/lv/geronimo.png") no-repeat #24b0cf 644px 1px;
+}
+.lpl-nflats {
+  background:url("../img/providers/lv/9flats.png") no-repeat #24b0cf 591px 3px;
+}
+.lpl-airbnb {
+  background:url("../img/providers/lv/airbnb.png") no-repeat #24b0cf 628px 3px;
+}
+.lpl-flipkey {
+  background:url("../img/providers/lv/flipkey.png") no-repeat #24b0cf 598px 3px;
+}
+.lpl-roomorama {
+  background:url("../img/providers/lv/roomorama.png") no-repeat #24b0cf 562px 4px;
+}
+.lpl-waytostay {
+  background:url("../img/providers/lv/waytostay.png") no-repeat #24b0cf 579px 4px;
+}
+
+.lpl-interhome {
+  background:url("../img/providers/lv/interhome.png") no-repeat #24b0cf 572px 3px;
+}
+
+
+
+
+.lpl-craigslist {
+  background:url("../img/craigslist.png") no-repeat #ec5f41 603px 4px;
+}
+
+
+.lpl-kangaride {
+  background:url("../img/kangaride.png") no-repeat #ec5f41 622px 4px;
+}
+.lpl-ridejoy {
+  background:url("../img/ridejoy.png") no-repeat #ec5f41 624px 5px;
+}
+.lpl-zimride {
+  background:url("../img/zimride.png") no-repeat #ec5f41 616px 5px;
+}
+.lpl-blablacar {
+  background:url("../img/blablacar.png") no-repeat #ec5f41 628px 3px;
+}
+
+.lpl-ridester {
+  background:url("../img/ridester_small.png") no-repeat #ec5f41 600px 5px;
+}
+
+.lpl-vayable {
+  background:url("../img/vayable.png") no-repeat #95d17b 612px 4px;
 }

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
+    <link rel="stylesheet" href="css/nprogress-012.css">
     <link rel="stylesheet" href="css/custom-32.css">
 </head>
 <body>
@@ -315,8 +316,11 @@
     %>
     <div class="lp-aList lp-aList-hou <%= provider %> <%= id %>" data-item='<%= json_item %>'>
       <div class="lp-list-head lpl-<%= item.provider %>">
-        <img class="lp-list-pp" src="<%= "img/" + item.roomType + ".png" %>">
         <h4 class="lp-list-title"><a href="/#!/item/houserental/<%= item.provider %>/<%= item.id %>" target="_blank"><%= item.heading %></a></h4>
+        <span class="lp-list-rt">
+          <img class="lp-list-rtpic" src="<%= "img/" + item.roomType + ".png" %>">
+          <span class="lp-list-rttext"><%= item.roomTypeAlias %></span>
+        </span>
       </div>
       <div class="lp-list-body">
         <div class="list-img-container">
@@ -325,12 +329,16 @@
         </div>
         <div class="lp-list-info">
           <ul>
-            <li>
-              <span class="icon-home css-blue tfpx"></span>
+            <li class="mb3">
+              <span class="icon-key css-blue tfpx"></span>
               <span class="lp-list-type"><%= item.propertyTypeAlias %></span>
             </li>
+            <li class="mb3">
+              <span class="icon-group css-red tfpx"></span>
+              <span>Sleeps <%= item.occupancy %></span>
+            </li>
             <li>
-              <span class="icon-map-marker css-green tfpx"></span>
+              <span class="icon-map-marker css-green tfpx fs21"></span>
               <span class="lp-list-location"><%= item.origin %></span>
             </li>
           </ul>
@@ -407,6 +415,7 @@
   <script src="js/vendor/backbone.analytics-1.0.min.js"></script>
   <script src="js/vendor/moment-2.1.0.min.js"></script>
   <script src="js/vendor/bootstrap-paginator-0.6.min.js"></script>
+  <script src="js/vendor/nprogress-0.1.2.min.js"></script>
   <!-- MVC -->
   <script src="js/app/helpers-32.js"></script>
   <script src="js/app/views-32.js"></script>

@@ -157,12 +157,10 @@
           method: 'GET',
           dataType: 'html',
           beforeSend: function() {
-            if (Outpost.state.$loader.is(":hidden")) {
-              Outpost.state.$loader.show();
-            }
+            NProgress.start();
           },
           complete: function() {
-            Outpost.state.$loader.hide();
+            NProgress.done();
           }
         });
       }
