@@ -378,7 +378,6 @@
       },
 
       events: {
-        "change .lp-hou-providers": "filterProviders",
         "change .lp-hou-roomtype": "filterRoomType",
         "change #lp-hou-sortby": "sortListings",
         "click .btn-hou-map": "slideMap",
@@ -473,12 +472,6 @@
         }
       },
 
-      loadMore: function() {
-        $.waypoints('destroy');
-        this.state.page += 1;
-        // this.fetchRentals();
-      },
-
       initPagination: function(currentPage, totalPages) {
         $('#ren-list-page').bootstrapPaginator({
           currentPage: currentPage,
@@ -487,7 +480,7 @@
           useBootstrapTooltip: true,
           onPageChanged: function(e, oldPage, newPage) {
             Outpost.searchQuery.rentals.page = newPage;
-            Outpost.helpers.genSearchParamsAndGo("rentals");
+            // Outpost.helpers.genSearchParamsAndGo("rentals");
           },
           itemTexts: function (type, page, current) {
             switch (type) {
@@ -507,28 +500,6 @@
             return (page === current) ? "active" : "pointer-cursor";
           }
         });
-      },
-
-      infiniteScroll: function() {
-        var _this = this;
-        var size = 0, index = 0;
-        var tr = ".lp-aList-hou";
-
-        size = _this.collection.length;
-        if (_this.state.prevSize < size) {
-          if (size <= 5) {
-            _this.state.prevSize = size;
-            _this.loadMore();
-          } else {
-            index = size - 5;
-            $(tr + ':eq(' + index + ')').waypoint(function(direction) {
-              if (direction === "down" &&  $(this).is(":visible")) {
-                _this.state.prevSize = size;
-                _this.loadMore();
-              }
-            });
-          }
-        }
       },
 
       slideCarousel: function(e) {
@@ -605,8 +576,8 @@
           edate: $('#ref-ren-edate').val(),
           guests: $('#ref-ren-guest').val()
         };
-        queryString = $.param(queryString);
-        this.navigateTo("!/rentals?" + queryString);
+        queryString = "!/rentals?" + $.param(queryString);
+        Outpost.mvc.router.navigate(queryString, true);
       },
 
       navigateTo: function(queryString) {
@@ -651,39 +622,13 @@
         this.filterProviders();
       },
 
-      filterProviders: function() {
-        var $checked = $('.lp-hou-providers:checked');
-        if (!$checked.length) {
-          $('.lp-aList-hou').show();
-        } else {
-          $('.lp-aList-hou').hide();
-          $checked.each(function() {
-            $('.alist-' + $(this).val()).show();
-          });
-        }
-
-        this.lazyLoad();
-      },
-
       filterRoomType: function() {
         var $checked = $('.lp-hou-roomtype:checked');
-        var _this = this;
-        this.state.roomType = [];
-        if (!$checked.length) {
-          this.state.roomType = [
-                                "entire_home",
-                                "private_room",
-                                "shared_room"
-                              ];
-        } else {
-          $checked.each(function() {
-            _this.state.roomType.push($(this).val());
-          });
-        }
-
-        $('.fil-num').empty();
-        this.resetListings();
-        this.fetchRentals();
+        var roomType = [];
+        $checked.each(function() {
+          roomType.push($(this).val());
+        });
+        Outpost.searchQuery.rentals.roomType = roomType;
       },
 
       updateHeading: function(totalResults) {
@@ -706,14 +651,6 @@
         } else {
           $('#fil-num-' + pro).text(actualResults + " / " + entries);
           this.numOfResults += entries;
-        }
-      },
-
-      lazyLoad: function() {
-        var $activeTab = $('.tab-pane.active');
-        if ($activeTab.attr('id') === "lp-spacerentals") {
-          $.waypoints('destroy');
-          this.infiniteScroll();
         }
       },
 

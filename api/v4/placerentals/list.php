@@ -47,6 +47,9 @@
   // Start the madness
   $listings = array();
   $latLng = array($lat, $lng);
+  if ($max == 1000) {
+    $max = 10000;
+  }
 
   // Configuration
   $dbhost = 'api.outpost.travel:27017';

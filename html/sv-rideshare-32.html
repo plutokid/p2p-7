@@ -1,39 +1,38 @@
-<% if (!date) { %>
-<div class="container" id="singleViewPage">
-  <div class="row">
-    <div class="span12">
-      <div class="item-wrapper">
-        <div class="panel-header css-bgred">
-          <h2 class="panel-title">Expired offer</h2>
+<div class="container lp-container" id="singleViewPage">
+  <% if (!date) { %>
+    <div class="row">
+      <div class="span12">
+        <div class="item-wrapper">
+          <div class="panel-header css-bgred">
+            <h2 class="panel-title">Expired offer</h2>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<% } else { %>
-<%
-  Outpost.helpers.alternateSEO({
-    title: origin + " to " + destination + " · " + date + " - Outpost",
-    description: "Ride from " + origin + " → " + destination + " for " + price + " per seat"
-  });
+  <% } else { %>
+  <%
+    Outpost.helpers.alternateSEO({
+      title: origin + " to " + destination + " · " + date + " - Outpost",
+      description: "Ride from " + origin + " → " + destination + " for " + price + " per seat"
+    });
 
-  var isFromRef, hrefRes = "";
-  var textBread = "Back to rides for " + origin + " to " + destination;
-  var title = origin + " → " + destination;
-  if (window.document.referrer === window.location.origin + "/") {
-    isFromRef = true;
-    hrefRes = "javascript:window.close()";
-  } else {
-    isFromRef = false;
-    hrefRes = window.location.origin + "/#!/rides?origCity=" + Outpost.helpers.enbarURI(origin) + "&destCity=" + Outpost.helpers.enbarURI(destination);
-  }
+    var isFromRef, hrefRes = "";
+    var textBread = "Back to rides for " + origin + " to " + destination;
+    var title = origin + " → " + destination;
+    if (window.document.referrer === window.location.origin + "/") {
+      isFromRef = true;
+      hrefRes = "javascript:window.close()";
+    } else {
+      isFromRef = false;
+      hrefRes = window.location.origin + "/#!/rides?origCity=" + Outpost.helpers.enbarURI(origin) + "&destCity=" + Outpost.helpers.enbarURI(destination);
+    }
 
-  var currentBread = title + " (" + date + ")";
-  if (currentBread.length >= 45) {
-    currentBread = currentBread.substr(0, 45) + "..";
-  }
-%>
-<div class="container" id="singleViewPage">
+    var currentBread = title + " (" + date + ")";
+    if (currentBread.length >= 45) {
+      currentBread = currentBread.substr(0, 45) + "..";
+    }
+  %>
   <div class="row">
     <div class="span12">
       <ul class="breadcrumb bc-spv">
@@ -88,7 +87,7 @@
             </div>
             <div class="provider-profile">
               <div class="item-provider-logo css-bgred">
-                <img src="<%= logopath %>" class="provider-<%= idtype %>"></img>
+                <img src="<%= logopath %>" class="provider-<%= idtype %>">
               </div>
               <div class="provider-desc"><%= logodesc %></div>
             </div>

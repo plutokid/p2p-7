@@ -1,54 +1,52 @@
-<% if (!title) { %>
-<div class="container" id="singleViewPage">
-  <div class="row">
-    <div class="span12">
-      <div class="item-wrapper">
-        <div class="panel-header css-bgblue">
-          <h2 class="panel-title">Expired offer</h2>
+<div class="container lp-container" id="singleViewPage">
+  <% if (!title) { %>
+    <div class="row">
+      <div class="span12">
+        <div class="item-wrapper">
+          <div class="panel-header css-bgblue">
+            <h2 class="panel-title">Expired offer</h2>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-<% } else { %>
-<%
-  Outpost.helpers.alternateSEO({
-    title: title + " in " + city,
-    description: property_type + " " + room_type + " for " + price +
-    " per night (" + currency + ") · " + address
-  });
+  <% } else { %>
+  <%
+    Outpost.helpers.alternateSEO({
+      title: title + " in " + city,
+      description: property_type + " " + room_type + " for " + price +
+      " per night (" + currency + ") · " + address
+    });
 
-  var isFromRef, hrefRes = "";
-  var textBread = "Back to rentals for " + city;
-  if (window.document.referrer === window.location.origin + "/") {
-    isFromRef = true;
-    hrefRes = "javascript:window.close()";
-  } else {
-    isFromRef = false;
-    hrefRes = window.location.origin + "/#!/rentals?destCity=" + Outpost.helpers.enbarURI(city);
-  }
-
-  var currentBread = title;
-  if (currentBread.length >= 45) {
-    currentBread = currentBread.substr(0, 45) + "..";
-  }
-
-  var geoPromise = Outpost.helpers.ipToGeo();
-
-  geoPromise.done(function(data) {
-    var origLocation = data.location;
-    var directionsHref = "";
-    if (data.lat && data.lon) {
-      directionsHref = "http://maps.google.com/maps?saddr=" + data.lat + "," + data.lon + "&daddr=" + lat + "," + lng;
-    } else if (data.city) {
-      directionsHref = "http://maps.google.com/maps?saddr=" + data.city + "&daddr=" + lat + "," + lng;
+    var isFromRef, hrefRes = "";
+    var textBread = "Back to rentals for " + city;
+    if (window.document.referrer === window.location.origin + "/") {
+      isFromRef = true;
+      hrefRes = "javascript:window.close()";
     } else {
-      directionsHref = "http://maps.google.com/maps?saddr=&daddr=" + lat + "," + lng;
+      isFromRef = false;
+      hrefRes = window.location.origin + "/#!/rentals?destCity=" + Outpost.helpers.enbarURI(city);
     }
-    $('.spv-directions-link').attr("href", directionsHref);
-  });
-%>
-<div class="container" id="singleViewPage">
+
+    var currentBread = title;
+    if (currentBread.length >= 45) {
+      currentBread = currentBread.substr(0, 45) + "..";
+    }
+
+    var geoPromise = Outpost.helpers.ipToGeo();
+
+    geoPromise.done(function(data) {
+      var origLocation = data.location;
+      var directionsHref = "";
+      if (data.lat && data.lon) {
+        directionsHref = "http://maps.google.com/maps?saddr=" + data.lat + "," + data.lon + "&daddr=" + lat + "," + lng;
+      } else if (data.city) {
+        directionsHref = "http://maps.google.com/maps?saddr=" + data.city + "&daddr=" + lat + "," + lng;
+      } else {
+        directionsHref = "http://maps.google.com/maps?saddr=&daddr=" + lat + "," + lng;
+      }
+      $('.spv-directions-link').attr("href", directionsHref);
+    });
+  %>
   <div class="row">
     <div class="span12">
       <ul class="breadcrumb bc-spv">
@@ -187,7 +185,7 @@
             </div>
             <div class="provider-profile">
               <div class="item-provider-logo css-bgblue">
-                <img src="<%= logopath %>" class="provider-<%= idtype %>"></img>
+                <img src="<%= logopath %>" class="provider-<%= idtype %>">
               </div>
               <div class="provider-desc"><%= logodesc %></div>
             </div>
@@ -196,8 +194,8 @@
       </div>
     </div>
   </div>
-</div>
 <% } %>
+</div>
 <script>
   (function() {
     $('#spv-bookit').tooltip();
