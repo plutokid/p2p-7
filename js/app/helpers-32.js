@@ -40,7 +40,8 @@
     sdateObj: "",
     edateObj: "",
     guests: "",
-    rentals: {}
+    rentals: {},
+    experiences: {}
   };
 
   // Extra helper functions
@@ -158,6 +159,17 @@
           dataType: 'html',
           beforeSend: function() {
             NProgress.start();
+            switch(Outpost.list.type) {
+              case "rentals":
+                $('.bar').addClass("bar-blue");
+                break;
+              case "rides":
+                $('.bar').addClass("bar-red");
+                break;
+              case "experiences":
+                $('.bar').addClass("bar-green");
+                break;
+            }
           },
           complete: function() {
             NProgress.done();
@@ -462,70 +474,12 @@
       return dff.promise();
     },
 
-    fetchRentals: function(state, idtype) {
-      var dff = $.Deferred();
-      var options = Outpost.searchQuery;
-      var query = "";
-      this.houRequests = this.houRequests || [];
-
-      var data = {
-        eloc: options.destLocation,
-        destlat: options.destLocationLat || "",
-        destlon: options.destLocationLng || "",
-        destState: options.destState,
-        destCountry: options.destCountry,
-
-        sloc: options.origLocation,
-        origlat: options.origLocationLat,
-        origlon: options.origLocationLng,
-        origState: options.origState,
-        origCountry: options.origCountry,
-
-        sdate: options.sdate,
-        edate: options.edate,
-
-        guests: options.guests,
-        price_min: state.min,
-        price_max: state.max,
-        room_type: state.roomType,
-        idtype: idtype,
-        page: state.page
-      };
-
-      query = Outpost.helpers.genSearchQuery([
-        data.idtype,
-        data.sloc,
-        data.eloc,
-        data.sdate,
-        data.edate,
-        data.guests,
-        data.price_min,
-        data.price_max,
-        data.room_type.toString(),
-        data.page
-      ]);
-
-      if (!this.houRequests[query]) {
-        this.houRequests[query] = $.ajax({
-          url: '/api/v3/houserental/',
-          type: 'GET',
-          dataType: 'jsonp',
-          data: data
-        });
-      }
-
-      this.houRequests[query].done(function(data) {
-        dff.resolve(data);
-      });
-
-      return dff.promise();
-    },
-
     loadRentals: function() {
       var dff = $.Deferred();
       var options = Outpost.searchQuery;
       var state = options.rentals;
       var query = [];
+      var _this = this;
       this.renRequests = this.renRequests || [];
 
       var data = {
@@ -568,6 +522,68 @@
       }
 
       this.renRequests[query].done(function(data) {
+        dff.resolve(data);
+      });
+
+      this.renRequests[query].fail(function() {
+        for (var i in _this.renRequests) {
+          if (_this.renRequests[i]["status"] !== 200) {
+            delete _this.renRequests[i];
+          }
+        }
+      });
+
+      return dff.promise();
+    },
+
+    loadGuides: function(state, idtype) {
+      var dff = $.Deferred();
+      var options = Outpost.searchQuery;
+      var query = "";
+      this.touRequests = this.touRequests || [];
+
+      var data = {
+        eloc: options.destLocation,
+        destlat: options.destLocationLat,
+        destlon: options.destLocationLng,
+        destState: options.destState,
+        destCountry: options.destCountry,
+
+        sloc: options.origLocation,
+        origlat: options.origLocationLat,
+        origlon: options.origLocationLng,
+        origState: options.origState,
+        origCountry: options.origCountry,
+
+        sdate: options.sdate,
+        edate: options.edate,
+
+        guests: options.guests,
+
+        idtype: idtype,
+        page: state.page
+      };
+
+      query = Outpost.helpers.genSearchQuery([
+        data.idtype,
+        data.sloc,
+        data.eloc,
+        data.sdate,
+        data.edate,
+        data.guests,
+        data.page
+      ]);
+
+      if (!this.touRequests[query]) {
+        this.touRequests[query] = $.ajax({
+          url: '/api/v3/tourism/',
+          type: 'GET',
+          dataType: 'jsonp',
+          data: data
+        });
+      }
+
+      this.touRequests[query].done(function(data) {
         dff.resolve(data);
       });
 

@@ -480,7 +480,7 @@
           useBootstrapTooltip: true,
           onPageChanged: function(e, oldPage, newPage) {
             Outpost.searchQuery.rentals.page = newPage;
-            // Outpost.helpers.genSearchParamsAndGo("rentals");
+            Outpost.helpers.genSearchParamsAndGo("rentals");
           },
           itemTexts: function (type, page, current) {
             switch (type) {
@@ -629,6 +629,10 @@
           roomType.push($(this).val());
         });
         Outpost.searchQuery.rentals.roomType = roomType;
+
+        $.xhrPool.abortAll();
+        Outpost.searchQuery.rentals.page = 1;
+        Outpost.helpers.genSearchParamsAndGo("rentals");
       },
 
       updateHeading: function(totalResults) {

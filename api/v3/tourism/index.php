@@ -27,7 +27,7 @@
       $tourList->load($html);
 
       if (!$tourList->find(".noresults")) {
-        foreach($tourList->find('.trip-card') as $aTrip) {
+        foreach($tourList->find('.card3') as $aTrip) {
           $price_full = str_replace(' ', '', trim($aTrip->find('.amount', 0)->plaintext));
           $price = 0 + substr($price_full, 1);
           $trip['id'] = 0 + filter_var($aTrip->find('a', 0)->href, FILTER_SANITIZE_NUMBER_INT);

@@ -119,7 +119,7 @@
       },
 
       listview: function(type, params) {
-        var rentalsOption;
+        var rentalsOption, expOption;
         Outpost.list.type = type;
         Outpost.helpers.detectNavBar(type);
         if (params && !params.utm_source) {
@@ -132,6 +132,13 @@
           searchQuery.edate = params.edate || "";
           searchQuery.guests = params.guests || 1;
           if (type === "rentals") {
+            if (typeof params["roomType%5B%5D"] === "string") {
+              params["roomType%5B%5D"] = [params["roomType%5B%5D"]];
+            }
+            if (typeof params["propertyType%5B%5D"] === "string") {
+              params["propertyType%5B%5D"] = [params["propertyType%5B%5D"]];
+            }
+
             rentalsOption = searchQuery.rentals;
             rentalsOption.page = Number(params.page) || 1;
             rentalsOption.rpp = Number(params.rpp) || 25;
@@ -139,18 +146,24 @@
             rentalsOption.max = Number(params.max) || 1000;
             rentalsOption.radius = Number(params.radius) || 0.7;
             rentalsOption.sortBy = params.sortBy || "relevance";
-            rentalsOption.roomType = params.roomType || [
+            rentalsOption.roomType = params["roomType%5B%5D"] || [
                                                           "entire_place",
                                                           "private_room",
                                                           "shared_room"
                                                         ];
-            rentalsOption.propertyType = params.propertyType || [
+            rentalsOption.propertyType = params["propertyType%5B%5D"] || [
                                                                   "apartment",
                                                                   "bnb",
                                                                   "chalet",
                                                                   "house",
                                                                   "other"
                                                                 ];
+          } else if (type === "experiences") {
+            expOption = searchQuery.experiences;
+            expOption.page = Number(params.page) || 1;
+            expOption.rpp = Number(params.rpp) || 25;
+            expOption.radius = Number(params.radius) || 0.7;
+            expOption.sortBy = params.sortBy || "relevance";
           }
 
           if (searchQuery.sdate) {

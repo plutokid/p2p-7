@@ -621,6 +621,18 @@ line-height: 1.2;
   background-color: #ec5f41;
 }
 
+.bar-blue {
+  background: #24b0cf !important;
+}
+
+.bar-red {
+  background: #ec5f41 !important;
+}
+
+.bar-green {
+  background: #95d17b !important;
+}
+
 .info-content ul {
   margin-top: -20px;
   margin:0;

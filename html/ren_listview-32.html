@@ -4,6 +4,7 @@
       <div class="lp-refineSearch">
         <form class="lp-refineSearchForm" id="ref-ren-form">
           <% var guests = Outpost.searchQuery.guests; %>
+          <% var roomType = Outpost.searchQuery.rentals.roomType; %>
           <div class="input-wrapper">
             <input id="ref-ren-dest-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Where do you want to go ?">
           </div>
@@ -90,13 +91,13 @@
                   <div id="lp-hou-roomType" class="accordion-body in collapse">
                     <div class="accordion-inner">
                       <label class="checkbox">
-                        <input class="lp-hou-roomtype" id="roomtype-entire_place" type="checkbox" name="room_types" value="entire_place">Entire place
+                        <input class="lp-hou-roomtype" id="roomtype-entire_place" type="checkbox" name="room_types" value="entire_place" <%= ~roomType.indexOf("entire_place") ? "checked" : "" %>>Entire place
                       </label>
                       <label class="checkbox">
-                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="private_room">Private room
+                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="private_room" <%= ~roomType.indexOf("private_room") ? "checked" : "" %>>Private room
                       </label>
                       <label class="checkbox">
-                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="shared_room">Shared room
+                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="shared_room" <%= ~roomType.indexOf("shared_room") ? "checked" : "" %>>Shared room
                       </label>
                     </div>
                   </div>

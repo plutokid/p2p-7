@@ -4,12 +4,28 @@
     "faZUcHycuTHBvrV0kTcqoTtpZsNQauN8IuXDLY7j"
   );
 
+  $.xhrPool = [];
+  $.xhrPool.abortAll = function() {
+    $(this).each(function(idx, jqXHR) {
+      jqXHR.abort();
+    });
+    $.xhrPool.length = 0;
+  };
+
   $.ajaxSetup({
-    timeout: 10000
+    timeout: 3000,
+    beforeSend: function(jqXHR) {
+      $.xhrPool.push(jqXHR);
+    },
+    complete: function(jqXHR) {
+      var index = $.xhrPool.indexOf(jqXHR);
+      if (~index) {
+        $.xhrPool.splice(index, 1);
+      }
+    }
   });
 
   $(document).ready(function() {
-    // Initializes the MVC
     new Outpost.views.main();
   });
 })(window, jQuery, undefined);
