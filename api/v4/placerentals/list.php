@@ -161,6 +161,7 @@
 
   $output = array();
   $output["type"] = "rentals";
+  $output["status"] = 200;
   $output["page"] = $page;
   $output["totalPages"] = $totalPages;
   $output["resultsPerPage"] = $rpp;
@@ -172,3 +173,4 @@
   } else {
     echo json_encode($output);
   }
+?>

@@ -341,14 +341,23 @@
             </li>
             <li class="mb3">
               <span class="icon-group css-red tfpx"></span>
-              <span>Sleeps <%= item.occupancy %></span>
+              <span>Sleeps <b><%= item.occupancy %></b></span>
             </li>
+            <% if (item.bedroomCount) { %>
+              <% var hasBdr = true; %>
+              <% var bdr = item.bedroomCount; %>
+              <% var bdrStr = bdr > 1 ? "bedrooms" : "bedroom"; %>
+              <li class="mb3">
+                <span class="icon-film css-silver tfpx"></span>
+                <span><b><%= bdr %></b> <%= bdrStr %></span>
+              </li>
+            <% } %>
             <li>
               <span class="icon-map-marker css-green tfpx fs21"></span>
               <span class="lp-list-location"><%= item.origin %></span>
             </li>
           </ul>
-          <div class="lp-hou-pricewrap">
+          <div class="lp-hou-pricewrap" style="<%= hasBdr ? 'bottom: 93px;' : 'bottom: 70px;' %>">
             <div class="lp-hou-price"><%= item.currencySign + item.rate %></div>
             <div class="lp-hou-pricedesc"><%= item.ratePer %></div>
           </div>

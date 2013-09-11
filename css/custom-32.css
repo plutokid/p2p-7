@@ -459,7 +459,7 @@ line-height: 1.2;
 .fb-text {
   margin: 0 auto;
   font-size: 1.2em;
-  margin-top: 13px;
+  padding-top: 12px;
 }
 
 .beta {
@@ -603,6 +603,10 @@ line-height: 1.2;
 
 .css-red {
   color: #ec5f41;
+}
+
+.css-silver {
+  color: #bdc3c7;
 }
 
 .css-bgsilver {
@@ -1585,7 +1589,10 @@ color: white;
 
 .lp-list-location {
   width: 350px;
+  overflow: hidden;
+  white-space: nowrap;
   display: inline-block;
+  text-overflow: ellipsis;
 }
 
 .mb3 {
@@ -1668,6 +1675,7 @@ color: white;
 
 .lp-list-info {
   float: left;
+  height: 150px;
 }
 
 .lp-list-info ul {
@@ -1840,13 +1848,15 @@ color: white;
 }
 
 .lp-hou-pricewrap, .lp-tou-pricewrap {
+  position: relative;
+  float: right;
   color: white;
   background: #24b0cf;
-  padding: 12px;
+  padding: 10px;
   margin: 7px 8px;
   text-align: center;
   border-radius: 3px;
-  width: 70px;
+  width: 65px;
 }
 
 .lp-tou-pricewrap {
@@ -2162,7 +2172,7 @@ color: white;
   height: 100px;
 }
 
-.push-footer {
+.bg-beige {
   background-color: #ede9e3;
 }
 
@@ -2677,6 +2687,9 @@ td.details-td {
 }
 .lpl-roomorama {
   background:url("../img/providers/lv/roomorama.png") no-repeat #24b0cf 562px 4px;
+}
+.lpl-homeaway {
+  background:url("../img/providers/lv/homeaway.png") no-repeat #24b0cf 613px 0px;
 }
 .lpl-waytostay {
   background:url("../img/providers/lv/waytostay.png") no-repeat #24b0cf 579px 4px;

@@ -525,9 +525,18 @@
         dff.resolve(data);
       });
 
-      this.renRequests[query].fail(function() {
+      this.renRequests[query].fail(function(jqXHR) {
         for (var i in _this.renRequests) {
           if (_this.renRequests[i]["status"] !== 200) {
+            dff.resolve({
+              page: 1,
+              status: jqXHR.status,
+              rentals: [],
+              resultsPerPage: Outpost.searchQuery.rentals.rpp,
+              totalPages: 1,
+              totalResults: 0,
+              type: "rentals"
+            });
             delete _this.renRequests[i];
           }
         }
@@ -711,6 +720,7 @@
 
     triggerReady: function() {
       $('body').addClass("outpost-done");
+      $('.push-footer').addClass("bg-beige");
     },
 
     loadRentalsCount: function() {
