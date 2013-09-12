@@ -128,15 +128,15 @@
     $room["id"] = $aList["microProvider"].$aList["pid"];
     $room["link"] = $aList["link"];
 
-    $room["heading"] = htmlspecialchars($aList["heading"], ENT_QUOTES);
+    $room["heading"] = htmlspecialchars(str_replace('"', "'", $aList["heading"]), ENT_QUOTES);
 
     $room["roomType"] = $aList["roomType"];
-    $room["roomTypeAlias"] = htmlspecialchars($aList["roomTypeAlias"], ENT_QUOTES);
-    $room["propertyTypeAlias"] = htmlspecialchars($aList["propertyTypeAlias"], ENT_QUOTES);
+    $room["roomTypeAlias"] = htmlspecialchars(str_replace('"', "'", $aList["roomTypeAlias"]), ENT_QUOTES);
+    $room["propertyTypeAlias"] = htmlspecialchars(str_replace('"', "'", $aList["propertyTypeAlias"]), ENT_QUOTES);
     $room["propertyType"] = $aList["propertyType"];
 
-    $room["origin"] = htmlspecialchars($aList["origin"], ENT_QUOTES);
-    $room["address"] = htmlspecialchars($aList["address"], ENT_QUOTES);
+    $room["origin"] = htmlspecialchars(str_replace('"', "'", $aList["origin"]), ENT_QUOTES);
+    $room["address"] = htmlspecialchars(str_replace('"', "'", $aList["address"]), ENT_QUOTES);
     $room["latLng"] = $aList["latLng"];
 
     $room["rate"] = $aList["rate"];
@@ -151,10 +151,14 @@
 
     $room["thumbnail"] = $aList["thumbnail"];
     $room["photos"] = $aList["photos"];
-    $room["captions"] = $aList["captions"];
+
+    $room["captions"] = array();
+    foreach ($aList["captions"] as $value) {
+      $room["captions"][] = htmlspecialchars(str_replace('"', "'", $value), ENT_QUOTES);
+    }
 
     $room["provider"] = $aList["provider"];
-    $room["fullProvider"] = htmlspecialchars($aList["fullProvider"], ENT_QUOTES);
+    $room["fullProvider"] = htmlspecialchars(str_replace('"', "'", $aList["fullProvider"]), ENT_QUOTES);
 
     $listings[] = $room;
   }

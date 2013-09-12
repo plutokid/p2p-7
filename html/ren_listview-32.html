@@ -187,7 +187,7 @@
     };
     var houDestTA = new google.maps.places.Autocomplete(houDestInput, options);
     google.maps.event.addListener(houDestTA, 'place_changed', function() {
-      $sdate.focus();
+      Outpost.searchQuery.destLocation = validate($(houDestInput).val());
     });
 
     var customRange = function customRange(input) {

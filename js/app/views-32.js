@@ -552,7 +552,21 @@
 
       refineSearch: function(e) {
         e.preventDefault();
+        Outpost.searchQuery.destLocation = this.validate(
+          $('#ref-ren-dest-loc').val()
+        );
         this.refreshQuery();
+      },
+
+      validate: function(destCity) {
+        var hasCommaDest = destCity.indexOf(",");
+        var $pcDest = $('.pac-container');
+        var firstDest = $pcDest.find(".pac-item:first").text();
+        var newDestCity = hasCommaDest === -1 ? firstDest : destCity;
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
+        return newDestCity;
       },
 
       refreshQuery: function() {
