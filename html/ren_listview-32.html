@@ -100,10 +100,10 @@
                         <input class="lp-hou-roomtype" id="roomtype-entire_place" type="checkbox" name="room_types" value="entire_place" <%= ~roomType.indexOf("entire_place") ? "checked" : "" %>>Entire place
                       </label>
                       <label class="checkbox">
-                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="private_room" <%= ~roomType.indexOf("private_room") ? "checked" : "" %>>Private room
+                        <input class="lp-hou-roomtype" id="roomtype-private_room" type="checkbox" name="room_types" value="private_room" <%= ~roomType.indexOf("private_room") ? "checked" : "" %>>Private room
                       </label>
                       <label class="checkbox">
-                        <input class="lp-hou-roomtype" type="checkbox" name="room_types" value="shared_room" <%= ~roomType.indexOf("shared_room") ? "checked" : "" %>>Shared room
+                        <input class="lp-hou-roomtype" id="roomtype-shared_room" type="checkbox" name="room_types" value="shared_room" <%= ~roomType.indexOf("shared_room") ? "checked" : "" %>>Shared room
                       </label>
                     </div>
                   </div>
@@ -160,6 +160,17 @@
 </div>
 <script>
   (function() {
+    var validate = function(destCity) {
+      var hasCommaDest = destCity.indexOf(",");
+      var $pcDest = $('.pac-container');
+      var firstDest = $pcDest.find(".pac-item:first").text();
+      var newDestCity = hasCommaDest === -1 ? firstDest : destCity;
+      if (!newDestCity) {
+        newDestCity =  destCity;
+      }
+      return newDestCity;
+    };
+
     $('.ui-datepicker').hide();
     $('.pac-container').remove();
     $('.lp-sidebar').affix({
@@ -209,12 +220,20 @@
       inline: true,
       beforeShow: customRange,
       onClose: function() {
-        $('#ref-ren-guest').focus();
+        Outpost.searchQuery.sdate = $('#ref-ren-sdate').val();
+        Outpost.searchQuery.edate = $('#ref-ren-edate').val();
+        $.xhrPool.abortAll();
+        Outpost.searchQuery.rentals.page = 1;
+        Outpost.helpers.genSearchParamsAndGo("rentals");
       }
     });
 
     $(houDestInput).on("click", function(){
       $(this).val("");
+    });
+
+    $(houDestInput).on("blur", function(){
+      Outpost.searchQuery.destLocation = validate($(this).val());
     });
 
     $('.lp-help').tooltip();

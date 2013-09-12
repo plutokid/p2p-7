@@ -196,7 +196,7 @@
       return str;
     },
 
-    genSearchParamsAndGo: function(cat) {
+    genSearchParamsAndGo: function(cat, random) {
       var paramStr;
       var param = Outpost.searchQuery;
 
@@ -213,7 +213,8 @@
           roomType: param.rentals.roomType,
           propertyType: param.rentals.propertyType,
           providers: param.rentals.providers,
-          page: param.rentals.page
+          page: param.rentals.page,
+          random: random ? jQuery.now() : ""
         });
       }
 
@@ -731,12 +732,12 @@
         $('#renCountPlace').text(data.rentalsAmt);
         $('#renCountCity').text(data.rentalsAmtCity);
       });
-    },
+    }
   };
 
   $.fn.preload = function() {
     this.each(function() {
-        $('<img/>')[0].src = this;
+      $('<img/>')[0].src = this;
     });
   };
 

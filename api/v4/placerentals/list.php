@@ -72,7 +72,8 @@
       )
     ),
     'occupancy' => array(
-      '$gte' => $guests
+      '$gte' => $guests,
+      '$lte' => $guests == 1 && empty($startDate) ? 99 : $guests * 2
     ),
     'rate' => array(
       '$gte' => $min,
@@ -157,7 +158,6 @@
 
     $listings[] = $room;
   }
-
 
   $output = array();
   $output["type"] = "rentals";

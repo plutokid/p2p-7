@@ -348,7 +348,7 @@
               <% var bdr = item.bedroomCount; %>
               <% var bdrStr = bdr > 1 ? "bedrooms" : "bedroom"; %>
               <li class="mb3">
-                <span class="icon-film css-silver tfpx"></span>
+                <span class="icon-film tfpx"></span>
                 <span><b><%= bdr %></b> <%= bdrStr %></span>
               </li>
             <% } %>
@@ -363,7 +363,7 @@
           </div>
         </div>
         <span class="lp-left-group">
-          <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.provider %>/<%= item.id %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
+          <a class="out-btn btn-hou btn-hou-details" href="/#!/item/houserental/<%= item.provider %>/<%= (item.id).substring(3) %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
           <a class="out-btn btn-hou btn-hou-bookit" title="Book on <%= item.fullProvider %>" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
           <a class="out-btn btn-hou btn-hou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
         </span>
@@ -438,7 +438,6 @@
   <!-- CUSTOM -->
   <script src="js/main-32.js"></script>
   <!-- FACEBOOK SDK -->
-  <!--
   <div id="fb-root"></div>
   <script>
     window.fbAsyncInit = function() {
@@ -494,7 +493,7 @@
   (function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
   </script>
   <noscript><img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=pNdKh1awVK00ay" style="display:none" height="1" width="1" alt="" /></noscript>
-  -->
+
   <script>
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-39723359-1']);

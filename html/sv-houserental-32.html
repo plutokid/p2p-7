@@ -1,5 +1,5 @@
 <div class="container lp-container" id="singleViewPage">
-  <% if (!title) { %>
+  <% if (!heading) { %>
     <div class="row">
       <div class="span12">
         <div class="item-wrapper">
@@ -12,13 +12,13 @@
   <% } else { %>
   <%
     Outpost.helpers.alternateSEO({
-      title: title + " in " + city,
-      description: property_type + " " + room_type + " for " + price +
+      title: heading + " in " + city,
+      description: propertyTypeAlias + " " + roomTypeAlias + " for " + currencySign + rate +
       " per night (" + currency + ") · " + address
     });
 
     var isFromRef, hrefRes = "";
-    var textBread = "Back to rentals for " + city;
+    var textBread = "Back to rentals for " + origin;
     if (window.document.referrer === window.location.origin + "/") {
       isFromRef = true;
       hrefRes = "javascript:window.close()";
@@ -27,11 +27,13 @@
       hrefRes = window.location.origin + "/#!/rentals?destCity=" + Outpost.helpers.enbarURI(city);
     }
 
-    var currentBread = title;
+    var currentBread = heading;
     if (currentBread.length >= 45) {
       currentBread = currentBread.substr(0, 45) + "..";
     }
 
+    var lat = latLng[0];
+    var lng = latLng[1];
     var geoPromise = Outpost.helpers.ipToGeo();
 
     geoPromise.done(function(data) {
@@ -55,10 +57,10 @@
       </ul>
       <div class="item-wrapper">
         <div class="panel-header css-bgblue">
-          <h2 class="panel-title"><%= title %></h2>
+          <h2 class="panel-title"><%= heading %></h2>
         </div>
         <div class="item-content row">
-          <h4 class="panel-subtitle-hou"><%= property_type %> <%= room_type %> · <span class="text-yellow"><%= address %></span></h4>
+          <h4 class="panel-subtitle-hou"><%= propertyTypeAlias %> - <%= roomTypeAlias %> · <span class="text-yellow"><%= address %></span></h4>
           <div class="span8">
             <div class="left-col-content">
               <div class="tabbable">
@@ -74,7 +76,7 @@
                       <div id="svhouCarousel" class="carousel slide air-carousel">
                         <ol class="carousel-indicators">
                           <% var j = 0; %>
-                          <% _.each(imgs, function(src) { %>
+                          <% _.each(photos, function(src) { %>
                             <li data-target="#svhouCarousel" data-slide-to="<%= j %>" class="<%= j ? '' : 'active' %>"></li>
                             <% j++ %>
                           <% }); %>
@@ -82,7 +84,7 @@
                         <!-- Carousel items -->
                         <div class="carousel-inner sv-hou-carousel-inner">
                           <% var i = 0; %>
-                          <% _.each(imgs, function(src) { %>
+                          <% _.each(photos, function(src) { %>
                             <div class="item <%= i ? '' : 'active' %> ">
                               <img class="modal-img" src="<%= src %>">
                               <% if (captions[i]) { %>
@@ -109,7 +111,7 @@
                 </div>
               </div>
               <div class="css-details-text">
-                <p class="sv-hou-details-text"><%= desc %></p>
+                <p class="sv-hou-details-text"><%= _.unescape(description) %></p>
               </div>
               <div class="css-details-ameneties">
                 <table class="table table-hover table-bordered table-striped">
@@ -123,55 +125,40 @@
                   </tbody>
                 </table>
               </div>
-              <div class="hou-review-text">
-                <% if (review)  { %>
-                <h3 class="review-title-hou">Latest Review</h3>
-                <div class="aReview">
-                  <div class="css-imgname">
-                    <img src="<%= review.img %>" class="img-polaroid">
-                    <span class="name"><%= review.name %></span>
-                  </div>
-                  <div class="review-text">
-                    <%= review.comment %>
-                  </div>
-                </div>
-                <% } %>
-              </div>
             </div>
           </div>
           <div class="span270">
             <div class="item-info">
               <div class="item-price-box">
-                <h2 class="item-price"><%= price %></h2>
+                <h2 class="item-price"><%= currencySign + rate %></h2>
                 <span class="item-per item-per-seat">per night (<%= currency %>)</span>
               </div>
               <div class="item-seatleft-box">
-                <% if (numOfBedrooms) { %>
-                  <strong class="item-beds"><%= numOfBedrooms %></strong>
-                  <span class="item-seat-left"><%= numOfBedrooms <= 1 ? "bedroom" : "bedrooms" %></span>
+                <% if (bedroomCount) { %>
+                  <strong class="item-beds"><%= bedroomCount %></strong>
+                  <span class="item-seat-left"><%= bedroomCount <= 1 ? "bedroom" : "bedrooms" %></span>
                 <% } %>
-                <% if (numOfBedrooms && numOfBeds) { %>
+                <% if (bedroomCount && bedCount) { %>
                   <span>&amp;</span>
                 <% } %>
-                <% if (numOfBeds) { %>
-                  <strong class="item-beds"><%= numOfBeds %></strong>
-                  <span><%= numOfBeds <= 1 ? "bed" : "beds" %></span>
+                <% if (bedCount) { %>
+                  <strong class="item-beds"><%= bedCount %></strong>
+                  <span><%= bedCount <= 1 ? "bed" : "beds" %></span>
                 <% } %>
               </div>
               <div class="item-desc-box">
                 <p class="item-desc">
-                  <%= house_rules %>
+                  <%= houseRules %>
                 </p>
               </div>
               <div class="item-contact-box">
-                <a class="out-btn btn-block btn-sv-hou spv-bookit" id="spv-bookit" data-toggle="tooltip" data-placement="bottom" title="You will be redirected to <%= provider %>'s website where you can inquire or complete your purchase." href="<%= link %>" target="_blank">Book on <%= provider %></a>
+                <a class="out-btn btn-block btn-sv-hou spv-bookit" id="spv-bookit" data-toggle="tooltip" data-placement="bottom" title="You will be redirected to <%= fullProvider %>'s website where you can inquire or complete your purchase." href="<%= link %>" target="_blank">Book on <%= fullProvider %></a>
               </div>
             </div>
             <div class="item-profile">
               <div class="item-profile-pic">
-                <img src="<%= picture_url %>" class="img-polaroid img-profile-pic">
-                <h4 class="item-profile-name"><%= name %></h4>
-                <h6 class="item-profile-age"><%= response_time %></h6>
+                <h4 class="item-profile-name"><%= hostName %></h4>
+                <h6 class="item-profile-age"><%= responseTime %></h6>
               </div>
               <table class="table table-striped">
                 <tbody>
@@ -185,9 +172,9 @@
             </div>
             <div class="provider-profile">
               <div class="item-provider-logo css-bgblue">
-                <img src="<%= logopath %>" class="provider-<%= idtype %>">
+                <img src="/img/providers/sv/<%= provider %>.png" class="pro-sv-ren-logo">
               </div>
-              <div class="provider-desc"><%= logodesc %></div>
+              <div class="provider-desc"><%= logoDesc %></div>
             </div>
           </div>
         </div>

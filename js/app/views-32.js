@@ -380,6 +380,7 @@
         "change .lp-hou-roomtype": "filterRoomType",
         "change .lp-hou-property": "filterPropType",
         "change #lp-hou-sortby": "sortListings",
+        "change #ref-ren-guest": "guestChange",
         "click .btn-hou-map": "slideMap",
         "click .lp-list-img": "slideCarousel",
         "click .btn-hou-bookit": "checkUserState",
@@ -415,6 +416,8 @@
       preDetermineSettings: function() {
         if (Outpost.searchQuery.guests >= 4) {
           $('#roomtype-entire_place').attr('checked', 'checked');
+          $('#roomtype-private_room').attr('checked', false);
+          $('#roomtype-shared_room').attr('checked', false);
           Outpost.searchQuery.rentals.roomType = ["entire_place"];
         }
       },
@@ -433,7 +436,7 @@
             _this.toggleLoading();
             $('#lp-hou-well').html(
               '<b class="css-red">Something went wrong in our system..</b>&nbsp;' +
-              '<a href="javascript:Outpost.helpers.genSearchParamsAndGo(\'rentals\')">Try again ?</a>'
+              '<a href="javascript:Outpost.helpers.genSearchParamsAndGo(\'rentals\', true)">Try again ?</a>'
             );
           }
         };
@@ -549,16 +552,7 @@
 
       refineSearch: function(e) {
         e.preventDefault();
-        var validatedValues = this.validate();
-        var destCity = validatedValues.destCity;
-        var queryString = {
-          destCity: Outpost.helpers.enbarURI(destCity),
-          sdate: $('#ref-ren-sdate').val(),
-          edate: $('#ref-ren-edate').val(),
-          guests: $('#ref-ren-guest').val()
-        };
-        queryString = "!/rentals?" + $.param(queryString);
-        Outpost.mvc.router.navigate(queryString, true);
+        this.refreshQuery();
       },
 
       refreshQuery: function() {
@@ -567,26 +561,17 @@
         Outpost.helpers.genSearchParamsAndGo("rentals");
       },
 
-      validate: function() {
-        var destCity = $("#ref-ren-dest-loc").val();
-        var hasCommaDest = destCity.indexOf(",");
-        var $pcDest = $('.pac-container');
-        var firstDest = $pcDest.find(".pac-item:first").text();
-        var newDestCity = hasCommaDest === -1 ? firstDest : destCity;
-        if (!newDestCity) {
-          newDestCity =  destCity;
-        }
-        return {
-          destCity: newDestCity
-        };
-      },
-
       checkUserState: function(e) {
         Outpost.helpers.checkUserState(e);
       },
 
       sortListings: function(e) {
         Outpost.searchQuery.rentals.sortBy = $(e.currentTarget).val();
+        this.refreshQuery();
+      },
+
+      guestChange: function(e) {
+        Outpost.searchQuery.guests = $(e.currentTarget).val();
         this.refreshQuery();
       },
 
@@ -1325,7 +1310,7 @@
 
       loadStreetView: function() {
         var data = this.data;
-        var street = new google.maps.LatLng(data.lat,data.lng);
+        var street = new google.maps.LatLng(data.latLng[0],data.latLng[1]);
         var panoramaOptions = {
           position: street,
           pov: {
@@ -1341,7 +1326,7 @@
       },
 
       loadMapView: function() {
-        var latLng = [this.data.lat, this.data.lng];
+        var latLng = this.data.latLng;
         var jhr = Outpost.helpers.latLngToAddr(latLng);
         jhr.done(function(address) {
           address = address.results[0].formatted_address;
