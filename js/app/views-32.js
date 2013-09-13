@@ -268,6 +268,7 @@
           _this.$el.html(tmpl);
           $('.sl-tab-' + Outpost.list.type).tab('show');
           Outpost.helpers.triggerReady();
+          $('#vp-meta').attr('content', 'width=940');
         });
       }
     }),

@@ -25,8 +25,6 @@
     }
   });
 
-  $('#vp-meta').attr('content', 'width=940');
-
   $(document).ready(function() {
     new Outpost.views.main();
   });
