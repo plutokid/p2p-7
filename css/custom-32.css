@@ -2591,7 +2591,7 @@ td.details-td {
 
 .providers-box {
   margin: 0 auto;
-  width: 1018px;
+  width: 1221px;
 }
 
 .logo-headline {
@@ -2693,40 +2693,38 @@ td.details-td {
   background:url("../img/providers/lv/roomorama.png") no-repeat #24b0cf 562px 4px;
 }
 .lpl-homeaway {
-  background:url("../img/providers/lv/homeaway.png") no-repeat #24b0cf 613px 0px;
+  background:url("../img/providers/lv/homeaway.png") no-repeat #24b0cf 613px 0;
 }
 .lpl-waytostay {
   background:url("../img/providers/lv/waytostay.png") no-repeat #24b0cf 579px 4px;
 }
-
 .lpl-interhome {
   background:url("../img/providers/lv/interhome.png") no-repeat #24b0cf 572px 3px;
 }
 
 
-
-
 .lpl-craigslist {
-  background:url("../img/craigslist.png") no-repeat #ec5f41 603px 4px;
+  background:url("../img/providers/lv/craigslist.png") no-repeat #ec5f41 581px 9px;
 }
-
-
 .lpl-kangaride {
-  background:url("../img/kangaride.png") no-repeat #ec5f41 622px 4px;
+  background:url("../img/providers/lv/kangaride.png") no-repeat #ec5f41 572px 5px;
 }
 .lpl-ridejoy {
-  background:url("../img/ridejoy.png") no-repeat #ec5f41 624px 5px;
+  background:url("../img/providers/lv/ridejoy.png") no-repeat #ec5f41 594px 5px;
 }
 .lpl-zimride {
-  background:url("../img/zimride.png") no-repeat #ec5f41 616px 5px;
+  background:url("../img/providers/lv/zimride.png") no-repeat #ec5f41 576px 8px;
 }
 .lpl-blablacar {
-  background:url("../img/blablacar.png") no-repeat #ec5f41 628px 3px;
+  background:url("../img/providers/lv/blablacar.png") no-repeat #ec5f41 560px 14px;
+}
+.lpl-ridester {
+  background:url("../img/providers/lv/ridester.png") no-repeat #ec5f41 575px 10px;
+}
+.lpl-gocarshare {
+  background:url("../img/providers/lv/gocarshare.png") no-repeat #ec5f41 565px 14px;
 }
 
-.lpl-ridester {
-  background:url("../img/ridester_small.png") no-repeat #ec5f41 600px 5px;
-}
 
 .lpl-vayable {
   background:url("../img/vayable.png") no-repeat #95d17b 612px 4px;

@@ -65,66 +65,20 @@
   // Start the crawling
   switch ($idtype) {
     case 'blablacar':
-      $output["idtype"] = "blablacar";
-      $output["provider"] = "bla";
-      if ($country == "world") {
-        $url = "http://www.blablacar.com/search-car-sharing-result";
-        $startDate2 = '';
-        if ($startDate) {
-          $startDate2 = urldecode($startDate);
-          $startDate2 = explode("/", $startDate2);
-          $startDate2 = $startDate2[1]."/".$startDate2[0]."/".$startDate2[2];
-          $startDate2 = urlencode($startDate2);
-        }
-        $qry_str = "?db={$startDate2}&fn={$startLocation}&tn={$endLocation}&sort=trip_date&order=asc&page={$page}";
-        $url = $url.$qry_str;
-        $html = file_get_contents($url);
-        $poolList->load($html);
-        foreach($poolList->find('.trip') as $aRide) {
-          $price_full = $aRide->find('.price', 0)->plaintext;
-          $price = 0 + filter_var($price_full, FILTER_SANITIZE_NUMBER_INT);
-
-          $seat = $aRide->find('.availability strong', 0)->plaintext;
-          if ($seat) {
-            $seat = 0 + $seat;
-            if ($guests  > $seat) {
-              continue;
-            }
-            $ride['seat'] = $seat;
-          } else {
-            continue;
-          }
-          $ride["full_provider"] = "BlaBlaCar";
-          $ride['img'] = $aRide->find('img', 0)->src;
-          $ride['link'] = "http://www.blablacar.com".$aRide->find('a', 0)->href;
-          $ride['uri'] = str_replace('http://www.blablacar.com/', '', $ride['link']);
-          $ride['id'] = filter_var($ride["uri"], FILTER_SANITIZE_NUMBER_INT);
-          $ride['idtype'] = "blablacar";
-          $datetime = explode("-", $aRide->find('.time', 0)->plaintext);
-          $ride['date'] = trim($datetime[0]);
-          $ride['time'] =  trim($datetime[1]);
-          $ride['timestamp'] = strtotime($ride['date']. " ".  $ride['time']);
-          if (!$ride['timestamp'])
-            $ride['timestamp'] = strtotime($ride['date']. " 2013 ".  $ride['time']);
-          if (!$ride['timestamp'])
-            $ride['timestamp'] = strtotime($ride['date']);
-          $ride['username'] = $aRide->find('.username', 0)->plaintext;
-          $ride['iconPath'] = "img/blablacar.ico";
-          $ride['infoWindowIcon'] = "img/blablacar.png";
-          $origin = str_replace("'", "", $aRide->find('.geo-from .tip', 0)->plaintext);
-          $origin = explode(",", $origin);
-          $ride['origin'] = $origin[0];
-
-          $destination = $aRide->find('.geo-to .tip', 0)->plaintext;
-          $destination = explode(",", $destination);
-          $ride['destination'] = $destination[0];
-          $ride['desc'] = $aRide->find('.fromto', 0)->plaintext;
-          $ride['price'] = $price;
-          $output["rides"][] = $ride;
-        }
-
+      if (isset($startDate)) {
+        $dateRid = urldecode($startDate);
+        $timestamp = strtotime($dateRid);
       }
-      $output["entries"] = count($output["rides"]);
+      $url = "http://api.outpost.travel/blablacar/date={$timestamp}&origLat={$origLat}&origLon={$origLon}&destLat={$destLat}&destLon={$destLon}&seats={$guests}&page={$page}";
+      $html = file_get_contents($url);
+      if (!empty($html)) {
+        $output = json_decode($html);
+      } else {
+        $output["idtype"] = "blablacar";
+        $output["provider"] = "bla";
+        $output["page"] = (int)$page;
+        $output["entries"] = 0;
+      }
       break;
 
     case 'craigslist':
@@ -193,6 +147,23 @@
       }
 
       $output["entries"] = count($output["rides"]);
+      break;
+
+    case 'gocarshare':
+      if (isset($startDate)) {
+        $dateRid = urldecode($startDate);
+        $timestamp = strtotime($dateRid);
+      }
+      $url = "http://api.outpost.travel/gocarshare/date={$timestamp}&origLat={$origLat}&origLon={$origLon}&destLat={$destLat}&destLon={$destLon}&seats={$guests}&page={$page}";
+      $html = file_get_contents($url);
+      if (!empty($html)) {
+        $output = json_decode($html);
+      } else {
+        $output["idtype"] = "gocarshare";
+        $output["provider"] = "goc";
+        $output["page"] = (int)$page;
+        $output["entries"] = 0;
+      }
       break;
 
     case 'kangaride':
@@ -385,14 +356,13 @@
 
     case 'ridester':
       if ($page == 1 && $origCountry == "US" && $destCountry == "US") {
-        $ip = @get_client_ip();
         $origCity = urlencode($origCity);
         $destCity = urlencode($destCity);
         if (isset($startDate)) {
           $dateRid = urldecode($startDate);
           $timestamp = strtotime($dateRid);
         }
-        $url = "http://api.outpost.travel/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}&ip={$ip}";
+        $url = "http://api.outpost.travel/ridester/depart={$origCity}&arrive={$destCity}&date={$timestamp}";
         $html = file_get_contents($url);
         if ($html) {
           $output = json_decode($html);
@@ -411,14 +381,13 @@
       break;
 
     case 'zimride':
-    $output["idtype"] = "zimride";
-    $output["provider"] = "zim";
+      $output["idtype"] = "zimride";
+      $output["provider"] = "zim";
       if ($page == 1) {
         $url = "http://www.zimride.com/search";
-        $qry_str = "?date={$startDate}&e={$endLocation}&s={$startLocation}&filterSearch=true&filter_type=offer&pageID={$page}";
+        $qry_str = "?date={$startDate}&e_full_text={$endLocation}&e_lat={$destLat}&e_lng={$destLon}&s_full_text={$startLocation}&s_lat={$origLat}&s_lng={$origLon}&filterSearch=true&filter_type=offer&pageID={$page}";
         $url = $url.$qry_str;
         $html = file_get_contents($url);
-
         $poolList->load($html);
 
         if ($lastDate = $poolList->find('h3.headline span', 0)) {
@@ -431,7 +400,8 @@
         }
 
         foreach($poolList->find('.ride_list a') as $aRide) {
-         if ($aRide->find('img', 0)) {
+          $img = $aRide->find('img', 0);
+         if (!empty($img)) {
            $ride['img'] = $aRide->find('img', 0)->src;
            if ($seat = $aRide->find('.count', 0)) {
              $seat = $seat->plaintext;
@@ -485,7 +455,8 @@
            $ride['date'] =  $lastDate; //poollist find
            $ride['username'] = $aRide->find('.username', 0)->plaintext;
 
-           $desc = str_replace("'", "", $aRide->find('h4', 0)->plaintext);
+           $desc = trim(str_replace("'", "", $aRide->find('h4', 0)->plaintext));
+
            $desc = explode('/', $desc);
            if (isset($desc[2])) {
              $ride['time'] = str_replace("Departs", "", $desc[2]);

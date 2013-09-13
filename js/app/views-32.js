@@ -640,7 +640,7 @@
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-rid-aList').html()),
       templateWell: _.template($('#tmpl-rid-well').html()),
-      idtypes: ["blablacar", "craigslist", "kangaride",
+      idtypes: ["blablacar", "craigslist", "gocarshare", "kangaride",
                 "ridejoy", "ridester", "zimride"],
       numOfLoaded: 0,
       collection: [],
@@ -875,6 +875,7 @@
       updateProviders: function() {
         $('#fil-num-bbc').text($('.alist-blablacar').length);
         $('#fil-num-cra').text($('.alist-craigslist').length);
+        $('#fil-num-goc').text($('.alist-gocarshare').length);
         $('#fil-num-kan').text($('.alist-kangaride').length);
         $('#fil-num-rid').text($('.alist-ridejoy').length);
         $('#fil-num-rids').text($('.alist-ridester').length);
