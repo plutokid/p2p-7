@@ -334,7 +334,7 @@
           <i class="icon-zoom-in icon-2x list-img-zoom"></i>
         </div>
         <div class="lp-list-info">
-          <ul>
+          <ul class="lp-some-info">
             <li class="mb3">
               <span class="icon-key css-blue tfpx"></span>
               <span class="lp-list-type"><%= item.propertyTypeAlias %></span>
@@ -374,6 +374,49 @@
   </script>
 
   <script id="tmpl-tou-aList" type="text/template">
+    <% _.each(items, function(item) { %>
+    <%
+      var json_item = JSON.stringify(item);
+      var provider = "alist-" + item.provider;
+      var id = "tou-" + item.id;
+    %>
+    <div class="lp-aList lp-aList-tou <%= provider %> <%= id %>" data-item='<%= json_item %>'>
+      <div class="lp-list-head lpl-<%= item.provider %>">
+        <h4 class="lp-list-title"><a href="/#!/item/localguide/<%= item.provider %>/<%= (item.id).substring(3) %>" target="_blank"><%= item.heading %></a></h4>
+      </div>
+      <div class="lp-list-body">
+        <div class="list-img-container">
+          <img class="lp-list-img" data-id="<%= id %>" src="<%= item.thumbnail %>">
+          <i class="icon-zoom-in icon-2x list-img-zoom"></i>
+        </div>
+        <div class="lp-list-info">
+          <ul class="lp-some-info">
+            <li>
+              <span class="icon-user css-blue tfpx"></span>
+              <span class="lp-list-type">City guide</span>
+            </li>
+            <li>
+              <span class="icon-map-marker css-green tfpx fs21"></span>
+              <span class="lp-list-location"><%= item.origin %></span>
+            </li>
+          </ul>
+          <div class="lp-tou-pricewrap">
+            <div class="lp-tou-price">$<%= item.rate %></div>
+            <div class="lp-tou-pricedesc"><%= item.ratePer %></div>
+          </div>
+        </div>
+        <span class="lp-left-group">
+          <a class="out-btn btn-tou btn-tou-details" href="/#!/item/localguide/<%= item.provider %>/<%= (item.id).substring(3) %>" target="_blank">Details &nbsp;<i class="icon-play"></i></a>
+          <a class="out-btn btn-tou btn-tou-bookit" title="Book on <%= item.fullProvider %>" href="<%= item.link %>" target="_blank">Book it &nbsp;<i class="icon-share"></i></a>
+          <a class="out-btn btn-tou btn-tou-map" data-id="<%= id %>" href="javascript:void(0)">Map &nbsp;<i class="icon-globe"></i></a>
+        </span>
+      </div>
+      <div class="lp-extra tou-extra etou<%= item.id %>" style="display: none"></div>
+    </div>
+    <% }); %>
+  </script>
+
+  <script id="tmpl-tou-aList2" type="text/template">
     <% _.each(items, function(item) { %>
     <%
       var json_item = JSON.stringify(item);

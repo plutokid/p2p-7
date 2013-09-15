@@ -105,6 +105,7 @@
 
     $tour["origin"] = htmlspecialchars(str_replace('"', "'", $aList["origin"]), ENT_QUOTES);
     $tour["latLng"] = $aList["latLng"];
+    $tour["address"] = $tour["origin"];
 
     $tour["rate"] = $aList["rate"];
     $tour["ratePer"] = $aList["ratePer"];

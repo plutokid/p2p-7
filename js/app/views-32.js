@@ -968,6 +968,7 @@
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-tou-aList').html()),
       templateWell: _.template($('#tmpl-tou-well').html()),
+      templateCarousel: _.template($('#tmpl-carousel').html()),
       collection: [],
 
       initialize: function() {
