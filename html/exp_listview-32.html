@@ -4,6 +4,7 @@
       <div class="lp-refineSearch">
         <form class="lp-refineSearchForm" id="ref-exp-form">
           <% var guests = Outpost.searchQuery.guests; %>
+          <% var sortBy = Outpost.searchQuery.experiences.sortBy; %>
           <div class="input-wrapper">
             <input id="ref-exp-dest-loc" type="text" autocomplete="off" value="<%= Outpost.searchQuery.destLocation %>" placeholder="Find something to do in..">
           </div>
@@ -27,24 +28,10 @@
                 <div class="accordion-body in collapse">
                   <div class="accordion-inner">
                     <select class="lp-sortfilter" id="lp-tou-sortby">
-                      <option value="low2high">Price: Low to high</option>
-                      <option value="high2low">Price: High to low</option>
-                      <option value="provider">Provider</option>
+                      <option <%= sortBy === "relevance" ? "selected" : '' %> value="relevance">Relevance</option>
+                      <option <%= sortBy === "low2high" ? "selected" : '' %> value="low2high">Price: Low to high</option>
+                      <option <%= sortBy === "high2low" ? "selected" : '' %> value="high2low">Price: High to low</option>
                     </select>
-                  </div>
-                </div>
-              </div>
-              <div class="accordion-group">
-                <div class="accordion-heading">
-                  <a class="accordion-toggle">
-                    Providers
-                  </a>
-                </div>
-                <div class="accordion-body in collapse">
-                  <div class="accordion-inner">
-                    <label class="checkbox">
-                      <input class="lp-tou-providers" checked="checked" type="checkbox" value="vayable">Vayable <span class="fil-num" id="fil-num-vay"></span>
-                    </label>
                   </div>
                 </div>
               </div>
@@ -58,6 +45,7 @@
             <div class="lp-spinner css-green lp-hidden" id="lp-tou-ls" style="display: none;">
               <div class="icon-spinner icon-spin icon-4x"></div>
             </div>
+            <div class="exp-list-page pagination" id="exp-list-page"></div>
           </div>
         </div>
       </div>

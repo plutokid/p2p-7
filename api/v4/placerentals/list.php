@@ -58,6 +58,7 @@
   // Connect to outpost database
   $m = new Mongo("mongodb://$dbhost");
   $db = $m->$dbname;
+  $db->authenticate("read", "outpost123");
 
   // Get the flipkey collection
   $c_rentals = $db->placeRentals;

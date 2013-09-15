@@ -2603,7 +2603,7 @@ td.details-td {
 
 
 /* Smartphones (portrait and landscape) ----------- */
-@media (max-width: 568px) {
+@media (max-width: 1568px) {
   .main-head {
     background-attachment: scroll;
   }
@@ -2669,6 +2669,61 @@ td.details-td {
   .push-footer {
     height: auto;
   }
+
+
+  /*LIST VIEW*/
+  .lp-container {
+    width: 100% !important;
+  }
+
+  .ref-search-bar {
+    display: none;
+  }
+
+  .search-results {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .lp-sidebar-res {
+    display: none;
+  }
+
+  .results-in-res {
+    float: left !important;
+    margin-left: 5px;
+    width: 97% !important
+  }
+
+  .lp-container-ins {
+    display: block !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .lp-list-info {
+    display: none;
+  }
+
+  .lp-list-title {
+    width: 100% important;
+  }
+
+  .lp-list-rt {
+    display: none;
+  }
+
+  .lp-list-img {
+    width: 74% !important;;
+  }
+
+  .lp-left-group {
+    width: 26% !important;;
+  }
+
+  .lp-list-title {
+    width: 100% !important;
+  }
 }
 
 .lpl-bedycasa {
@@ -2728,4 +2783,13 @@ td.details-td {
 
 .lpl-vayable {
   background:url("../img/vayable.png") no-repeat #95d17b 612px 4px;
+}
+.lpl-waterplayusa {
+  background:url("../img/waterplayusa.png") no-repeat #95d17b 612px 4px;
+}
+.lpl-getyourguide {
+  background:url("../img/getyourguide.png") no-repeat #95d17b 612px 4px;
+}
+.lpl-homedine {
+  background:url("../img/homedine.png") no-repeat #95d17b 612px 4px;
 }

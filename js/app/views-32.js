@@ -308,7 +308,6 @@
 
       initialize: function() {
         this.render();
-        $('#vp-meta').attr('content', 'width=940');
       },
 
       render: function() {
@@ -969,62 +968,45 @@
       template: Outpost.helpers.renderTemplate,
       templateList: _.template($('#tmpl-tou-aList').html()),
       templateWell: _.template($('#tmpl-tou-well').html()),
-      idtypes: ["vayable"],
-      numOfLoaded: 0,
       collection: [],
-      sortedCollection: [],
-      state: {
-        prevSize: 0,
-        page: 1
-      },
 
       initialize: function() {
         var _this = this;
         _this.template('exp_listview', {}).done(function(tmpl)  {
           _this.$el.html(tmpl);
-          _this.resetState();
           _this.fetchGuides();
         });
-
       },
 
       events: {
-        "change .lp-tou-providers": "filterProviders",
         "change #lp-tou-sortby": "sortListings",
         "click .btn-tou-map": "slideMap",
+        "click .lp-list-img": "slideCarousel",
         "click .btn-tou-bookit": "checkUserState",
         "submit #ref-exp-form": "refineSearch"
       },
 
-      resetState: function() {
-        this.numOfLoaded = 0;
-        this.state = {
-          prevSize: 0,
-          page: 1
-        };
-      },
-
       fetchGuides: function() {
         var _this = this;
-        var len = this.idtypes.length;
         var parseHTML = function(data) {
-          _this.collection = _this.collection.concat(data);
-          _this.render();
-          _this.numOfLoaded++;
-          if (_this.numOfLoaded % len === 0) {
+          if (data.status === 200) {
+            _this.collection = _this.collection.concat(data.experiences);
             _this.toggleLoading();
+            _this.initPagination(data.page, data.totalPages);
+            _this.updateHeading(data.totalResults);
+            _this.render();
             Outpost.helpers.triggerReady();
+          } else {
+            _this.toggleLoading();
+            $('#lp-tou-well').html(
+              '<b class="css-red">Something went wrong in our system..</b>&nbsp;' +
+              '<a href="javascript:Outpost.helpers.genSearchParamsAndGo(\'experiences\', true)">Try again ?</a>'
+            );
           }
         };
 
         _this.toggleLoading();
-
-        for (var i = 0; i < len; i++) {
-          Outpost.helpers.fetchGuides(
-            this.state,
-            this.idtypes[i]
-          ).done(parseHTML);
-        }
+        Outpost.helpers.loadGuides().done(parseHTML);
       },
 
       toggleLoading: function() {
@@ -1038,171 +1020,141 @@
         }
       },
 
-      loadMore: function() {
-        $.waypoints('destroy');
-        this.state.page += 1;
-        this.fetchGuides();
+      initPagination: function(currentPage, totalPages) {
+        $('#exp-list-page').bootstrapPaginator({
+          currentPage: currentPage,
+          totalPages: totalPages,
+          alignment:'right',
+          useBootstrapTooltip: true,
+          onPageChanged: function(e, oldPage, newPage) {
+            Outpost.searchQuery.experiences.page = newPage;
+            Outpost.helpers.genSearchParamsAndGo("experiences");
+          },
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                  return "First";
+              case "prev":
+                  return "&laquo;";
+              case "next":
+                  return "&raquo;";
+              case "last":
+                  return "Last";
+              case "page":
+                  return page;
+            }
+          },
+          itemContainerClass: function(type, page, current) {
+            return (page === current) ? "active" : "pointer-cursor";
+          }
+        });
       },
 
-      infiniteScroll: function() {
+      slideCarousel: function(e) {
         var _this = this;
-        var size = 0, index = 0;
-        var tr = ".lp-aList-tou";
-
-        size = _this.collection.length;
-        if (_this.state.prevSize < size) {
-          if (size <= 5) {
-            _this.state.prevSize = size;
-            _this.loadMore();
-          } else {
-            index = size - 5;
-            $(tr + ':eq(' + index + ')').waypoint(function(direction) {
-              if (direction === "down" &&  $(this).is(":visible")) {
-                _this.state.prevSize = size;
-                _this.loadMore();
-              }
-            });
-          }
-        }
+        var $this = $(e.currentTarget);
+        var rowClass = $("." + $this.data("id"));
+        var item = rowClass.data('item');
+        var $extra = $(".etou" + item.id);
+        $(".tou-extra").gmap3('destroy').empty().slideUp();
+        $extra.slideDown(function() {
+          var html = _this.templateCarousel(item);
+          $extra.css("height", "425px");
+          $extra.html(html);
+          $('body, html').animate({
+            scrollTop: $(rowClass).offset().top
+          }, 300);
+        });
       },
 
       slideMap: function(e) {
         var $this = $(e.currentTarget);
         var item = $("." + $this.data("id")).data('item');
-        var jhr = Outpost.helpers.loadAPI({
-          uri: Outpost.helpers.formURI({
-            idtype: item.idtype,
-            id: item.uri
-          }),
-          idtype: item.idtype,
-          apicat: "tourism"
-        });
 
+        var origin, dest, $extra, xhrDuration, $duration;
+        var latLng = item.latLng;
+        $extra = $(".etou" + item.id);
+        $extra.css("height", "225px");
         $(".tou-extra").gmap3('destroy').empty().slideUp();
-        jhr.done(function(data) {
-          var origin, dest, $extra, xhrDuration, $duration;
-          var address = data.origin;
-          $extra = $(".etou" + item.id);
-          $extra.css("height", "225px");
-          $extra.slideDown(function(){
-            $extra.gmap3({
-              marker: {
-                address: address,
-                data: address,
-                events: {
-                  mouseover: function(marker, event, context) {
-                    var map = $(this).gmap3("get"),
-                      infowindow = $(this).gmap3({get:{name:"infowindow"}});
-                    if (infowindow) {
-                      infowindow.open(map, marker);
-                      infowindow.setContent(context.data);
-                    } else {
-                      $(this).gmap3({
-                        infowindow:{
-                          anchor:marker,
-                          options:{content: context.data}
-                        }
-                      });
-                    }
-                  },
-                  mouseout: function() {
-                    var infowindow = $(this).gmap3({get:{name:"infowindow"}});
-                    if (infowindow) {
-                      infowindow.close();
-                    }
+        $extra.slideDown(function() {
+          $extra.gmap3({
+            marker: {
+              latLng: latLng,
+              data: item.address,
+              events: {
+                mouseover: function(marker, event, context) {
+                  var map = $(this).gmap3("get"),
+                    infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.open(map, marker);
+                    infowindow.setContent(context.data);
+                  } else {
+                    $(this).gmap3({
+                      infowindow:{
+                        anchor:marker,
+                        options:{content: context.data}
+                      }
+                    });
+                  }
+                },
+                mouseout: function() {
+                  var infowindow = $(this).gmap3({get:{name:"infowindow"}});
+                  if (infowindow) {
+                    infowindow.close();
                   }
                 }
-              },
-              map: {
-                options: {
-                  zoom: 12
-                }
               }
-            });
+            },
+            map: {
+              options: {
+                zoom: 12
+              }
+            }
           });
         });
+      },
+
+      refineSearch: function(e) {
+        e.preventDefault();
+        Outpost.searchQuery.destLocation = this.validate(
+          $('#ref-exp-dest-loc').val()
+        );
+        this.refreshQuery();
+      },
+
+      validate: function(destCity) {
+        var hasCommaDest = destCity.indexOf(",");
+        var $pcDest = $('.pac-container');
+        var firstDest = $pcDest.find(".pac-item:first").text();
+        var newDestCity = hasCommaDest === -1 ? firstDest : destCity;
+        if (!newDestCity) {
+          newDestCity =  destCity;
+        }
+        return newDestCity;
+      },
+
+      refreshQuery: function() {
+        $.xhrPool.abortAll();
+        Outpost.searchQuery.experiences.page = 1;
+        Outpost.helpers.genSearchParamsAndGo("experiences");
       },
 
       checkUserState: function(e) {
         Outpost.helpers.checkUserState(e);
       },
 
-      sortListings: function(e, value) {
-        var sortby = value ? value : $(e.currentTarget).val();
-        this.sortedCollection = _(this.collection).clone();
-        switch (sortby) {
-          case "provider":
-            this.sortedRender();
-            break;
-          case "low2high":
-            Outpost.helpers.sortLowToHigh(this.sortedCollection);
-            this.sortedRender();
-            break;
-          case "high2low":
-            Outpost.helpers.sortHighToLow(this.sortedCollection);
-            this.sortedRender();
-            break;
-        }
-
-        this.filterProviders();
+      sortListings: function(e) {
+        Outpost.searchQuery.experiences.sortBy = $(e.currentTarget).val();
+        this.refreshQuery();
       },
 
-      filterProviders: function() {
-        var $checked = $('.lp-tou-providers:checked');
-        if (!$checked.length) {
-          $('.lp-aList-tou').show();
-        } else {
-          $('.lp-aList-tou').hide();
-          $checked.each(function() {
-            $('.alist-' + $(this).val()).show();
-          });
-        }
-
-        this.lazyLoad();
-      },
-
-      updateHeading: function() {
+      updateHeading: function(totalResults) {
         var data = {
-          numOfItems: this.collection.length,
-          origLocation: Outpost.searchQuery.origLocation,
+          numOfItems: totalResults,
           destLocation: Outpost.searchQuery.destLocation
         };
         var html = this.templateWell(data);
         $('#lp-tou-well').html(html);
-      },
-
-      updateProviders: function() {
-        $('#fil-num-vay').text($('.alist-vayable').length);
-      },
-
-      sortedRender: function() {
-        var html = this.templateList({
-          items: this.sortedCollection
-        });
-        $('#lp-tou-list').html(html);
-      },
-
-      refineSearch: function(e) {
-        e.preventDefault();
-        var destCity = $("#ref-exp-dest-loc").val();
-        var hasComma = destCity.indexOf(",");
-        var newDestCity = hasComma === -1 ? $('.pac-item:first').text() : destCity;
-        if (!newDestCity) {
-          newDestCity =  destCity;
-        }
-        var queryString = {
-          destCity: Outpost.helpers.enbarURI(newDestCity)
-        };
-        queryString = "!/experiences?" + $.param(queryString);
-        Outpost.mvc.router.navigate(queryString, true);
-      },
-
-      lazyLoad: function() {
-        var $activeTab = $('.tab-pane.active');
-        if ($activeTab.attr('id') === "lp-localguides") {
-          $.waypoints('destroy');
-          this.infiniteScroll();
-        }
       },
 
       render: function() {
@@ -1210,10 +1162,6 @@
           items: this.collection
         });
         $('#lp-tou-list').html(html);
-        this.sortListings("", $('#lp-tou-sortby').val());
-        this.updateHeading();
-        this.updateProviders();
-        this.filterProviders();
       }
     }),
 

@@ -71,6 +71,7 @@
       }
       $url = "http://api.outpost.travel/blablacar/date={$timestamp}&origLat={$origLat}&origLon={$origLon}&destLat={$destLat}&destLon={$destLon}&seats={$guests}&page={$page}";
       $html = file_get_contents($url);
+
       if (!empty($html)) {
         $output = json_decode($html);
       } else {
@@ -150,15 +151,22 @@
       break;
 
     case 'gocarshare':
-      if (isset($startDate)) {
-        $dateRid = urldecode($startDate);
-        $timestamp = strtotime($dateRid);
-      }
-      $url = "http://api.outpost.travel/gocarshare/date={$timestamp}&origLat={$origLat}&origLon={$origLon}&destLat={$destLat}&destLon={$destLon}&seats={$guests}&page={$page}";
-      $html = file_get_contents($url);
-      if (!empty($html)) {
-        $output = json_decode($html);
-      } else {
+      if ($page == 1) {
+        if (isset($startDate)) {
+          $dateRid = urldecode($startDate);
+          $timestamp = strtotime($dateRid);
+        }
+        $url = "http://api.outpost.travel/gocarshare/date={$timestamp}&origLat={$origLat}&origLon={$origLon}&destLat={$destLat}&destLon={$destLon}&seats={$guests}&page={$page}";
+        $html = file_get_contents($url);
+        if (!empty($html)) {
+          $output = json_decode($html);
+        } else {
+          $output["idtype"] = "gocarshare";
+          $output["provider"] = "goc";
+          $output["page"] = (int)$page;
+          $output["entries"] = 0;
+        }
+      } else if ($page >= 2) {
         $output["idtype"] = "gocarshare";
         $output["provider"] = "goc";
         $output["page"] = (int)$page;

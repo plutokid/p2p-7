@@ -1,6 +1,6 @@
 <div class="container lp-container">
-  <div class="row">
-    <div class="span12">
+  <div class="row lp-container-ins">
+    <div class="span12 ref-search-bar">
       <div class="lp-refineSearch">
         <form class="lp-refineSearchForm" id="ref-ren-form">
           <%
@@ -48,10 +48,10 @@
         </form>
       </div>
     </div>
-    <div class="span12">
+    <div class="span12 search-results">
       <div class="tab-content">
         <div class="tab-pane active" id="lp-spacerentals">
-          <div class="span3">
+          <div class="span3 lp-sidebar-res">
             <div class="lp-sidebar">
               <div class="accordion">
                 <div class="accordion-group">
@@ -130,7 +130,7 @@
                       </label>
                       <label class="checkbox">
                         <input class="lp-hou-property" type="checkbox" name="property_types" value="house" <%= ~propertyType.indexOf("house") ? "checked" : "" %>>
-                        <span class="lp-help" data-toggle="tooltip" data-placement="right" title="Includes House, Holiday Home, Villa, Bungalow, Townhouse, and Estates">House</span>
+                        <span class="lp-help" data-toggle="tooltip" data-placement="right" title="Includes House, Holiday Home, Villa, Bungalow, Townhouse, Resorts, and Estates">House</span>
                       </label>
                       <label class="checkbox">
                         <input class="lp-hou-property" type="checkbox" name="property_types" value="other" <%= ~propertyType.indexOf("other") ? "checked" : "" %>>
@@ -142,7 +142,7 @@
               </div>
             </div>
           </div>
-          <div class="span9 pull-right margin0">
+          <div class="span9 pull-right margin0 results-in-res">
             <h1 class="well" id="lp-hou-well">
               Searching for <%= Outpost.searchQuery.rentals.page >= 2 ? "more" : "" %> vacation rentals near <b><%= Outpost.searchQuery.destLocation || Outpost.searchQuery.origLocation %></b>...
             </h1>
@@ -150,8 +150,7 @@
             <div class="lp-spinner css-blue lp-hidden" id="lp-hou-ls" style="display: none;">
               <div class="icon-spinner icon-spin icon-4x"></div>
             </div>
-            <div class="ren-list-page pagination" id="ren-list-page">
-            </div>
+            <div class="ren-list-page pagination" id="ren-list-page"></div>
           </div>
         </div>
       </div>

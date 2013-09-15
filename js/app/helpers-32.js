@@ -216,6 +216,17 @@
           page: param.rentals.page,
           random: random ? jQuery.now() : ""
         });
+      } else if (cat === "experiences") {
+        paramStr = $.param({
+          destCity: Outpost.helpers.enbarURI(param.destLocation),
+          sdate: param.sdate,
+          edate: param.edate,
+          guests: param.guests,
+          sortBy: param.experiences.sortBy,
+          radius: param.experiences.radius,
+          page: param.experiences.page,
+          random: random ? jQuery.now() : ""
+        });
       }
 
       Outpost.mvc.router.navigate("!/" + cat + "?" + paramStr, true);
@@ -546,109 +557,67 @@
       return dff.promise();
     },
 
-    loadGuides: function(state, idtype) {
+    loadGuides: function() {
       var dff = $.Deferred();
       var options = Outpost.searchQuery;
-      var query = "";
-      this.touRequests = this.touRequests || [];
+      var state = options.experiences;
+      var query = [];
+      var _this = this;
+      this.expRequests = this.expRequests || [];
 
       var data = {
-        eloc: options.destLocation,
-        destlat: options.destLocationLat,
-        destlon: options.destLocationLng,
-        destState: options.destState,
-        destCountry: options.destCountry,
+        loc: options.destLocation || "",
+        lat: options.destLocationLat || "",
+        lng: options.destLocationLng || "",
+        state: options.destState || "",
+        country: options.destCountry || "",
 
-        sloc: options.origLocation,
-        origlat: options.origLocationLat,
-        origlon: options.origLocationLng,
-        origState: options.origState,
-        origCountry: options.origCountry,
+        sdate: options.sdate ? options.sdateObj.unix() : "",
 
-        sdate: options.sdate,
-        edate: options.edate,
+        guests: options.guests || "",
 
-        guests: options.guests,
-
-        idtype: idtype,
-        page: state.page
+        sort: state.sortBy || "",
+        radius: state.radius || "",
+        rpp: state.rpp || "",
+        page: state.page || ""
       };
 
-      query = Outpost.helpers.genSearchQuery([
-        data.idtype,
-        data.sloc,
-        data.eloc,
-        data.sdate,
-        data.edate,
-        data.guests,
-        data.page
-      ]);
+      query = $.map(data, function(value, key) {
+        if (key === "lat" || key === "lng") {
+          // do nothing
+        } else {
+          return value.toString ? value.toString() : String(value);
+        }
+      }).toString();
 
-      if (!this.touRequests[query]) {
-        this.touRequests[query] = $.ajax({
-          url: '/api/v3/tourism/',
+      if (!this.expRequests[query]) {
+        this.expRequests[query] = $.ajax({
+          url: '/api/v4/experiences/list.php',
           type: 'GET',
           dataType: 'jsonp',
           data: data
         });
       }
 
-      this.touRequests[query].done(function(data) {
+      this.expRequests[query].done(function(data) {
         dff.resolve(data);
       });
 
-      return dff.promise();
-    },
-
-    fetchGuides: function(state, idtype) {
-      var dff = $.Deferred();
-      var options = Outpost.searchQuery;
-      var query = "";
-      this.touRequests = this.touRequests || [];
-
-      var data = {
-        eloc: options.destLocation,
-        destlat: options.destLocationLat,
-        destlon: options.destLocationLng,
-        destState: options.destState,
-        destCountry: options.destCountry,
-
-        sloc: options.origLocation,
-        origlat: options.origLocationLat,
-        origlon: options.origLocationLng,
-        origState: options.origState,
-        origCountry: options.origCountry,
-
-        sdate: options.sdate,
-        edate: options.edate,
-
-        guests: options.guests,
-
-        idtype: idtype,
-        page: state.page
-      };
-
-      query = Outpost.helpers.genSearchQuery([
-        data.idtype,
-        data.sloc,
-        data.eloc,
-        data.sdate,
-        data.edate,
-        data.guests,
-        data.page
-      ]);
-
-      if (!this.touRequests[query]) {
-        this.touRequests[query] = $.ajax({
-          url: '/api/v3/tourism/',
-          type: 'GET',
-          dataType: 'jsonp',
-          data: data
-        });
-      }
-
-      this.touRequests[query].done(function(data) {
-        dff.resolve(data);
+      this.expRequests[query].fail(function(jqXHR) {
+        for (var i in _this.expRequests) {
+          if (_this.expRequests[i]["status"] !== 200) {
+            dff.resolve({
+              page: 1,
+              status: jqXHR.status,
+              experiences: [],
+              resultsPerPage: Outpost.searchQuery.experiences.rpp,
+              totalPages: 1,
+              totalResults: 0,
+              type: "experiences"
+            });
+            delete _this.expRequests[i];
+          }
+        }
       });
 
       return dff.promise();

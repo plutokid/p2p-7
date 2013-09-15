@@ -19,6 +19,9 @@
     case 'blablacar':
       $json = blablacar($url);
       break;
+    case 'gocarshare':
+      $json = gocarshare($url);
+      break;
     case 'craigslist':
       $json = craigslist($url);
       break;
@@ -31,42 +34,15 @@
   // START THE FUNCTIONS
   function blablacar($url) {
     global $idtype;
-    $url = "http://www.blablacar.com/".$url;
+    $url = "http://api.outpost.travel/blablacar/id={$url}";
     $html = file_get_contents($url);
-    $single = new simple_html_dom();
-    $single->load($html);
-
-    $json = array();
-
-    $json['provider'] = "BlaBlaCar";
-    $json["price"] = trim($single->find('.big-price', 0)->plaintext);
-
-    $json["date"] = trim($single->find('strong', 3)->plaintext);
-    $json["date"] .= " at " . trim($single->find('strong', 4)->plaintext);
-
-    $json["origin"] = trim($single->find('.display-map', 1)->plaintext);
-    $json["destination"] = trim($single->find('.display-map', 2)->plaintext);
-
-    $json["description"] = trim($single->find('.comment-trip', 0)->plaintext);
-    $json["numOfSeats"] = trim($single->find('.seats-available', 0)->plaintext) + 0;
-
-    $json["link"] = $url;
-
-    $json["profile_pic"] = $single->find('.user-picture', 0)->src;
-    $json["name"] = trim($single->find('.user-infos-general a', 0)->plaintext);
-    $json["age"] = trim($single->find('.user-infos-general li', 1)->plaintext);
-    $json["logopath"] = "img/blablacar-final.png";
-    $json["idtype"] = $idtype;
-    $json["logodesc"] = "BlaBlaCar connects drivers with empty seats and people travelling the same way - Over 3 Million trusted members saving up to 70% on inter-city travel!";
-
-    foreach ($single->find(".verification-list .checked") as $label) {
-      $json["labels"][] = trim($label->plaintext);
-    }
-    foreach ($single->find(".user-summary .tip") as $label) {
-      $json["labels"][] = trim($label->plaintext);
-    }
-
-    return json_encode($json);
+    return $html;
+  }
+  function gocarshare($url) {
+    global $idtype;
+    $url = "http://api.outpost.travel/gocarshare/id={$url}";
+    $html = file_get_contents($url);
+    return $html;
   }
 
   function craigslist($id) {
