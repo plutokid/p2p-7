@@ -196,7 +196,7 @@
       return str;
     },
 
-    genSearchParamsAndGo: function(cat, random) {
+    genSearchParams: function(cat, random) {
       var paramStr;
       var param = Outpost.searchQuery;
 
@@ -228,8 +228,11 @@
           random: random ? jQuery.now() : ""
         });
       }
+      return "!/" + cat + "?" + paramStr;
+    },
 
-      Outpost.mvc.router.navigate("!/" + cat + "?" + paramStr, true);
+    genSearchParamsAndGo: function(cat, random) {
+        Outpost.mvc.router.navigate(Outpost.helpers.genSearchParams(cat, random), true);      
     },
 
     loadAPI: function(data) {

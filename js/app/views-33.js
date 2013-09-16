@@ -462,9 +462,9 @@
           totalPages: totalPages,
           alignment:'right',
           useBootstrapTooltip: true,
-          onPageChanged: function(e, oldPage, newPage) {
-            Outpost.searchQuery.rentals.page = newPage;
-            Outpost.helpers.genSearchParamsAndGo("rentals");
+          pageUrl: function(type, page, current){
+            Outpost.searchQuery.rentals.page = page;
+            return "#" + Outpost.helpers.genSearchParams("rentals");
           },
           itemTexts: function (type, page, current) {
             switch (type) {
@@ -1027,9 +1027,9 @@
           totalPages: totalPages,
           alignment:'right',
           useBootstrapTooltip: true,
-          onPageChanged: function(e, oldPage, newPage) {
-            Outpost.searchQuery.experiences.page = newPage;
-            Outpost.helpers.genSearchParamsAndGo("experiences");
+          pageUrl: function(type, page, current){
+            Outpost.searchQuery.experiences.page = page;
+            return "#" + Outpost.helpers.genSearchParams("experiences");
           },
           itemTexts: function (type, page, current) {
             switch (type) {
