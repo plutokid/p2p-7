@@ -2761,10 +2761,6 @@ td.details-td {
     width: 100% !important;;
   }
 
-  .btn-hou-details, .btn-rid-details, .btn-tou-details {
-    display: none;
-  }
-
   .lp-list-title {
     width: 100% !important;
   }

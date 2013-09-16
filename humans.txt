@@ -3,10 +3,11 @@
 
 # TEAM
 
-    Hamed   -- Janitor  -- @wololodev
     Trevor  -- CTO      -- @trevorstarick
+    Dustin  -- Lead Dev -- @DustinJBlackman
+    Hamed   -- Janitor  -- @wololodev
 
-# THANKS
+# THANKS FOR THE FOOD
 
     Ovi     -- COO      -- @oviask
 
