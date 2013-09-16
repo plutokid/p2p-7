@@ -1,5 +1,5 @@
 <div class="container lp-container" id="singleViewPage">
-  <% if (!title) { %>
+  <% if (!heading) { %>
     <div class="row">
       <div class="span12">
         <div class="item-wrapper">
@@ -13,8 +13,8 @@
   <% } else { %>
   <%
     Outpost.helpers.alternateSEO({
-      title: title + " - Outpost",
-      description: location + ", for " + price + " per person. " +
+      title: heading + " - Outpost",
+      description: origin + ", for " + rate + " per person. " +
         "Feel like a local by exploring rare venues with a local guide."
     });
 
@@ -28,7 +28,7 @@
       hrefRes = window.location.origin + "/#!/experiences?destCity=" + Outpost.helpers.enbarURI(origin);
     }
 
-    var currentBread = title;
+    var currentBread = heading;
     if (currentBread.length >= 45) {
       currentBread = currentBread.substr(0, 45) + "..";
     }
@@ -41,10 +41,10 @@
       </ul>
       <div class="item-wrapper">
         <div class="panel-header css-bggreen">
-          <h2 class="panel-title"><%= title %></h2>
+          <h2 class="panel-title"><%= heading %></h2>
         </div>
         <div class="item-content row">
-          <h4 class="panel-subtitle-hou"><%= duration %> · <span class="text-yellow"><%= location %></span></h4>
+          <h4 class="panel-subtitle-hou"><span class="text-yellow"><%= origin %></span></h4>
           <div class="span8">
             <div class="left-col-content">
               <div class="tabbable">
@@ -55,7 +55,7 @@
                 <div class="tab-content">
                   <div class="tab-pane active" id="sv-carousel">
                     <div class="tab-pane active" id="tab-gallery">
-                      <img src="<%= image %>" class="w620">
+                      <img src="<%= photos[0] %>" class="w620">
                     </div>
                   </div>
                   <div class="tab-pane" id="sv-map-view">
@@ -64,27 +64,34 @@
                 </div>
               </div>
               <div class="css-details-text-tou">
-                <p class="sv-hou-details-text"><%= desc %></p>
+                <p class="sv-hou-details-text"><%= description %></p>
               </div>
             </div>
           </div>
           <div class="span270">
             <div class="item-info">
               <div class="item-price-box">
-                <h2 class="item-price"><%= price %></h2>
-                <span class="item-per item-per-seat">per person (USD)</span>
+                <% if (rate) { %>
+                  <h2 class="item-price">$<%= rate %></h2>
+                  <span class="item-per item-per-seat">per person (USD)</span>
+                <% } else { %>
+                  <h2 class="item-price">FREE</h2>
+                  <span class="item-per item-per-seat">for everyone</span>
+                <% } %>
               </div>
               <div class="item-seatleft-box">
-                <strong class="item-beds"><%= amount %></strong>
+                <% if (occupancy) { %>
+                  <strong class="item-beds">Up to <%= occupancy %> people</strong>
+                <% } %>
               </div>
               <div class="item-contact-box">
-                <a class="out-btn btn-block btn-sv-tou spv-bookit" id="spv-bookit" data-toggle="tooltip" data-placement="bottom" title="You will be redirected to <%= provider %>'s website where you can inquire or complete your purchase."  href="<%= link %>" target="_blank">Book on <%= provider %></a>
+                <a class="out-btn btn-block btn-sv-tou spv-bookit" id="spv-bookit" data-toggle="tooltip" data-placement="bottom" title="You will be redirected to <%= fullProvider %>'s website where you can inquire or complete your purchase."  href="<%= link %>" target="_blank">Book on <%= fullProvider %></a>
               </div>
             </div>
             <div class="item-profile">
               <div class="item-profile-pic">
-                <img src="<%= picture_url %>" class="img-polaroid img-profile-pic">
-                <h4 class="item-profile-name"><%= name %></h4>
+                <img src="<%= hostPhoto %>" class="img-polaroid img-profile-pic">
+                <h4 class="item-profile-name"><%= hostName %></h4>
                 <h6 class="item-profile-age">&nbsp;</h6>
               </div>
             </div>
@@ -92,7 +99,7 @@
               <div class="item-provider-logo css-bggreen">
                 <img src="/img/providers/lv/<%= provider %>.png" class="pro-sv-ren-logo">
               </div>
-              <div class="provider-desc"><%= logodesc %></div>
+              <div class="provider-desc"><%= logoDesc %></div>
             </div>
           </div>
         </div>

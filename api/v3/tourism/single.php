@@ -1,70 +1,41 @@
 <?php
   header('Content-Type: application/javascript');
   header("Access-Control-Allow-Origin: *");
-  header('Access-Control-Allow-Credentials: true' );
-  require_once('../../simple_html_dom.php');
-  $url = urldecode($_GET["uri"]);
-  $idtype = $_GET["idtype"];
 
-  switch ($idtype) {
-    case 'vayable':
-      $json = vayable($url);
-      break;
-  }
-  echo $_GET['callback'] . '('.$json.')';
+  $pid = urldecode($_GET["uri"]);
+  $provider = $_GET["idtype"];
 
-  // START THE MADDNESS
-  function vayable($url) {
-    global $idtype;
-    $uri = $url;
-    $url = "https://www.vayable.com/experiences/" . $url;
-    $html = file_get_contents($url);
-    $single = new simple_html_dom();
-    $single->load($html);
+  $output = array();
+  $output["type"] = "experiences";
+  $output["status"] = 200;
 
-    $json['provider'] = "Vayable";
-    $json["title"] = trim($single->find('.trip-title h1', 0)->plaintext);
-    $json["location"] = trim($single->find('.trip-header-prop', 0)->plaintext);
-    $json["duration"] = "Up to ". trim($single->find('.trip-header-prop', 1)->plaintext). " long";
+  // Configuration
+  $dbhost = 'api.outpost.travel:27017';
+  $dbname = 'outpost';
 
-    $json["amount"] = strtolower(trim($single->find('.trip-header-prop', 2)->plaintext));
-    $json["amount"] = str_replace('-', 'to', $json["amount"]);
+  // Connect to outpost database
+  $m = new Mongo("mongodb://$dbhost");
+  $db = $m->$dbname;
+  $db->authenticate("read", "outpost123");
 
-    $json["price"] = trim($single->find('.price', 0)->plaintext);
+  // Get the flipkey collection
+  $c_exp = $db->experiences;
 
-    $name = $single->find('.name', 0);
-    if (isset($name)) {
-      $json["name"] = trim($name->plaintext);
-    } else {
-      $json["name"] = "&nbsp;";
-    }
+  // Build the query
+  $query = array(
+    'pid' => $pid,
+    'provider' => $provider
+  );
 
-    $json["picture_url"] = trim($single->find('#trip-guide-img', 0)->src);
-
-    $coverImg = $single->find('.trip-cover img', 0);
-    if (isset($coverImg)) {
-      $json["image"] = $single->find('.trip-cover img', 0)->src;
-    } else {
-      $json["image"] = $single->find('.cover-img', 0)->src;
-    }
-
-    $json["desc"] = trim($single->find('.framed2', 0)->innertext);
-    $origin = $single->find('.text-center strong', 0);
-    if (isset($origin)) {
-      $json["origin"] = trim($single->find('.text-center strong', 0)->plaintext);
-    } else {
-      $json["origin"] = $json["location"];
-    }
-
-    $json["logopath"] = "img/vayable_logo_edited.png";
-    $json["idtype"] = $idtype;
-    $json["logodesc"] = "Vayable - Tours by locals and other things to do on vacation.";
-
-    $json["link"] = $url;
-    return json_encode($json);
+  try {
+    $output = $c_exp->findOne($query);
+  } catch (Exception $e) {
+    $output = $c_exp->findOne($query);
   }
 
-  function yesno($bool) {
-    return $bool ? "Yes" : "No";
+  if (isset($_GET['callback'])) {
+    echo $_GET['callback'] . '('.json_encode($output).')';
+  } else {
+    echo json_encode($output);
   }
 ?>

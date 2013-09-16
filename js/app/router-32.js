@@ -146,18 +146,8 @@
             rentalsOption.max = Number(params.max) || 1000;
             rentalsOption.radius = Number(params.radius) || 0.7;
             rentalsOption.sortBy = params.sortBy || "relevance";
-            rentalsOption.roomType = params["roomType%5B%5D"] || [
-                                                          "entire_place",
-                                                          "private_room",
-                                                          "shared_room"
-                                                        ];
-            rentalsOption.propertyType = params["propertyType%5B%5D"] || [
-                                                                  "apartment",
-                                                                  "bnb",
-                                                                  "chalet",
-                                                                  "house",
-                                                                  "other"
-                                                                ];
+            rentalsOption.roomType = params["roomType%5B%5D"] || [];
+            rentalsOption.propertyType = params["propertyType%5B%5D"] || [];
           } else if (type === "experiences") {
             expOption = searchQuery.experiences;
             expOption.page = Number(params.page) || 1;

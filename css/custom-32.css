@@ -2668,15 +2668,22 @@ td.details-td {
   .lp-hou-pricewrap {
     background: none;
     border-radius: none;
-    color: white;
     float: none;
     min-width: 0;
     padding: 0px;
     bottom: 0 !important;
   }
 
-  .lp-hou-price {
-    -webkit-text-stroke: 1px black;
+  .lp-hou-price, .lp-hou-pricedesc {
+    text-shadow:
+     -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+       1px 1px 0 #000;
+  }
+
+  .list-img-zoom {
+    right: 10px;
   }
 
   #sl-hou-dest-location-input, #sl-exp-dest-location-input,
@@ -2746,11 +2753,16 @@ td.details-td {
   }
 
   .lp-list-img {
-    width: 74% !important;;
+    width: 100% !important;;
   }
 
   .lp-left-group {
-    width: 26% !important;;
+    height: 46px !important;
+    width: 100% !important;;
+  }
+
+  .btn-hou-details, .btn-rid-details, .btn-tou-details {
+    display: none;
   }
 
   .lp-list-title {
@@ -2762,11 +2774,26 @@ td.details-td {
   }
 
   .lp-rid-wrap {
-    width: 26% !important;
+    font-size: 0.88em !important;
+    width: 27% !important;
   }
 
   .lp-rid-block {
-    width: 48% !important;
+    font-size: 0.9em !important;
+    width: 73% !important;
+  }
+
+  .lp-list-body {
+    height: 195px !important;
+  }
+
+  .lp-arrow-block {
+    display: none;
+  }
+
+  .lp-rid-orig-block, .lp-rid-dest-block, .rid-block-loc, .rid-block-text {
+    width: auto !important;
+    max-width: auto !important;
   }
 }
 
@@ -2780,7 +2807,7 @@ td.details-td {
   background: url("../img/providers/lv/geronimo.png") no-repeat #24b0cf 644px 1px;
 }
 .lpl-nflats {
-  background:url("../img/providers/lv/9flats.png") no-repeat #24b0cf 591px 3px;
+  background:url("../img/providers/lv/nflats.png") no-repeat #24b0cf 591px 3px;
 }
 .lpl-airbnb {
   background:url("../img/providers/lv/airbnb.png") no-repeat #24b0cf 628px 3px;
