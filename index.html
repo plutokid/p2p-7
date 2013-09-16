@@ -484,10 +484,11 @@
   <div id="fb-root"></div>
   <script>
     window.fbAsyncInit = function() {
-      // init the FB JS SDK
       Parse.FacebookUtils.init({
         appId      : '513949188651801',
         channelUrl : '//OUTPOST.TRAVEL/channel.php',
+        status     : true,
+        cookie     : true,
         xfbml      : true
       });
     };
